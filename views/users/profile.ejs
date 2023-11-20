@@ -1,0 +1,197 @@
+<%- include("../partials/userHeader.ejs")%>
+    <style>
+        #foot {
+            margin-top: 10rem;
+
+        }
+
+        .welcomeHead {
+            height: 60px;
+            background-color: white;
+            display: flex;
+
+
+        }
+
+        .welcome {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            margin-left: 30px;
+            position: relative;
+            margin-top: 10px;
+
+        }
+    </style>
+    <div class="welcomeHead">
+        <h3 class="welcome">Welcome
+            <%=userData.name%>
+        </h3>
+    </div>
+    <section style="background-color: #eee;">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col">
+                    <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4 d-flex justify-content-center"
+                        style="font-size: 25px;">
+                        Your Profile
+                    </nav>
+                </div>
+            </div>
+
+            <!-- <div class="row">
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSo-Wks69MaR5rrZwubeSAQYuhuzUikEnI5UQ&usqp=CAU"
+                                alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                            <h5 class="my-3">
+                                <%=userData.name%>
+                            </h5>
+                            <p class="text-muted mb-1"></p>
+                            <p class="text-muted mb-4">Bay Area, San Francisco, CA</p>
+                            <div class="d-flex justify-content-center mb-2">
+
+                                <a href="/profile/editprofile">
+                                    <button type="button" class="btn btn-outline-primary ms-1">Edit Profile</button>
+                                  </a>
+                                  
+                            </div>
+                        </div>
+                    </div>
+
+                </div> -->
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Username</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="text-muted mb-0">
+                                    <%=userData.name%>
+                                </p>
+                            </div>
+                            <div class="col-sm-3">
+                                <a href="/profile/name/edit"><button class="btn btn-primary">Edit</button></a>
+                                
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Email</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="text-muted mb-0">
+                                    <%=userData.email%>
+                                </p>
+                            </div>
+                            <div class="col-sm-3">
+                                <a href="/profile/email/edit"><button class="btn btn-primary">Edit</button></a>
+                                
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row ">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Phone</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <p class="text-muted mb-0">
+                                    <%=userData.phone%>
+                                </p>
+                            </div>
+                            <div class="col-sm-3">
+                                <a href="/profile/phone/edit"><button class="btn btn-primary">Edit</button></a>
+                                
+                            </div>
+
+                        </div>
+                        <hr>
+
+
+                        <div class="row flex-wrap">
+                            <!-- Add Your Address Button -->
+                            <div class="col-sm-3" style="width: 100%;">
+                                <a href="/profile/address" class="btn btn-primary">+ Add Your Address</a>
+                            </div>
+                            <% if (userData.address && userData.address.length> 0) { %>
+
+                                <div class="col-sm-9 mt-3 ">
+                                    <% if (userData.address && userData.address.length> 0) { %>
+
+                                        <% userData.address.forEach(function(address,index) { %>
+                                            <h5>Address <%=index + 1%>
+                                            </h5>
+                                            <div class="card mb-3">
+                                                <div class="card-body ">
+                                                    <div>
+                                                        <h6 class="card-title">
+                                                            <%= address.name %>
+                                                                <%= address.phone %>
+                                                        </h6>
+                                                        <h6 class="card-subtitle mb-2 text-muted">
+                                                            <%= address.address %>,
+                                                                <%= address.district %>,
+                                                                    <%= address.state %>-<%= address.pincode %>
+                                                        </h6>
+                                                        <!-- Add more card details as needed -->
+                                                        <!-- Example: <p class="card-text"><%= address.street %></p> -->
+                                                    </div>
+                                                    <div class="d-flex ">
+                                                        <div class="ms-2" style="font-size:10px;">
+                                                            <a href="/profile/address/edit/<%=address._id%>"> <button class="btn btn-primary">Edit</button></a>
+                                                           
+                                                        </div>
+                                                        <div class="ms-2">
+                                                            <button class="btn btn-primary"  onclick="removeAddress('<%= address._id %>')"><i
+                                                                    class="fas fa-trash"></i></button>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+
+                                            <% }); %>
+                                                <% } else { %>
+                                                    <!-- Message for no addresses -->
+                                                    <p>No addresses found.</p>
+                                                    <% } %>
+                                </div>
+                                <% } else { %>
+                                    <div class="mt-3"> <p>No addresses found.</p></div>
+                                    <!-- Message for no addresses -->
+                                   
+                                    <% } %>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        </div>
+    </section>
+    <script>
+        function removeAddress(addressId) {
+          fetch(`/profile/address/remove/${addressId}`, {
+            method: 'DELETE',
+          })
+          .then(response => {
+            location.reload()
+            if (response.ok) {
+              console.log('Address removed successfully');
+              // Optionally, update the view to reflect the removal
+            } else {
+              console.error('Error removing address:', response.statusText);
+            }
+          })
+          .catch(error => {
+            console.error('Error removing address:', error);
+          });
+        }
+      </script>
+     
+    <%- include("../partials/userFooter.ejs")%>

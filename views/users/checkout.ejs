@@ -1,0 +1,273 @@
+<%- include("../partials/userHeader.ejs")%>
+    <div class="container-fluid my-5">
+        <div class="row justify-content-center">
+            <div class="col-xl-10">
+                <div class="card shadow-lg">
+                    <div class="row p-2 mt-3 justify-content-between mx-sm-2">
+                        <!-- Other content within this row -->
+                    </div>
+
+                    <!-- Shipping Details Section -->
+                    <div class="row justify-content-around">
+                        <div class="col-md-5">
+                            <div class="card border-0">
+                                <div class="card-header pb-0">
+                                    <h2 class="card-title space">Checkout</h2>
+                                    <p class="card-text text-muted mt-4 space">SHIPPING DETAILS</p>
+                                    <hr class="my-0">
+                                    <div>
+                                        <p class="card-text text-muted mt-4 mb-2 space">SELECT DELIVERY ADDRESS</p>
+                                    </div>
+                                    <form action="/checkout" method="post" class="">
+
+                                        <!-- Dummy content for addresses -->
+                                        <% userData.address.forEach(function(item ,index) { %>
+
+                                            <div class="form-check mt-3">
+                                                <input type="radio" class="form-check-input js-radioInput" id="radio<%= index %>" name="selectedAddressIndex" value="<%= index %>" required>
+
+                                                <p class="display-address">
+                                                    <%= item.name %><span class="mx-3"><a
+                                                                href="/profile?edit=address1&checkout=true"
+                                                                style="text-decoration: none">Edit</a></span>
+                                                </p>
+                                                <p class="display-address">
+                                                    <%= item.address %>,<%= item.locality %>
+                                                </p>
+                                                <p class="display-address">
+                                                    <%= item.district %>,<%= item.state %>
+                                                </p>
+                                                <p class="display-address">
+                                                    <%= item.phone %>
+                                                </p>
+                                                <p class="display-address">
+                                                    <%= item.state %>-<%= item.pincode %>
+                                                </p>
+                                                <label class="form-check-label" for="radio1"></label>
+                                            </div>
+                                            <% }); %>
+                                                <!-- Dummy content for adding a new address -->
+                                                <a href="/profile?add=true&checkout=true"
+                                                    style="text-decoration: none; color: green;">
+                                                    <p>Add a new address</p>
+                                                </a>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <% if (buynow) { %>
+                            <div class="col-md-5 mt-4">
+                                <div class="card border-0">
+                                    <div class="card-header card-2">
+                                        <p class="card-text text-muted mt-md-4 space">ORDER SUMMARY </p>
+                                        <hr class="my-2">
+                                    </div>
+                                    <div class="card-body mt-3">
+                                        <% filteredCart.forEach(function(item) { %>
+                                            <div class="row justify-content-between">
+                                                <div class="form-group row justify-content-between ">
+                                                    <div class="col-sm-3 col-xs-3">
+                                                        <img class="img-fluid"
+                                                            src="/images/<%= item.prod_id.image[0] %>" />
+                                                    </div>
+                                                    <div class="col-sm-6 col-xs-6">
+                                                        <div class="col-xs-12">
+                                                            <%= item.prod_id.name %>
+                                                        </div>
+                                                        <div class="col-xs-12"><small>Quantity:<span>
+                                                                    <%= item.qty %>
+                                                                </span></small></div>
+                                                                <div class="col-xs-12"><small><%= item.prod_id.discount %>% off<span>
+                                                                   
+                                                                </span></small></div>
+                                                    </div>
+                                                    <!-- <div class="col-sm-3 col-xs-3 text-right">
+                                                    <h6><span>$</span>25.00</h6>
+                                                </div> -->
+                                                    <div class=" flex-sm-col col-auto my-auto">
+                                                        <h6 class="mb-3"><b>₹<%= item.prod_id.price %></b></h6>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                            <hr>
+                                            <% }); %>
+
+                                            <% filteredCart.forEach(function(item) { %>
+                                                <div class="row mt-5">
+                                                    <div class="col">
+                                                        <div class="row justify-content-between">
+                                                            <div class="col-4">
+                                                                <h6 class="mb-3"><b>Subtotal</b></h6>
+                                                            </div>
+                                                            <div class="flex-sm-col col-auto mx-4">
+                                                                <h6 class="mb-3"><b>₹<%= item.prod_id.price*item.qty %></b></h6>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row justify-content-between">
+                                                            <div class="col">
+                                                                <h6 class="mb-3"><b>discount</b></h6>
+                                                            </div>
+                                                            <div class="flex-sm-col col-auto mx-4">
+                                                                <h6 class="mb-3" style="color: green"><b>-₹<%= (item.prod_id.price*item.qty)*(item.prod_id.discount/100) %></b></h6>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row justify-content-between">
+                                                            <div class="col">
+                                                                <h6 class="mb-3"><b>Shipping</b></h6>
+                                                            </div>
+                                                            <div class="flex-sm-col col-auto mx-4">
+                                                                <h6 class="mb-3" style="color: green"><b>Free</b></h6>
+                                                            </div>
+                                                        </div>
+                                                      
+                                                        <div class="row justify-content-between">
+                                                            <div class="col-4">
+                                                                <h6><b>Total</b></h6>
+                                                            </div>
+                                                            <div class="flex-sm-col col-auto mx-4 ">
+                                                                <h6 class="mb-3"><b>₹<%= item.total_price %>
+
+                                                                    </b></h6>
+                                                            </div>
+                                                        </div>
+                                                        <hr class="my-0">
+                                                    </div>
+                                                    
+                                                </div>
+                                                <% }); %>
+                                                <!-- Dummy content for the Proceed to Payment button -->
+                                                <div class="row mb-5 mt-4">
+                                                    <div class="col-md-7 col-lg-6"> <button
+                                                                id="my_button" type="submit" disabled="disabled"
+                                                                value="submit" name="submit"
+                                                                class="btn btn-block btn-lg border-dark"
+                                                                style="width: 100%; border-radius:30px;">Proceed to
+                                                                Payment</button>
+
+                                                    </div>
+                                                </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } else { %>
+                                <!-- Order Summary Section -->
+                                <div class="col-md-5 mt-4">
+                                    <div class="card border-0">
+                                        <div class="card-header card-2">
+                                            <p class="card-text text-muted mt-md-4 space">ORDER SUMMARY </p>
+                                            <hr class="my-2">
+                                        </div>
+                                        <div class="card-body mt-3">
+                                            <% userData.cart.forEach(function(item) { %>
+                                                <div class="row justify-content-between">
+                                                    <div class="form-group row justify-content-between ">
+                                                        <div class="col-sm-3 col-xs-3">
+                                                            <img class="img-fluid"
+                                                                src="/images/<%= item.prod_id.image[0] %>" />
+                                                        </div>
+                                                        <div class="col-sm-6 col-xs-6">
+                                                            <div class="col-xs-12">
+                                                                <%= item.prod_id.name %>
+                                                            </div>
+                                                            <div class="col-xs-12"><small>Quantity:<span>
+                                                                        <%= item.qty %>
+                                                                    </span></small></div>
+                                                        </div>
+                                                        <!-- <div class="col-sm-3 col-xs-3 text-right">
+                                                    <h6><span>$</span>25.00</h6>
+                                                </div> -->
+                                                        <div class=" flex-sm-col col-auto my-auto">
+                                                            <h6 class="mb-3"><b>₹<%= item.total_price %></b></h6>
+                                                        </div>
+
+                                                    </div>
+
+
+                                                </div>
+                                                <hr>
+                                                <% }); %>
+
+                                                    <!-- Dummy content for subtotal, shipping, and total -->
+                                                    <div class="row mt-5">
+                                                        <div class="col">
+                                                            <div class="row justify-content-between">
+                                                                <div class="col-4">
+                                                                    <h6 class="mb-3"><b>Subtotal</b></h6>
+                                                                </div>
+                                                                <div class="flex-sm-col col-auto mx-4">
+                                                                    <h6 class="mb-3"><b>₹<%=totalBill%></b></h6>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row justify-content-between">
+                                                                <div class="col">
+                                                                    <h6 class="mb-3"><b>Shipping</b></h6>
+                                                                </div>
+                                                                <div class="flex-sm-col col-auto mx-4">
+                                                                    <h6 class="mb-3" style="color: green"><b>Free</b>
+                                                                    </h6>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row justify-content-between">
+                                                                <div class="col-4">
+                                                                    <h6><b>Total</b></h6>
+                                                                </div>
+                                                                <div class="flex-sm-col col-auto mx-4 ">
+                                                                    <h6 class="mb-3"><b>₹<%=totalBill%>
+
+                                                                        </b></h6>
+                                                                </div>
+                                                            </div>
+                                                            <hr class="my-0">
+                                                        </div>
+                                                    </div>
+                                                    <!-- Dummy content for the Proceed to Payment button -->
+                                                    <div class="row mb-5 mt-4">
+                                                        <div class="col-md-7 col-lg-6"> <button
+                                                                    id="my_button" type="submit" disabled="disabled"
+                                                                    value="submit" name="submit"
+                                                                    class="btn btn-block btn-lg border-dark"
+                                                                    style="width: 100%; border-radius:30px;">Proceed to
+                                                                    Payment</button>
+
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                        </div>
+                                    </div>
+                                    ;
+                                </div>
+                                <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dummy footer content -->
+    <footer>
+
+
+    </footer>
+
+    <script>
+        // Dummy script as EJS syntax is removed
+        const inputElems = document.getElementsByClassName("js-radioInput");
+        const myButton = document.getElementById("my_button");
+
+        for (let i = 0; i < inputElems.length; i++) {
+            const elem = inputElems[i];
+            elem.addEventListener("change", function () {
+                let isDisabled = true;
+                for (let j = 0; j < inputElems.length; j++) {
+                    if (inputElems[j].checked) {
+                        isDisabled = false;
+                        break;
+                    }
+                }
+                myButton.disabled = isDisabled;
+            });
+        }
+    </script>

@@ -1,0 +1,271 @@
+<%- include("../partials/userHeader.ejs")%>
+    <style>
+        #foot {
+            margin-top: 10rem;
+
+        }
+
+        body {
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .card-header h2 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+
+
+        label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-con {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+            font-size: 18px;
+            border: none;
+            border-radius: 30px;
+            /* Adding curve to the button */
+            padding: 10px 40px;
+            /* Centering the button */
+            cursor: pointer;
+            margin: 0 auto;
+            /* Center the button horizontally */
+            display: block;
+            /* Make it a block-level element for centering */
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .inputbox {
+            position: relative;
+        }
+
+        #eyeIcon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .text-danger {
+            color: #ff6347;
+            font-size: 14px;
+        }
+
+        .mt-3 {
+            margin-top: 20px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-success {
+            color: #4caf50;
+        }
+    </style>
+    <section>
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Create Account</h2>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" id="signupForm" onsubmit="return validateForm()">
+                                <% if(typeof message!=='undefined' ){ %>
+                                    <p style=" margin-left: 50px;" class="text-danger">
+                                        <%= message%>
+                                    </p>
+                                    <% } %>
+                                        <% if(typeof isSuccess!=='undefined' ){ %>
+                                            <p class="text-success text-center " style="font: size 30px ;">
+                                                <%= isSuccess%>
+                                            </p>
+                                            <% } %>
+                                                <div class="form-group">
+                                                    <label for="name">Name</label>
+                                                    <input type="text" class="form-con" id="name" name="name"
+                                                        placeholder="Enter your name">
+                                                    <span id="nameError" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="email">Email</label>
+                                                    <input type="email" class="form-con" id="email" name="email"
+                                                        placeholder="Enter your email">
+                                                    <span id="emailError" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="phone">Phone</label>
+                                                    <input type="text" class="form-con" id="phone" name="phone"
+                                                        maxlength="10" placeholder="Enter your phone number">
+                                                    <span id="phoneError" class="text-danger"></span>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="password">Password</label>
+                                                    <div class="inputbox"> <input type="password" class="form-con"
+                                                            id="password" name="password" placeholder="Enter password">
+
+                                                        <i class="fas fa-eye" id="eyeIcon"
+                                                            onclick="togglePasswordVisibility()"></i>
+
+                                                    </div>
+                                                    <span id="passwordError" class="text-danger"></span>
+                                                </div>
+
+                                                <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                            </form>
+                        </div>
+                    </div>
+                    <p class="mt-3 text-center">Already have an account? <a href="/login">Log In</a></p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <script>
+        function printError(elemId, hintMsg) {
+            document.getElementById(elemId).textContent = hintMsg;
+        }
+
+        function validateForm() {
+            // Get form fields values
+            var name = document.getElementById("name").value;
+            var email = document.getElementById("email").value;
+            var phone = document.getElementById("phone").value;
+            var password = document.getElementById("password").value;
+
+            // Reset error messages
+            printError("nameError", "");
+            printError("emailError", "");
+            printError("phoneError", "");
+            printError("passwordError", "");
+
+            // Validation flag
+            var isValid = true;
+
+            // Validate name field
+            if (name.trim() == '') {
+                printError('nameError', 'Please enter your name');
+                isValid = false;
+            } else {
+                const nameRegex = /^[a-zA-Z\s]+$/;
+                if (!nameRegex.test(name)) {
+                    printError('nameError', 'Please enter a valid name');
+                    isValid = false;
+                }
+            }
+            // if (name.trim() == '') {
+            //     printError('nameError', 'Please enter your name');
+            //     isValid = false;
+            // } else {
+            //     const nameRegex = /^[a-zA-Z].*[a-zA-Z0-9\s]*$/;
+            //     if (!nameRegex.test(name)) {
+            //         printError('nameError', 'Please enter a valid name');
+            //         isValid = false;
+            //     }
+            // }
+
+
+            // Validate email field
+            if (email === '') {
+                printError('emailError', 'Please enter your email');
+                isValid = false;
+            } else {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    printError('emailError', 'Please enter a valid email');
+                    isValid = false;
+                }
+            }
+
+            // Validate phone field
+            if (phone === '') {
+                printError('phoneError', 'Please enter your phone number');
+                isValid = false;
+            } else {
+                const phoneRegex = /^\d{10}$/;
+                if (!phoneRegex.test(phone)) {
+                    printError('phoneError', 'Please enter a valid 10-digit phone number');
+                    isValid = false;
+                }
+            }
+
+            // Validate password field
+            if (password.trim() === '') {
+                printError('passwordError', 'Please enter your password');
+                isValid = false;
+            } else if (password.length < 3) {
+                printError('passwordError', 'Password must be at least 3 characters long');
+                isValid = false;
+            }
+
+            return isValid;
+        }
+    </script>
+    <script>
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
+    </script>
+
+    <%- include("../partials/userFooter.ejs")%>

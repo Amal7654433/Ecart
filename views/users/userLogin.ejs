@@ -1,0 +1,230 @@
+<%- include("../partials/userHeader.ejs")%>
+<style>
+    #foot
+    {
+        margin-top: 15rem;
+     
+    }
+     body {
+        background-color: #f4f4f4;
+        font-family: Arial, sans-serif;
+    }
+   
+    /* .container {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    } */
+
+    .card-header {
+        background-color: #007bff;
+        color: #fff;
+        text-align: center;
+        padding: 15px;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+  
+
+    label {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .form-con {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-radius: 30px;
+        color: #fff;
+        font-size: 18px;
+     
+       width: 9rem; 
+       height: 3rem;
+        border: none;
+        margin: 0 auto; /* Center the button horizontally */
+        display: block;
+        padding: 10px 20px;
+        cursor: pointer;
+      
+        position: relative;
+        margin-top: 0%;
+    }
+  
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    /* #eyeIcon {
+        position: relative;
+        margin-left: 36rem;
+    
+      
+        font-size: 23px;
+        color: #555;
+    } */
+
+    .inputbox {
+       
+        background-color: #f9f9f9;
+        position: relative;
+    }
+
+    .form-group {
+        display: block;
+    }
+    
+    #eyeIcon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 20px;
+        color: #333;
+        cursor: pointer;
+    }
+    /* #eyeIcon
+    {
+position: relative;
+top: 55%;
+right: 4%;
+margin-left: 95%;
+margin-bottom:50px ;
+font-size: 23px;
+color: darkgray;
+
+
+    }
+    .input-box
+
+    {
+    width: 90%;
+    background-color: aquamarine;
+    }
+    .form-group
+    {
+       display: block;
+        
+    } */
+</style>
+
+    <body >
+        <div class="container mt-5" >
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-primary ">
+                            Login
+                        </div>
+                        <div class="card-body">
+                            <form method="post" id="loginForm" onsubmit="return loginValidate()">
+                                <% if(typeof message!=='undefined' ){ %>
+                                    <p class="text-center" style="color: red;">
+                                        <%= message%>
+                                    </p>
+                                    <% } %>
+                                <div class="form-group">
+                                    <label for="email">Email:</label>
+                                    <input type="email" class="form-con" id="email" name="email"
+                                        placeholder="Enter your email">
+                                    <!-- Add an element to display email error message -->
+                                    <p id="lEmailErr" class="text-danger" style=" margin-left: 10px;"></p>
+                                </div>
+                                <div class="form-group " >
+                                    <label for="password">Password:</label>
+                                    <div class="inputbox   "  > <input type="password" class="form-con" id="password" name="password"
+                                        placeholder="Enter password">
+                                       
+                                        <i class="fas fa-eye" id="eyeIcon" onclick="togglePasswordVisibility()"></i>
+                                        
+                                    </div>
+                            
+                                    <span id="lPassErr" class="text-danger" style=" margin-left: 10px;"></span>
+                                   
+                                    <!-- Add an element to display password error message -->
+                                    
+                                   
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block">Login</button>
+                            </form>
+                        </div>
+                       
+                                <div class="card-footer d-flex justify-content-between align-items-center">
+                                    <a href="/signup" style="text-decoration: none;">Signup</a>
+
+                                    <a href="/forgetpassword" style="text-decoration: none;">Forgot Password?</a>
+                                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+  
+
+    <script>
+        function printError(elemId, hintMsg) {
+            document.getElementById(elemId).innerText = hintMsg;
+        }
+
+        function loginValidate() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            let isValid = true;
+
+            if (email.trim() === '') {
+                printError('lEmailErr', 'Please enter your email address');
+                isValid = false;
+            } else {
+                const regex = /^\S+@\S+\.\S+$/;
+                if (regex.test(email) === false) {
+                    printError('lEmailErr', 'Please enter a valid email address');
+                    isValid = false;
+                } else {
+                    printError('lEmailErr', '');
+                }
+            }
+            if (password.trim() === '') {
+                printError('lPassErr', 'Please enter your password');
+                isValid = false;
+            } else if (password.length < 3) {
+                printError('lPassErr', 'Password must be at least 3 characters long');
+                isValid = false;
+            } else {
+                printError('lPassErr', '');
+            }
+
+            return isValid;
+        }
+    </script>
+    <script>
+        function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+    }
+}
+
+    </script>
+     <%- include("../partials/userFooter.ejs")%>

@@ -1,0 +1,388 @@
+<%- include("../partials/adminHeader.ejs")%>
+    <%- include("../partials/sideMenu.ejs")%>
+        <style>
+            
+            .table {
+                background-color: #fff;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+            }
+
+           
+            .table thead th {
+                background-color: #f2f2f2;
+                border-bottom: 2px solid #ddd;
+                color: #333;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle;
+                font-size: 18px;
+                padding: 20px;
+            }
+
+           
+            .table tbody tr {
+                background-color: #fff;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .table tbody tr:last-child {
+                border-bottom: none;
+            }
+
+            .table tbody td {
+                border-top: none;
+                text-align: center;
+                vertical-align: middle;
+                font-size: 16px;
+                padding: 20px;
+            }
+
+            /* Customize the edit and delete buttons */
+            .btn-primary {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: #fff;
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+
+            .btn-primary:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+                color: #fff;
+            }
+
+            .btn-red {
+                background-color: #dc3545;
+                border-color: #dc3545;
+                color: #fff;
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+
+            .btn-red:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+                color: #fff;
+            }
+
+            /* Customize the modal */
+            .modal-content {
+                background-color: #fff;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .modal-header {
+                background-color: #f2f2f2;
+                border-bottom: 2px solid #ddd;
+                color: #333;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle;
+                font-size: 18px;
+                padding: 20px;
+            }
+
+            .modal-body {
+                font-size: 16px;
+                padding: 20px;
+            }
+
+            .modal-footer {
+                border-top: none;
+            }
+
+            .btn-secondary {
+                background-color: #6c757d;
+                border-color: #6c757d;
+                color: #fff;
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+                border-color: #545b62;
+                color: #fff;
+            }
+
+            /* Customize the pagination */
+            .pagination {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+            }
+
+            .pagination.page-item {
+                margin: 0 5px;
+            }
+
+            .pagination.page-link {
+                background-color: #f2f2f2;
+                border-radius: 5px;
+                color: #333;
+                font-size: 16px;
+                padding: 5px 10px;
+            }
+
+            .pagination.page-link:hover {
+                background-color: #ddd;
+            }
+
+            .pagination.page-item.active.page-link {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: #fff;
+            }
+
+            /* .card-img-top {
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                margin: 0 auto;
+            } */
+
+            .prev-image-btn,
+            .next-image-btn {
+
+
+                transform: translateY(-50%);
+                background: transparent;
+                border: none;
+                font-size: 12px;
+                cursor: pointer;
+            }
+
+            .img-fluid {
+
+                width: 200px;
+               
+                height: 200px;
+               
+                object-fit: cover;
+            }
+
+            .heading {
+                display: flex;
+                justify-content: center;
+                font-size: 30px;
+                height: 60px;
+                width: 100%;
+                margin-top: 40px;
+
+            }
+        </style>
+        <section>
+            <div class="heading"> <i class="fas fa-shopping-cart fa-fw"
+                    style="width:max-content; margin-top: 10px; color: #0069d9;"> Products</i> </div>
+            <div class="container">
+                <div class="row">
+                    <div> <a href="/admin/products/add" class="btn btn-primary ml-auto">Add product</a></div>
+                </div>
+
+                <div class="table-responsive mt-3">
+
+                    <table class="table  " id="myTable">
+                        <thead>
+                            <tr>
+                                <th scope="col">No</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Brand</th>
+                                <th scope="col">Stock</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Discount</th>
+                                <th scope="col">Details</th>
+                                <th scope="col">Image</th>
+                                <th scope="col">Edit</th>
+                                <th scope="col">Activation</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% products.forEach(function(product, index) { %>
+                                <tr>
+
+
+                                    <td>
+                                        <%= index+1 %>
+                                    </td>
+                                    <td title="<%= product.name %>">
+                                        <%= product.name.length > 20 ? product.name.substring(0, 20) + '...' : product.name %>
+                                    </td>
+                                    <td title=" <%= product.category.name %>">
+                                        <%= product.category.name.length > 20 ? product.category.name.substring(0, 20) + '...' : product.category.name %>
+                                    </td>
+                                    <td title=" <%= product.brand %>">
+                                        <%= product.brand.length > 20 ? product.brand.substring(0, 20) + '...' : product.brand %>
+                                    </td>
+                                    <td title=" <%= product.stock %>">
+                                        <%= product.stock %>
+                                    </td>
+                                    <td>
+                                        <%= product.price %>
+                                    </td>
+                                    <td>
+                                        <%= product.discount %>
+                                    </td>
+                                    <td title=" <%= product.details %>">
+                                        <%= product.details.slice(0,30) %>
+                                            <a style="text-decoration: none;"
+                                                href="/admin/products/details/<%= product._id %>">
+                                                <p>more</p>
+                                            </a>
+                                    </td>
+
+
+
+
+
+
+                                    <!--                                 
+                                <td>
+                                    
+                                    <% product.image.forEach(function(image) { %>
+                                        
+                                        <img src="/images/<%= image %>" alt="Product Image" class="product-images" style="max-width: 100px;">
+                                    <% }); %>
+                                </td>  -->
+                                    <td class="image-container   ">
+
+
+                                        <% product.image.forEach(function(image, i) { %>
+                                            <a href="/admin/products/image/edit/<%= product._id %>">
+                                                <img  src="/images/<%= image %>" alt="Product Image" class="img-fluid"
+                                                    style="max-width: 80px; ; max-height: 80px; <%= i === 0 ? 'display: block;' : 'display: none;' %>">
+                                            </a>
+                                            <!-- <a href="/crop-image/<%= product._id %>/<%= i %>" class="crop-link">Crop </a> -->
+                                            <% }); %>
+
+                                                <div class="navigation-buttons">
+                                                    <button class="prev-image-btn"
+                                                        onclick="showImage('<%= product._id %>', -1)"><i
+                                                            class="fas fa-chevron-left"></i></button>
+                                                    <button class="next-image-btn"
+                                                        onclick="showImage('<%= product._id %>', 1)"><i
+                                                            class="fas fa-chevron-right"></i></button>
+                                                </div>
+
+                                    </td>
+
+
+
+
+
+
+                                    <td>
+                                        <!-- Edit button for each brand -->
+                                        <a href="/admin/products/edit/<%= product._id %>"
+                                            class="btn btn-primary">Edit</a>
+                                    </td>
+
+                                    <% if (product.active) { %>
+
+                                        <td>
+                                            <a onclick="deactive('<%= product._id %>')"
+                                                class="btn btn-primary">Deactive</a>
+
+
+                                        </td>
+
+                                        <% } else { %>
+
+
+                                            <td>
+                                                <a onclick="active('<%= product._id %>')"
+                                                    class="btn btn-dark">Active</a>
+                                            </td>
+                                            <% } %>
+
+
+                                </tr>
+                                <% }); %>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+      
+
+
+
+        <script>
+            function active(id) {
+
+                console.log(id)
+                fetch("/admin/products/active", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id: id
+                    })
+                })
+
+
+                    .then(data => {
+                        location.reload()
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            };
+
+
+            function deactive(id) {
+
+                console.log(id)
+                fetch("/admin/products/deactive", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id: id
+                    })
+                })
+
+
+                    .then(data => {
+                        location.reload()
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            };
+        </script>
+        <script>
+            const imageContainers = document.querySelectorAll(".image-container");
+
+            imageContainers.forEach(container => {
+                let currentIndex = 0;
+                const images = container.querySelectorAll('img');
+                images[currentIndex].style.display = 'block';
+
+                const prevBtn = container.querySelector('.prev-image-btn');
+                const nextBtn = container.querySelector('.next-image-btn');
+
+                prevBtn.addEventListener("click", () => {
+                    images[currentIndex].style.display = 'none';
+                    currentIndex = (currentIndex - 1 + images.length) % images.length;
+                    images[currentIndex].style.display = 'block';
+                });
+
+                nextBtn.addEventListener("click", () => {
+                    images[currentIndex].style.display = 'none';
+                    currentIndex = (currentIndex + 1) % images.length;
+                    images[currentIndex].style.display = 'block';
+                });
+            });
+        </script>
+        <%- include("../partials/adminFooter.ejs") %>

@@ -1,0 +1,102 @@
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin side</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
+    <style>
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            position: sticky;
+        }
+
+        .form-control {
+            border: none;
+            border-radius: 20px;
+            box-shadow: none;
+            font-size: 18px;
+            padding: 10px;
+            transition: all 0.3s ease-in-out;
+            /* width: 700px; */
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light  sticky-top d-flex">
+        <div class="container-fluid" style="height: 60px;">
+            <a class="navbar-brand" href="#"> <i class="fas fa-shopping-cart"></i>Ecart</a>
+            
+
+
+            <form class="d-flex">
+                <input class="form-control " type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button>
+
+            </form>
+            <div><a type="submit" class="btn btn-primary" href="/admin/logout">Logout</a></div>
+
+        </div>
+        
+    </nav> -->
+    <!-- Navbar-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top d-flex flex-column">
+        <div class="container-fluid justify-content-between">
+            <!-- Left elements -->
+            <div class="d-flex">
+                <!-- Brand -->
+                <a class="navbar-brand me-2 mb-1 d-flex align-items-center" href="#">
+                    <img src="data:image/png;base64,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"
+                        height="30" alt="ecart" loading="lazy" style="margin-top: 2px;" />
+                </a>
+
+                <!-- Search form -->
+
+            </div>
+            <!-- Left elements -->
+
+            <!-- Center elements -->
+            <form class="input-group w-auto my-auto d-none d-sm-flex">
+                <input autocomplete="off" type="search" class="form-control rounded" placeholder="Search"
+                    style="min-width: 125px;" />
+                <span class="input-group-text border-0 d-none d-lg-flex"><i class="fas fa-search"></i></span>
+            </form>
+            <!-- Center elements -->
+
+            <!-- Right elements -->
+            <!-- <ul class="navbar-nav flex-row"> -->
+            <div><a type="submit" class="btn btn-primary" href="/admin/logout">Logout</a></div>
+            <!-- Right elements -->
+        </div>
+
+
+
+
+
+    </nav>
+    <!-- Navbar -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"
+        integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</body>

@@ -1,0 +1,257 @@
+<%- include("../partials/userHeader.ejs")%>
+    <style>
+        .title-style {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-weight: 700;
+            font-size: 20px;
+            color: hsl(52, 0%, 98%);
+        }
+
+        .title-quote {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-weight: 400;
+            color: hsl(52, 0%, 98%);
+        }
+    </style>
+
+    <div class="container py-5">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col">
+                <div class="card my-4 shadow-3">
+                    <form action="/profile/address/update/<%= addressId._id %>" method="POST"  onsubmit="return validateForm()">
+                        <div class="row g-0">
+
+                            <div class="col-xl-6">
+                                <div class="card-body p-md-5 text-black">
+                                    <h3 class="mb-4 text-uppercase">Update Address</h3>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline">
+                                                <label class="form-label" for="form3Example1m"> Name</label>
+                                                <input type="text" id="name" name="name" value="<%=addressId.name%>"
+                                                    class="form-control form-control-lg" />
+                                                    <span id="nameError" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+                                            <div class="form-outline">
+                                                <label class="form-label" for="form3Example1n">phone</label>
+                                                <input type="text" id="phone" value="<%=addressId.phone%>"
+                                                    class="form-control form-control-lg" name="phone" maxlength="10"/>
+                                                    <span id="phoneError" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="form3Example2">Locality</label>
+                                        <input type="text" id="locality"  value="<%=addressId.locality%>" class="form-control form-control-lg" name="locality" />
+                                        <span id="localityError" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="form3Example8">Address</label>
+                                        <input type="text" id="address" value="<%=addressId.address%>" class="form-control form-control-lg" name="address" />
+                                        <span id="addressError" class="text-danger"></span>
+                                    </div>
+
+
+
+                                    <div class="row">
+
+                                        <div class="col-md-6 mb-4">
+
+                                            <div class="form-outline">
+                                                <label class="form-label" for="form3Example1n">District</label>
+                                                <input type="text" id="district" name="district"  value="<%=addressId.district%>"
+                                                    class="form-control form-control-lg" />
+                                                    <span id="districtError" class="text-danger"></span>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+
+                                            <select id="state" name="state" class="form-select"  >
+                                                <option value="choose the state" selected>Select a State</option>
+                                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                                <option value="Assam">Assam</option>
+                                                <option value="Bihar">Bihar</option>
+                                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                                <option value="Goa">Goa</option>
+                                                <option value="Gujarat">Gujarat</option>
+                                                <option value="Haryana">Haryana</option>
+                                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                                <option value="Jharkhand">Jharkhand</option>
+                                                <option value="Karnataka">Karnataka</option>
+                                                <option value="Kerala">Kerala</option>
+                                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                                <option value="Maharashtra">Maharashtra</option>
+                                                <option value="Manipur">Manipur</option>
+                                                <option value="Meghalaya">Meghalaya</option>
+                                                <option value="Mizoram">Mizoram</option>
+                                                <option value="Nagaland">Nagaland</option>
+                                                <option value="Odisha">Odisha</option>
+                                                <option value="Punjab">Punjab</option>
+                                                <option value="Rajasthan">Rajasthan</option>
+                                                <option value="Sikkim">Sikkim</option>
+                                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                                <option value="Telangana">Telangana</option>
+                                                <option value="Tripura">Tripura</option>
+                                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                                <option value="Uttarakhand">Uttarakhand</option>
+                                                <option value="West Bengal">West Bengal</option>
+                                            </select>
+                                            <span id="stateError" class="text-danger"></span>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-outline mb-4">
+                                        <label class="form-label" for="form3Example3">Pin Code</label>
+                                        <input type="text" id="pin"  value="<%=addressId.pincode%>" name="pincode" class="form-control form-control-lg"maxlength="6" />
+                                        <span id="pinError" class="text-danger"></span>
+                                    </div>
+
+
+
+                                    <div class="d-flex justify-content-end pt-3">
+                                        <button   type="submit" class="btn btn-success btn-lg ms-2"
+                                            style="background-color:hsl(210, 100%, 50%)">Submit</button>
+                                    </div>
+                                
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function editAddress(id) {
+          fetch(`/profile/address/update/${id}`, {
+            method: 'POST',
+          })
+          .then(response => {
+           
+            if (response.ok) {
+              console.log('Address updated successfully');
+              // Optionally, update the view to reflect the removal
+            } else {
+              console.error('Error updating address:', response.statusText);
+            }
+          })
+          .catch(error => {
+            console.error('Error updating address:', error);
+          });
+        }
+      </script>
+       <script>
+        function printError(elemId, hintMsg) {
+            document.getElementById(elemId).textContent = hintMsg;
+        }
+    
+        function validateForm() {
+            // Get form fields values
+            var name = document.getElementById("name").value;
+            
+            var phone = document.getElementById("phone").value;
+            var locality = document.getElementById("locality").value;
+            var address = document.getElementById("address").value;
+            var district = document.getElementById("district").value;
+            var pin = document.getElementById("pin").value;
+            var state = document.getElementById("state").value;
+    
+            // Reset error messages
+            printError("nameError", "");
+          
+            printError("phoneError", "");
+            printError("districtError", "");
+            
+            printError("localityError", "");
+            
+            printError("addressError", "");
+            printError("pinError", "");
+            printError("stateError", "");
+            
+    
+            // Validation flag
+            var isValid = true;
+    
+            // Validate name field
+            if (name.trim() == '') {
+                printError('nameError', 'Please enter your name');
+                isValid = false;
+            } else {
+                const nameRegex = /^[a-zA-Z\s]+$/;
+                if (!nameRegex.test(name)) {
+                    printError('nameError', 'Please enter a valid name');
+                    isValid = false;
+                }
+            }
+            if (locality.trim() == '') {
+                printError('localityError', 'Please enter your locality');
+                isValid = false;
+            } else {
+                const nameRegex = /^[\s\S]*$/;
+                if (!nameRegex.test(locality)) {
+                    printError('localityError', 'Please enter a valid locality');
+                    isValid = false;
+                }
+            }
+            if (address.trim() == '') {
+                printError('addressError', 'Please enter your address');
+                isValid = false;
+            } else {
+                const nameRegex = /^[\s\S]*$/;
+                if (!nameRegex.test(address)) {
+                    printError('addressError', 'Please enter a valid address');
+                    isValid = false;
+                }
+            }
+       
+       
+    
+            // Validate phone field
+            if (phone === '') {
+                printError('phoneError', 'Please enter your phone number');
+                isValid = false;
+            } else {
+                const phoneRegex = /^\d{10}$/;
+                if (!phoneRegex.test(phone)) {
+                    printError('phoneError', 'Please enter a valid 10-digit phone number');
+                    isValid = false;
+                }
+            }
+            if (pin === '') {
+                printError('pinError', 'Please enter your pincode');
+                isValid = false;
+            } else {
+                const phoneRegex =  /^\d{6}$/;
+                if (!phoneRegex.test(pin)) {
+                    printError('pinError', 'Please enter a valid 6 digit pincode');
+                    isValid = false;
+                }
+            }
+    
+            if (district.trim() == '') {
+                printError('districtError', 'Please enter your district name');
+                isValid = false;
+            } else {
+                const nameRegex = /^[a-zA-Z\s]+$/;
+                if (!nameRegex.test(district)) {
+                    printError('districtError', 'Please enter a valid district name');
+                    isValid = false;
+                }
+            }
+            if (state === 'choose the state') {
+                        printError('stateError', 'Please select a state');
+                        isValid = false;
+                    } else {
+                        printError('stateError', '');
+                    }
+    
+            return isValid;
+        }
+    </script>
+      

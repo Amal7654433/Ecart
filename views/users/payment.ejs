@@ -1,0 +1,88 @@
+<%- include("../partials/userHeader.ejs")%>
+<div class="container-fluid my-5">
+    <div class="row justify-content-center">
+      <div class="col-xl-10"  style="height:8rem">
+        <div class="card " >
+          <div class="row p-2 mt-3 justify-content-between mx-sm-2">
+            <!-- Other content goes here -->
+          </div>
+  
+          <div class="row justify-content-around">
+            <div class="col-md-5">
+              <div class="card border-0">
+                <div class="card-header ">
+                  <h2 class="card-title space">Payment Option</h2>
+                  <hr class="my-0 mt-4">
+<!--   
+                  <div class="">
+                    <p class="card-text text-muted mt-5 mb-2 space">HAVE A COUPON CODE?</p>
+                  </div>
+                  <h5 class="text-uppercase mb-2 mt-4">Give code</h5>
+  
+                  <div class="mb-5">
+                    <div class="form-outline">
+                      <div style="display: flex; gap: 2px;">
+                        <input style="border: 1px solid black;" name="coupon" placeholder="enter your code" type="text" id="form3Examplea2" class="form-control form-control-lg" />
+                        <button type="submit" class="btn btn-warning ms-2 border-dark">Apply</button>
+                      </div>
+                      <span style="color: green;" id="validation2" class="ps-3"><b></b></span>
+                      <span style="color: red;" class="ps-3"><b id="validation"></b></span>
+                    </div>
+                  </div> -->
+                  <div class="">
+                    <p class="card-text text-muted mt-4 mb-2 space">SELECT PAYMENT OPTION</p>
+                  </div>
+  
+                  <form id="checkout-form" method="post" >
+                    <!-- <div class="form-check">
+                        <input class="form-check-input js-radioInput" type="radio" name="radio" value="razorpay" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+<p>online payment</p>
+                        </label>
+                      </div> -->
+                      <div class="form-check">
+                        <input class="form-check-input js-radioInput" type="radio" name="cod" value="COD" id="flexRadioDefault2">
+                        <label class="form-check-label" for="flexRadioDefault2">
+                          <p>cash on delivery</p>
+                        </label>
+                      </div>
+                      <button id="my_button" class=" btn btn-primary" disabled="disabled" >place order</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col-md-5 mt-4">
+              <div class="card border-0 ">
+                <div class="card-header card-2">
+                  <p class="card-text text-muted mt-md-4 space">ORDER SUMMARY</p>
+                  <hr class="my-2">
+                </div>
+  
+                <div class="card-body pt-5">
+                 
+                </div>
+              </div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const inputElems = document.getElementsByClassName("js-radioInput");
+    const myButton = document.getElementById("my_button");
+  
+    for (let i = 0; i < inputElems.length; i++) {
+      const elem = inputElems[i];
+      elem.addEventListener("change", function() {
+        let isDisabled = true;
+        for (let j = 0; j < inputElems.length; j++) {
+          if (inputElems[j].checked) {
+            isDisabled = false;
+            break;
+          }
+        }
+        myButton.disabled = isDisabled;
+      });
+    }
+  </script>

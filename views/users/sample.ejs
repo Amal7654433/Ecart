@@ -1,0 +1,108 @@
+<%- include("../partials/userHeader.ejs")%>
+<style>
+    .image-container {
+    position: relative;
+}
+
+.prev-image-btn, .next-image-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.prev-image-btn {
+    left: 10px; /* Adjust this value to position it as desired */
+}
+
+.next-image-btn {
+    right: 0px; /* Adjust this value to position it as desired */
+}
+.image-container
+{
+    height: 300 px;
+    width: 50%;
+   
+}
+.img-fluid
+{
+    position: relative;
+    height: 300px;
+    width:200px;
+}
+
+</style>
+   
+    
+<div class="container mt-5 ">
+    <div class="row">
+        
+        <div class="col-md-6 d-flex flex-column">
+            <!-- <div>
+                <% product.image.forEach(function(image, i) { %>
+                    <img src="/images/<%= image %>" alt="Product Image" class="product-image" style="max-width: 400px; max-height: 400px;">
+                <% }); %>
+            </div> -->
+            <div class="image-container d-flex justify-content-center  "  >
+                <button class="prev-image-btn"
+                onclick="showImage('<%= product._id %>', -1)"> <i
+                    class="fas fa-chevron-left"></i> </button>
+                <% product.image.forEach(function(image, i) { %>
+                    
+                    <img src="/images/<%= image %>" alt="Product Image" class="img-fluid"
+                        style=" <%= i === 0 ? 'display: block;' : 'display: none;' %>">
+                    <% }); %>
+                       
+                           
+                            <button class="next-image-btn" onclick="showImage('<%= product._id %>', 1)">
+                                <i class="fas fa-chevron-right"></i></button>
+                        
+            </div>
+            
+            <div class="mt-auto ">
+                <button type="button" style="font-size: 25px;" class="btn btn-primary">Buy Now</button>
+                <span style="margin-left: 20px; margin-right: 30px;"></span>
+                <button type="button"  style="font-size: 25px;" class="btn btn-success">Add to Cart</button>
+            </div>
+        </div>
+        <div class="col-md-6 d-flex flex-column">
+            <div>
+                <h2><%= product.name%></h2>
+                <p><strong><%=product.details%></strong></p>
+            </div>
+            <div class="mt-auto">
+                <p><strong>  ₹<%=product.price %></strong></p>
+                <p><strong><% if (product.discount !== 0) { %>
+                    <%= product.discount %>% off
+                    <% } %></strong> </p>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const imageContainers = document.querySelectorAll(".image-container");
+
+    imageContainers.forEach(container => {
+        let currentIndex = 0;
+        const images = container.querySelectorAll('img');
+        images[currentIndex].style.display = 'block';
+
+        const prevBtn = container.querySelector('.prev-image-btn');
+        const nextBtn = container.querySelector('.next-image-btn');
+
+        prevBtn.addEventListener("click", () => {
+            images[currentIndex].style.display = 'none';
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            images[currentIndex].style.display = 'block';
+        });
+
+        nextBtn.addEventListener("click", () => {
+            images[currentIndex].style.display = 'none';
+            currentIndex = (currentIndex + 1) % images.length;
+            images[currentIndex].style.display = 'block';
+        });
+    });
+</script>

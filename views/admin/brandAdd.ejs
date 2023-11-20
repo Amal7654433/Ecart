@@ -1,0 +1,79 @@
+<%- include("../partials/adminHeader.ejs")%>
+    <%- include("../partials/sideMenu.ejs")%>
+        <style>
+            .heading {
+                display: flex;
+                justify-content: center;
+                font-size: 30px;
+                height: 60px;
+                width: 100%;
+                margin-top: 40px;
+
+            }
+        </style>
+        <section>
+            <div class="container mt-5  " style="background-color: whitesmoke; height:400px; border-radius: 30px;">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="heading">Add Brand</div>
+                        <form id="productForm" action="/admin/brand/add" method="post"
+                            onsubmit="return validateProductForm()">
+                            <div class="mb-3">
+                                <label class="form-label">brand Name</label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                    placeholder="enter the name">
+                                <span id="nameErr" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">description</label>
+                                <input type="text" class="form-control" id="details" name="description"
+                                    placeholder="enter the description">
+                                <span id="detailsErr" class="text-danger"></span>
+                            </div>
+                            <% if(typeof message!=='undefined' ){ %>
+                                <p class="d-flex justify-content-center" style="color: red ; ">
+                                    <%= message%>
+                                </p>
+                                <% } %>
+
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <script>
+            function printError(elemId, hintMsg) {
+                document.getElementById(elemId).innerText = hintMsg;
+            }
+
+            function validateProductForm() {
+                let isValid = true;
+                const name = document.getElementById('name').value;
+
+                const details = document.getElementById('details').value;
+
+
+                if (name.trim() === '') {
+                    printError('nameErr', 'Please enter a brand name');
+                    isValid = false;
+                } else if (!/^[a-zA-Z0-9\s]+$/.test(name.trim())) {
+                    printError('nameErr', 'brand name should only contain alphanumeric characters');
+                    isValid = false;
+                } else {
+                    printError('nameErr', '');
+                }
+
+                if (details.trim() === '') {
+                    printError('detailsErr', 'Please enter brand description');
+                    isValid = false;
+                } else {
+                    printError('detailsErr', '');
+                }
+
+
+
+                return isValid;
+            }
+        </script>
+        <%- include("../partials/adminFooter.ejs") %>

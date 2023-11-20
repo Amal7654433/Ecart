@@ -1,0 +1,267 @@
+<%- include("../partials/adminHeader.ejs")%>
+    <%- include("../partials/sideMenu.ejs")%>
+        <style>
+            /* Customize the table */
+            .table {
+                background-color: #fff;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+            }
+
+            /* Customize the table header */
+            .table thead th {
+                background-color: #f2f2f2;
+                border-bottom: 2px solid #ddd;
+                color: #333;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle;
+                font-size: 18px;
+                padding: 20px;
+            }
+
+            /* Customize the table body */
+            .table tbody tr {
+                background-color: #fff;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .table tbody tr:last-child {
+                border-bottom: none;
+            }
+
+            .table tbody td {
+                border-top: none;
+                text-align: center;
+                vertical-align: middle;
+                font-size: 16px;
+                padding: 20px;
+            }
+
+            /* Customize the edit and delete buttons */
+            .btn-primary {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: #fff;
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+
+            .btn-primary:hover {
+                background-color: #0069d9;
+                border-color: #0062cc;
+                color: #fff;
+            }
+
+            .btn-red {
+                background-color: #dc3545;
+                border-color: #dc3545;
+                color: #fff;
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+
+            .btn-red:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+                color: #fff;
+            }
+
+            /* Customize the modal */
+            .modal-content {
+                background-color: #fff;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .modal-header {
+                background-color: #f2f2f2;
+                border-bottom: 2px solid #ddd;
+                color: #333;
+                font-weight: bold;
+                text-align: center;
+                vertical-align: middle;
+                font-size: 18px;
+                padding: 20px;
+            }
+
+            .modal-body {
+                font-size: 16px;
+                padding: 20px;
+            }
+
+            .modal-footer {
+                border-top: none;
+            }
+
+            .btn-secondary {
+                background-color: #6c757d;
+                border-color: #6c757d;
+                color: #fff;
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+                border-color: #545b62;
+                color: #fff;
+            }
+
+            /* Customize the pagination */
+            .pagination {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+            }
+
+            .pagination.page-item {
+                margin: 0 5px;
+            }
+
+            .pagination.page-link {
+                background-color: #f2f2f2;
+                border-radius: 5px;
+                color: #333;
+                font-size: 16px;
+                padding: 5px 10px;
+            }
+
+            .pagination.page-link:hover {
+                background-color: #ddd;
+            }
+
+            .pagination.page-item.active.page-link {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: #fff;
+            }
+
+            .heading {
+                display: flex;
+                justify-content: center;
+                font-size: 30px;
+                height: 60px;
+                width: 100%;
+                margin-top: 40px;
+
+            }
+        </style>
+        <section>
+            <div class="heading"> <i class="fas fa-users fa-fw"
+                    style="width:max-content; margin-top: 10px; color: #0069d9;"> Customers</i> </div>
+            <div class="container">
+
+                <div class="table-responsive mt-3">
+
+                    <table class="table   ">
+                        <thead>
+                            <tr>
+                                <th scope="col">No</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Phone</th>
+                                <th scope="col">Verified</th>
+                                <th scope="col">Status</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% users.forEach(function(user, index) { %>
+                                <tr>
+
+                                    <td>
+                                        <%= index+1 %>
+                                    </td>
+                                    <td>
+                                        <%= user.name %>
+                                    </td>
+                                    <td>
+                                        <%= user.email %>
+                                    </td>
+                                    <td>
+                                        <%= user.phone %>
+                                    </td>
+
+                                    <% if (user.is_verified===1) { %>
+                                        <td>User verified</td>
+                                        <% } else { %>
+                                            <td>Not verified</td>
+                                            <% } %>
+
+
+                                                <% if (user.blocked) { %>
+
+                                                    <td>
+
+                                                        <a onclick="unBlock('<%= user._id %>')"
+                                                            class="btn btn-dark">unblock</a>
+                                                    </td>
+
+                                                    <% } else { %>
+
+
+                                                        <td>
+
+                                                            <a onclick="Block('<%= user._id %>')"
+                                                                class="btn btn-primary">block</a>
+                                                        </td>
+                                                        <% } %>
+
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <script>
+            function Block(id) {
+
+                console.log(id)
+                fetch("/admin/customer/block-user", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id: id
+                    })
+                })
+
+
+                    .then(data => {
+                        location.reload()
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            };
+
+
+            function unBlock(id) {
+
+                console.log(id)
+                fetch("/admin/customer/unblock-user", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id: id
+                    })
+                })
+
+
+                    .then(data => {
+                        location.reload()
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            };
+
+        </script>
+        <%- include("../partials/adminFooter.ejs") %>

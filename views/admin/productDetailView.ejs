@@ -1,0 +1,104 @@
+<%- include("../partials/adminHeader.ejs")%>
+<%- include("../partials/sideMenu.ejs")%>
+    <style>
+        .icon-hover:hover {
+            border-color: #3b71ca !important;
+            background-color: white !important;
+            color: #3b71ca !important;
+        }
+
+        .icon-hover:hover i {
+            color: #3b71ca !important;
+        }
+        #foot
+    {
+        margin-top: 10rem;
+     
+    }
+    .heading {
+                display: flex;
+                justify-content: center;
+           font-size: 30px;
+                height: 60px;
+                width: 100%;
+                margin-top:10px;
+                
+            } 
+    </style>
+
+
+    <!-- content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="heading">Product Details</div>
+            <div class="row gx-5">
+
+                <aside class="col-lg-6">
+                    <div class="border rounded-4 mb-3 d-flex justify-content-baseline">
+                        <img id="mainImage" style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4 fit"
+                             src="/images/<%= products.image[0] %>" />
+                    </div>
+                    <div class="d-flex justify-content-center mb-3">
+                        <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image"
+                        
+                           class="item-thumb">
+                            <% products.image.forEach(function(image, i) { %>
+                                <img width="60" height="60" class="rounded-2" src="/images/<%= image %>" onclick="changeMainImage('<%= image %>')"/>
+                            <% }); %>
+                        </a>
+                    </div>
+                </aside>
+                
+                <script>
+                    function changeMainImage(newImage) {
+                        // Get the main image element by its ID
+                        var mainImage = document.getElementById("mainImage");
+                        // Set the src attribute of the main image to the clicked thumbnail's image URL
+                        mainImage.src = "/images/" + newImage;
+                    }
+                </script>
+                
+                <main class="col-lg-6">
+                    <div class="ps-lg-3">
+                        <h4 class="title text-dark">
+                            <%=products.name%>
+                        </h4>
+                     
+
+                       
+                       
+
+                        <p>
+                            <%=products.details%>
+                        </p>
+
+                        <div class="row">
+                            <dt class="col-3">Category: </dt>
+                            <dd class="col-9"> <%=products.category.name%> </dd>
+                            <dt class="col-3">Brand:</dt>
+                            <dd class="col-9"><%=products.brand%></dd>
+
+                            <dt class="col-3">Price:</dt>
+                            <dd class="col-9">₹<%=products.price%></dd>
+                            <dt class="col-3">Discount:</dt>
+                            <dd class="col-9"><%=products.discount%>%</dd>
+
+                            <dt class="col-3">Stock:</dt>
+                            <dd class="col-9"><%=products.stock%></dd>
+
+                            
+                        </div>
+
+                        <hr />
+
+
+                      
+                       
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>
+    <%- include("../partials/adminFooter.ejs") %>
+  
+   

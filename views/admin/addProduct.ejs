@@ -1,0 +1,175 @@
+<%- include("../partials/adminHeader.ejs")%>
+    <%- include("../partials/sideMenu.ejs")%>
+    <style>
+         .heading {
+                display: flex;
+                justify-content: center;
+           font-size: 30px;
+                height: 60px;
+                width: 100%;
+                margin-top:40px;
+                
+            }  
+    </style>
+        <section>
+            <div class="container mt-5 d-flex justify-content-center "
+            style="background-color: whitesmoke;  border-radius: 30px;">
+                <div class="col-md-8">
+                    <div class="heading">Add Product</div>
+                    <form id="productForm" onsubmit="return validateProductForm()" action="" method="post"
+                        enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="name" name="name" >
+                            <span id="nameErr" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" id="category" name="category" required>
+                                <% categories.forEach(function(category) { %>
+                                    <option value="<%= category.name %>">
+                                        <%= category.name%>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                            <span id="categoryErr" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="text" class="form-control" id="price" name="price">
+                            <span id="priceErr" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="brand" class="form-label">brand</label>
+                            <select class="form-select" id="brand" name="brand" required>
+                                <% brands.forEach(function(brand) { %>
+                                    <option value="<%= brand.name %>">
+                                        <%= brand.name%>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                            <span id="brandErr" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="stock" class="form-label">Stock</label>
+                            <input type="text" class="form-control" id="stock" name="stock">
+                            <span id="stockErr" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="discount" class="form-label">Discount</label>
+                            <input type="text" class="form-control" id="discount" name="discount">
+                            <span id="discountErr" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="details" class="form-label">Details</label>
+                            <textarea class="form-control" id="details" name="details" rows="3"></textarea>
+                            <span id="detailsErr" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Product Image</label>
+                            <input type="file"  class="form-control" id="image" name="image" accept="image/*"  multiple>
+                            <span id="imageErr" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+            <% if(typeof message!=='undefined' ){ %>
+                <p class="d-flex justify-content-center" style="color: red ; ">
+                  <%= message%>
+                </p>
+                <% } %>
+        </section>
+        <script>
+            function printError(elemId, hintMsg) {
+                document.getElementById(elemId).innerText = hintMsg;
+            }
+
+            function validateProductForm() {
+                let isValid = true;
+                const name = document.getElementById('name').value;
+                const price = document.getElementById('price').value;
+                const details = document.getElementById('details').value;
+                const stock = document.getElementById('stock').value;
+                const category = document.getElementById('category').value;
+                const brand = document.getElementById('brand').value;
+                const discount = document.getElementById('discount').value;
+                const image = document.getElementById('image').value;
+
+                if (name.trim() === '') {
+                    printError('nameErr', 'Please enter a product name');
+                    isValid = false;
+                } else if (!/^[a-zA-Z0-9\s]+$/.test(name.trim())) {
+                    printError('nameErr', 'Product name should only contain alphanumeric characters');
+                    isValid = false;
+                } else {
+                    printError('nameErr', '');
+                }
+
+
+
+                if (price.trim() === '' || isNaN(price) || price < 0) {
+                    printError('priceErr', 'Please enter a valid price');
+                    isValid = false;
+                } else {
+                    printError('priceErr', '');
+                }
+                
+                // if (brand.trim() === '') {
+                //     printError('brandErr', 'Please enter a brand name');
+                //     isValid = false;
+                // } else if (!/^[a-zA-Z0-9\s]+$/.test(name.trim())) {
+                //     printError('brandErr', 'brand name should conain valid brand name');
+                //     isValid = false;
+                // } else {
+                //     printError('brandErr', '');
+                // }
+
+                if (details.trim() === '') {
+                    printError('detailsErr', 'Please enter product details');
+                    isValid = false;
+                } else {
+                    printError('detailsErr', '');
+                }
+
+                if (stock.trim() === '' || isNaN(stock) || stock < 0) {
+                    printError('stockErr', 'Please enter a valid stock quantity');
+                    isValid = false;
+                } else {
+                    printError('stockErr', '');
+                }
+
+                if (category === 'choose the category') {
+                    printError('categoryErr', 'Please select a category');
+                    isValid = false;
+                } else {
+                    printError('categoryErr', '');
+                }
+                
+                if (brand === 'choose the brand') {
+                    printError('brandErr', 'Please select a brand');
+                    isValid = false;
+                } else {
+                    printError('brandErr', '');
+                }
+
+                if (discount.trim() === '' || isNaN(discount) || discount <= 0 || discount > 100) {
+                    printError('discountErr', 'Please enter a valid discount percentage (0-100)');
+                    isValid = false;
+                } else {
+                    printError('discountErr', '');
+                }
+
+                if (image.trim() === '') {
+                    printError('imageErr', 'Please select an image for the product');
+                    isValid = false;
+                } else {
+                    printError('imageErr', '');
+                }
+
+                return isValid;
+            }
+        </script>
+        <%- include("../partials/adminFooter.ejs") %>

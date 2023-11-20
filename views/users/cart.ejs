@@ -1,0 +1,311 @@
+<%- include("../partials/userHeader.ejs")%>
+    <style>
+        .empty {
+            display: flex;
+
+
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .text-container {
+            position: absolute;
+            text-align: center;
+            margin-top: 20rem;
+            /* Adjust as needed for spacing */
+        }
+    </style>
+    <% if (empty) { %>
+        <div class=" empty " id="emp">
+            <img src="https://www.meesho.com/mcheckout/build/static/media/empty-cart.b87f87595dfaa8606bfe.png" alt="">
+            <% if(typeof message!=='undefined' ){ %>
+                <div class="text-container">
+                    <p class="text-dark" style="font-size: 30px;">
+                        <%= message %>
+                    </p>
+                </div>
+                <% } %>
+        </div>
+
+        <% } else { %>
+
+
+            <head>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+            </head>
+            <section class="h-100 gradient-custom" id="bod">
+                <div class="container py-5">
+                    <div class="row d-flex justify-content-center my-4">
+                        <div class="col-md-8">
+                            <div class="card mb-4"  >
+
+                                <div class="card-header py-3">
+
+                                    <h5 class="mb-0">Cart - <%=cart.length%> items</h5>
+                                </div>
+
+                                <div class="card-body" id="">
+                                    <% cart.forEach(function(item) { %>
+                                        <!-- Single item -->
+                                        <div class="row">
+                                            <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
+                                                <!-- Image -->
+                                                <div class="bg-image hover-overlay hover-zoom ripple rounded"
+                                                    data-mdb-ripple-color="light">
+                                                    <img src="/images/<%= item.prod_id.image[0]  %>" class="w-100"
+                                                        alt="Blue Jeans Jacket" />
+                                                    <a href="#!">
+                                                        <div class="mask"
+                                                            style="background-color: rgba(251, 251, 251, 0.2)">
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                                <!-- Image -->
+                                            </div>
+
+                                            <div class="col-lg-5 col-md-6 mb-4 mb-lg-0">
+                                                <!-- Data -->
+                                                <p><strong>
+                                                        <%= item.prod_id.name %>
+                                                    </strong></p>
+                                                <span style="font-weight: bolder;">
+                                                    <%= (item.prod_id.price -(item.prod_id.price*item.prod_id.discount /
+                                                        100)).toFixed(2) %>
+                                                </span>
+                                                <span style="text-decoration: line-through; color: darkgray;">
+                                                    ₹<%= item.prod_id.price %>
+                                                </span>
+                                                <p>
+                                                    <%= item.prod_id.discount %>% off
+                                                </p>
+                                                <button type="button" onclick="removeCart(`<%= item.prod_id._id %>`)"
+                                                    class="delete-button btn btn-primary btn-sm me-1 mb-2"
+                                                    data-mdb-toggle="tooltip" title="Remove item">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                                <!-- Include this JavaScript in your HTML file -->
+
+
+                                                <button type="button" class="btn btn-danger btn-sm mb-2"
+                                                    data-mdb-toggle="tooltip" title="Move to the wish list">
+                                                    <i class="fas fa-heart"></i>
+                                                </button>
+                                                <!-- Data -->
+                                            </div>
+
+                                            <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                                                <!-- Quantity -->
+                                                <div class="d-flex mb-4" style="max-width: 300px">
+                                                    <button class="btn btn-primary px-3 me-2 decrease-quantity-btn"
+                                                        data-product-id="<%= item.prod_id._id %>"
+                                                        data-action="decrease">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+
+                                                    <div class="form-outline">
+                                                        <input id="quantity_<%= item.prod_id._id %>" min="1"
+                                                            name="quantity" value="<%= item.qty %>" type="number"
+                                                            class="form-control" />
+                                                        <label class="form-label"
+                                                            for="quantity_<%= item.prod_id._id %>">Quantity</label>
+                                                    </div>
+
+                                                    <button class="btn btn-primary px-3 ms-2 increase-quantity-btn"
+                                                        data-product-id="<%= item.prod_id._id %>"
+                                                        data-action="increase">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+
+
+                                                <!-- Quantity -->
+
+                                                <!-- Price -->
+                                                <p class="text-start text-md-center">
+                                                    <strong></strong>
+                                                </p>
+                                                <!-- Price -->
+                                            </div>
+                                        </div>
+                                        <!-- Single item -->
+
+                                        <hr class="my-4" />
+
+                                        <!-- Single item -->
+
+                                        <!-- Single item -->
+                                        <% }); %>
+                                </div>
+                            </div>
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <p><strong>Expected shipping delivery</strong></p>
+                                    <p class="mb-0">12.10.2020 - 14.10.2020</p>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card mb-4">
+                                <div class="card-header py-3">
+                                    <h5 class="mb-0">Summary</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul id="myDiv" class="list-group list-group-flush">
+                                        <li style="font-weight: bolder;"
+                                            class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                                            Price Details
+                                            <span>
+
+                                            </span>
+                                        </li>
+                                        <% cart.forEach(function(item) { %>
+                                            <li
+                                                class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                <%= item.prod_id.name %>
+
+                                                    <span><strong>+ ₹<%= item.qty*item.unit_price %></strong></span>
+                                            </li>
+                                            <% }); %>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                                                    <div>
+                                                        <strong>Total amount</strong>
+                                                        <strong>
+
+                                                        </strong>
+                                                    </div>
+                                                    <span id="total_<%= cart[0]._id %>"><strong>₹
+                                                            <%=cart.reduce((total,item)=>
+                                                                {
+                                                                return total+item.total_price
+                                                                },0) %>
+                                                        </strong></span>
+
+                                                </li>
+                                    </ul>
+                                    <a href='/checkout'> <button type="button" class="btn btn-primary btn-lg btn-block">
+                                            Go to checkout
+                                        </button></a>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <script>
+                function removeCart(id) {
+
+                    fetch(`/cart/remove/${id}`, {
+                        method: 'DELETE',
+                    }).then(() => {
+                        // window.location.reload()
+                        // $('#myDiv').load(' #myDiv')
+                        $('#bod').load(' #bod')
+                        $('#emp').load(' #emp')
+
+                        
+
+                    }).catch((error) => {
+                        console.error('Error deleting product:', error);
+                        // Optionally handle error and show error message to the user
+                    });
+                }
+            </script>
+            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+            <!-- <script>
+        $(document).ready(function () {
+            $('.decrease-quantity-btn, .increase-quantity-btn').on('click', function () {
+                const productId = $(this).data('product-id');
+                const action = $(this).data('action');
+                const quantityInput = $('#quantity_' + productId);
+                let newQuantity = parseInt(quantityInput.val());
+    
+                if (action === 'decrease' && newQuantity > 1) {
+                    newQuantity--;
+                } else if (action === 'increase') {
+                    newQuantity++;
+                }
+    
+           
+                quantityInput.val(newQuantity);
+    
+             
+                $.ajax({
+                    url: '/cart/update-quantity',
+                    method: 'PATCH',
+                    data: { productId, newQuantity },
+                    success: function (data) {
+                       
+                    },
+                    error: function (error) {
+                        console.error('Error updating quantity:', error);
+                      
+                    }
+                });
+            });
+        });
+    </script> -->
+            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+            <script>
+                $(document).ready(function () {
+                    $('.decrease-quantity-btn, .increase-quantity-btn').on('click', function () {
+                        const productId = $(this).data('product-id');
+                        const action = $(this).data('action');
+                        const quantityInput = $('#quantity_' + productId);
+                        const totalSpan = $('#total_' + productId);
+                        let newQuantity = parseInt(quantityInput.val());
+
+
+                        if (action === 'decrease' && newQuantity > 1) {
+                            newQuantity--;
+
+                        } else if (action === 'increase') {
+                            newQuantity++;
+
+                        }
+
+                        // Update the UI
+                        quantityInput.val(newQuantity);
+
+                        // Send a PATCH request to update the quantity on the server
+                        $.ajax({
+                            url: '/cart/update-quantity',
+                            method: 'PATCH',
+                            data: { productId, newQuantity },
+                            success: function (data) {
+                                $('#myDiv').load(' #myDiv')
+                                // Swal.fire({
+                                //     icon: 'success',
+                                //     title: 'Quantity Updated',
+                                //     text: 'The quantity was updated successfully!',
+                                //     timer: 1500, // You can adjust the duration of the popup
+                                //     showConfirmButton: false
+                                // }).then(() => {
+                                // Reload the page after showing the success message
+
+                                // });
+                                // Assuming the server returns updated total_price
+                                const updatedTotalPrice = data.total_price;
+
+                                // Update the UI with the new total price
+                                totalSpan.text(updatedTotalPrice.toFixed(2));
+                                console.log('Quantity updated successfully');
+
+                                // Reload the page after successful update
+
+                            },
+                            error: function (error) {
+                                console.error('Error updating quantity:', error);
+                                // Handle error (if needed)
+                            }
+                        });
+                    });
+                });
+            </script>
+            <% } %>

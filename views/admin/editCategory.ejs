@@ -1,0 +1,76 @@
+<!-- admin/editBrand.ejs -->
+<%- include("../partials/adminHeader.ejs") %>
+  <%- include("../partials/sideMenu.ejs") %>
+
+<style>
+   .heading {
+                display: flex;
+                justify-content: center;
+           font-size: 30px;
+                height: 60px;
+                width: 100%;
+                margin-top:40px;
+                
+            } 
+</style>
+    <div class="container mt-5 d-flex justify-content-center "
+      style="background-color: whitesmoke; height:400px; border-radius: 30px;">
+      <div class="col-md-6">
+        <div class="heading">Edit Category</div>
+        <form id="brandForm" action="/admin/category/update/<%= cat._id %>" method="post"
+          onsubmit="return validateProductForm()">
+          <div class="mb-3">
+            <label class="form-label">category Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="<%= cat.name %>">
+            <span id="nameErr" class="text-danger"></span>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <input type="text" class="form-control" id="details" name="description" value="<%= cat.description %>">
+            <span id="detailsErr" class="text-danger"></span>
+          </div>
+          <% if(typeof message!=='undefined' ){ %>
+            <p class="d-flex justify-content-center" style="color: red ; margin-left: 50px;">
+              <%= message%>
+            </p>
+            <% } %>
+              <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+      </div>
+    </div>
+    <script>
+      function printError(elemId, hintMsg) {
+        document.getElementById(elemId).innerText = hintMsg;
+      }
+
+      function validateProductForm() {
+        let isValid = true;
+        const name = document.getElementById('name').value;
+
+        const details = document.getElementById('details').value;
+
+
+        if (name.trim() === '') {
+          printError('nameErr', 'Please enter a category name');
+          isValid = false;
+        } else if (!/^[a-zA-Z0-9\s]+$/.test(name.trim())) {
+          printError('nameErr', 'category  name should only contain alphanumeric characters');
+          isValid = false;
+        } else {
+          printError('nameErr', '');
+        }
+
+        if (details.trim() === '') {
+          printError('detailsErr', 'Please enter category description');
+          isValid = false;
+        } else {
+          printError('detailsErr', '');
+        }
+
+
+
+        return isValid;
+      }
+    </script>
+
+<%- include("../partials/adminFooter.ejs") %>
