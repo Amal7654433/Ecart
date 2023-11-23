@@ -72,5 +72,8 @@ router.get('/profile',auth.userLoggedIn,profileControl.profileView)
  router.post('/checkout',auth.userLoggedIn,orderControl.checkOutPost)
  router.get('/checkout/payment',auth.userLoggedIn,orderControl.paymentView)
  router.post('/checkout/payment',auth.userLoggedIn,orderControl.paymentPost)
+ router.get('/orders-redirect',auth.userLoggedIn,orderControl.orderSuccessRedirect)
  router.get('/orders',auth.userLoggedIn,orderControl.ordersView)
+ router.post('/cancel-order',auth.userLoggedIn,orderControl.cancelOrder)
+
 module.exports = router;

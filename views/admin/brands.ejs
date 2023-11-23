@@ -157,7 +157,7 @@
                 <div class="row">
                     <div> <a href="/admin/brand/add" class="btn btn-primary ml-auto">Add brand</a></div>
                 </div>
-                <div class="table-responsive mt-3">
+                <div id="tab" class="table-responsive mt-3">
                     <table class="table  ">
                         <thead>
                             <tr>
@@ -229,12 +229,13 @@
 
 
                     .then(data => {
-                        location.reload()
+                        window.location.reload()
                     })
                     .catch(error => {
                         console.log(error);
                     });
             };
+
 
 
             function deactive(id) {
@@ -252,7 +253,7 @@
 
 
                     .then(data => {
-                        location.reload()
+                       window.location.reload()
                     })
                     .catch(error => {
                         console.log(error);

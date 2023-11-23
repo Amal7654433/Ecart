@@ -13,7 +13,7 @@ const { ObjectId } = require('mongoose').Types;
 
 const profileView = async (req, res) => {
     try {
-        console.log("amal")
+      
         const cat = await catego.find({ active: true })
         const userData = await user.findById({ _id: req.session.user })
 
@@ -164,8 +164,7 @@ const updateAddressView = async (req, res) => {
 
 const updateAddressPost = async (req, res) => {
     try {
-        console.log("hello amal")
-        console.log(req.params.id)
+      
 
 
 
@@ -343,22 +342,21 @@ const updateUserEmail = async (req, res) => {
         }
 
 
-        // Find the user's profile in the database
+
         const userData = await user.findById(req.session.user);
 
         if (!userData) {
-            // Handle the case where the user is not found
+            
             return res.status(404).send('User not found');
         }
         if (email === userData.email) {
-            // Redirect to the profile page without making any updates
+
             return res.redirect('/profile');
         }
 
-        // Update the user's email
+      
         userData.email = email;
 
-        // Save the updated user data to the database
         const updatedUserData = await userData.save();
         if (updatedUserData) {
 

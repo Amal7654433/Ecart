@@ -39,7 +39,7 @@
                 <div class="container py-5">
                     <div class="row d-flex justify-content-center my-4">
                         <div class="col-md-8">
-                            <div class="card mb-4"  >
+                            <div class="card mb-4">
 
                                 <div class="card-header py-3">
 
@@ -106,7 +106,8 @@
 
                                                     <div class="form-outline">
                                                         <input id="quantity_<%= item.prod_id._id %>" min="1"
-                                                            name="quantity" value="<%= item.qty %>" type="number"
+                                                            data-stock-limit="<%= item.prod_id.stock %>" name="quantity"
+                                                            value="<%= item.qty %>" type="number"
                                                             class="form-control" />
                                                         <label class="form-label"
                                                             for="quantity_<%= item.prod_id._id %>">Quantity</label>
@@ -166,9 +167,44 @@
                                                 class="list-group-item d-flex justify-content-between align-items-center px-0">
                                                 <%= item.prod_id.name %>
 
-                                                    <span><strong>+ ₹<%= item.qty*item.unit_price %></strong></span>
+                                                    <span><strong>+ ₹<%= item.qty*item.prod_id.price %></strong></span>
                                             </li>
                                             <% }); %>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                                                    <div>
+                                                        <strong>Sub Total </strong>
+                                                        <strong>
+
+                                                        </strong>
+                                                    </div>
+                                                    <span id="total_<%= cart[0]._id %>"><strong>₹
+                                                            <%=cart.reduce((total,item)=>
+                                                                {
+                                                                return total+(item.prod_id.price*item.qty)
+                                                                },0) %>
+                                                        </strong></span>
+
+                                                </li>
+                                                <li
+                                                    class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                                                    <div>
+                                                        <strong>Discount</strong>
+                                                        <strong>
+
+                                                        </strong>
+                                                    </div>
+                                                    <span id="total_<%= cart[0]._id %>"><strong class="text-success">- ₹  <%=cart.reduce((total,item)=>
+                                                        {
+                                                        return total+(item.prod_id.price*item.qty)
+                                                        },0)-cart.reduce((total,item)=>
+                                                        {
+                                                        return total+item.total_price
+                                                        },0) %>
+
+                                                        </strong></span>
+
+                                                </li>
                                                 <li
                                                     class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
                                                     <div>
@@ -196,19 +232,18 @@
                     </div>
                 </div>
             </section>
-            
+
             <script>
                 function removeCart(id) {
 
                     fetch(`/cart/remove/${id}`, {
                         method: 'DELETE',
                     }).then(() => {
-                        // window.location.reload()
+                        window.location.reload()
                         // $('#myDiv').load(' #myDiv')
-                        $('#bod').load(' #bod')
-                        $('#emp').load(' #emp')
 
-                        
+
+
 
                     }).catch((error) => {
                         console.error('Error deleting product:', error);
@@ -216,7 +251,7 @@
                     });
                 }
             </script>
-            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
             <!-- <script>
         $(document).ready(function () {
             $('.decrease-quantity-btn, .increase-quantity-btn').on('click', function () {
@@ -251,7 +286,7 @@
         });
     </script> -->
             <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
             <script>
                 $(document).ready(function () {
                     $('.decrease-quantity-btn, .increase-quantity-btn').on('click', function () {
@@ -259,21 +294,31 @@
                         const action = $(this).data('action');
                         const quantityInput = $('#quantity_' + productId);
                         const totalSpan = $('#total_' + productId);
+                        const stockLimit = parseInt(quantityInput.data('stock-limit'));
                         let newQuantity = parseInt(quantityInput.val());
 
 
                         if (action === 'decrease' && newQuantity > 1) {
                             newQuantity--;
 
-                        } else if (action === 'increase') {
+                        } else if (action === 'increase' && newQuantity < stockLimit) {
                             newQuantity++;
 
                         }
 
-                        // Update the UI
+
                         quantityInput.val(newQuantity);
 
-                        // Send a PATCH request to update the quantity on the server
+                        if (newQuantity === stockLimit) {
+                            // Display SweetAlert popup when the limit is reached
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Stock Limit Reached',
+                                text: 'You have reached the stock limit for this product.',
+                            });
+                        }
+
+
                         $.ajax({
                             url: '/cart/update-quantity',
                             method: 'PATCH',
@@ -293,16 +338,16 @@
                                 // Assuming the server returns updated total_price
                                 const updatedTotalPrice = data.total_price;
 
-                                // Update the UI with the new total price
+
                                 totalSpan.text(updatedTotalPrice.toFixed(2));
                                 console.log('Quantity updated successfully');
 
-                                // Reload the page after successful update
+
 
                             },
                             error: function (error) {
                                 console.error('Error updating quantity:', error);
-                                // Handle error (if needed)
+
                             }
                         });
                     });

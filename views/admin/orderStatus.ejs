@@ -153,7 +153,7 @@
                     style="width:max-content; margin-top: 10px; color: #0069d9;"> Orders</i> </div>
             <div class="container">
 
-                <div class="table-responsive mt-3">
+                <div id="mytable" class="table-responsive mt-3">
 
                     <table class="table   ">
                         <thead>
@@ -186,6 +186,42 @@
                                     <td >₹ <%= item.price %></td>
                                     <td ><%= item.orderStatus %></td>
 
+                                    <% if (item.orderStatus === "Processed") { %>
+                                        <td>
+                                          <div class="d-flex">
+                                            <form class="mx-2" action="/admin/order/status?orderId=<%= item._id %>&approve=true" method="post">
+                                              <button type="submit" class="btn btn-success border-dark">Approve</button>
+                                            </form>
+                                            <form action="/admin/order/status?orderId=<%= item._id %>&deny=<%= item._id %>" method="post">
+                                              <button type="submit" class="btn btn-danger border-dark">Deny</button>
+                                            </form>
+                                          </div>
+                                        </td>
+                                        <% } else if (item.orderStatus === "Cancelled") { %>
+                                        <td>
+                                          <button type="submit" disabled class="btn btn-secondary border-dark">Cancelled</button>
+                                        </td>
+                                        <% } else if (item.orderStatus === "Approved") { %>
+                                        <td>
+                                          <form class="mx-2" action="/admin/order/status?orderId=<%= item._id %>&shipped=true" method="post">
+                                            <button type="submit" class="btn btn-warning border-dark">to Shipp</button>
+                                          </form>
+                                        </td>
+                                        <% } else if (item.orderStatus === "Shipped") { %>
+                                        <td>
+                                          <form class="mx-2" action="/admin/order/status?orderId=<%= item._id %>&itemId=<%= item.productId %>&delivered=true" method="post">
+                                            <button type="submit" class="btn btn-info border-dark">to Deliver</button>
+                                          </form>
+                                        </td>
+                                        <% } else if (item.orderStatus === "Delivered") { %>
+                                        <td>
+                                          <form class="mx-2" action="/admin/order/status?id=<%= item._id %>" method="post">
+                                            <button type="submit" disabled class="btn btn-secondary border-dark">Delivered</button>
+                                          </form>
+                                        </td>
+                                        <% } %>
+
+
                                 </tr>
 
                                 <% }); %>
@@ -196,50 +232,11 @@
             </div>
         </section>
         <script>
-            function Block(id) {
-
-                console.log(id)
-                fetch("/admin/customer/block-user", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        id: id
-                    })
-                })
-
-
-                    .then(data => {
-                        location.reload()
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            };
-
-
-            function unBlock(id) {
-
-                console.log(id)
-                fetch("/admin/customer/unblock-user", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        id: id
-                    })
-                })
-
-
-                    .then(data => {
-                        location.reload()
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            };
-
-        </script>
+            $(document).ready( function () {
+              $('#mytable').DataTable();
+            });
+            
+           
+          </script>
+       
         <%- include("../partials/adminFooter.ejs") %>

@@ -213,51 +213,5 @@
                 </div>
             </div>
         </section>
-        <script>
-            function Block(id) {
-
-                console.log(id)
-                fetch("/admin/customer/block-user", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        id: id
-                    })
-                })
-
-
-                    .then(data => {
-                        location.reload()
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            };
-
-
-            function unBlock(id) {
-
-                console.log(id)
-                fetch("/admin/customer/unblock-user", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        id: id
-                    })
-                })
-
-
-                    .then(data => {
-                        location.reload()
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            };
-
-        </script>
+       
         <%- include("../partials/adminFooter.ejs") %>

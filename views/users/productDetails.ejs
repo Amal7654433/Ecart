@@ -9,12 +9,90 @@
         .icon-hover:hover i {
             color: #3b71ca !important;
         }
-        #foot
-    {
-        margin-top: 10rem;
-     
-    }
+
+        #foot {
+            margin-top: 10rem;
+
+        }
     </style>
+    <style>
+        #img-zoomer-box {
+            max-width: 500px;
+            height: auto;
+            position: relative;
+            margin: 10px auto;
+        }
+
+        #mainImage {
+            width: 100%;
+            height: auto;
+        }
+
+        #img-zoomer-box:hover,
+        #img-zoomer-box:active {
+            cursor: zoom-in;
+            display: block;
+        }
+
+        #img-zoomer-box:hover #img-2,
+        #img-zoomer-box:active #img-2 {
+            opacity: 1;
+        }
+
+        #img-2 {
+            width: 340px;
+            height: 340px;
+            background: url('/images/<%= product.image[0] %>') no-repeat #FFF;
+            box-shadow: 0 5px 10px -2px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+            position: absolute;
+            opacity: 0;
+            border: 4px solid whitesmoke;
+            z-index: 99;
+            border-radius: 100%;
+            display: block;
+            transition: opacity .2s;
+        }
+    </style>
+
+<!-- <style>
+
+
+#mainImage {
+  max-width: 100%;
+}
+#overlay {
+  display: none;
+  background: url('/images/<%= product.image[0] %>') ;
+  position: absolute;
+  width: 25%;
+  height: 35%;
+  margin-top: -30%;
+  margin-left: 50%;
+  border: 2px solid #555;
+  z-index: 1000;
+  background-repeat: no-repeat;
+}
+#mouse-overlay {
+  cursor: zoom-in;
+  position: absolute;
+  width: 2em;
+  height: 2em;
+  transform: translate(-50%, -50%);
+  background-color: rgba(245, 245, 245, 0.6);
+  border-radius: 50%;
+}
+@media only screen and (max-width: 768px) {
+  #image-container {
+    width: 55%;
+  }
+  #overlay {
+    margin-left: 70%;
+    width: 25%;
+    height: 15%;
+  }
+}
+</style> -->
 
 
     <!-- content -->
@@ -22,21 +100,25 @@
         <div class="container">
             <div class="row gx-5">
                 <aside class="col-lg-6">
-                    <div class="border rounded-4 mb-3 d-flex justify-content-baseline">
-                        <img id="mainImage" style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4 fit"
-                             src="/images/<%= product.image[0] %>" />
+                    <div id="img-zoomer-box" class="border rounded-4 mb-3 d-flex justify-content-baseline">
+                        <img id="mainImage" style="max-width: 100%; max-height: 100vh; margin: auto;"
+                            class="rounded-4 fit" src="/images/<%= product.image[0] %>" />
+                        <div id="img-2"></div>
+                      
                     </div>
-                    <div class="d-flex justify-content-center mb-3">
+                    <!-- <div id="mouse-overlay"></div>
+                    <div id="overlay"></div> -->
+                    <div id="image-container" class="d-flex justify-content-center mb-3">
                         <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image"
-                        
-                           class="item-thumb">
+                            class="item-thumb">
                             <% product.image.forEach(function(image, i) { %>
-                                <img width="60" height="60" class="rounded-2" src="/images/<%= image %>" onclick="changeMainImage('<%= image %>')"/>
-                            <% }); %>
+                                <img width="60" height="60" class=" rounded-2" src="/images/<%= image %>"
+                                    onclick="changeMainImage('<%= image %>')" />
+                                <% }); %>
                         </a>
                     </div>
                 </aside>
-                
+
                 <script>
                     function changeMainImage(newImage) {
                         // Get the main image element by its ID
@@ -45,7 +127,7 @@
                         mainImage.src = "/images/" + newImage;
                     }
                 </script>
-                
+
                 <main class="col-lg-6">
                     <div class="ps-lg-3">
                         <h4 class="title text-dark">
@@ -62,28 +144,35 @@
                                     4.5
                                 </span>
                             </div>
-                            <span class="text-muted"><i class="fas fa-shopping-basket fa-sm mx-1"></i><%=product.stock%></span>
+                            <span class="text-muted"><i class="fas fa-shopping-basket fa-sm mx-1"></i>
+                                <%=product.stock%>
+                            </span>
                             <span class="text-success ms-2">In stock</span>
                         </div>
 
                         <div class="mb-3">
-                            <p class="h5"> ₹<%=product.price%></p>
+                            <p class="h5"> ₹<%=product.price%>
+                            </p>
                             <!-- <span class="text-muted">/per box</span> -->
-                            <span> <% if (product.discount !==0) { %>
-                                <%= product.discount %>% off
-                                  <% } %></span>
+                            <span>
+                                <% if (product.discount !==0) { %>
+                                    <%= product.discount %>% off
+                                        <% } %>
+                            </span>
                         </div>
-                       
+
 
                         <p>
                             <%=product.details%>
                         </p>
 
                         <div class="row">
-             
+
 
                             <dt class="col-3">Brand</dt>
-                            <dd class="col-9"><%=product.brand%></dd>
+                            <dd class="col-9">
+                                <%=product.brand%>
+                            </dd>
                         </div>
 
                         <hr />
@@ -114,24 +203,130 @@
                                     </button>
                                 </div>
                             </div> -->
-                      
+
                         </div>
-                        <a href="/checkout?buynow=true" class=" shadow-0"><button class=" btn btn-primary" onclick="buynow(`<%= product._id %>`)"> Buy now</button> </a>
+                        <a href="/checkout?buynow=true" class=" shadow-0"><button class=" btn btn-primary"
+                                onclick="buynow(`<%= product._id %>`)"> Buy now</button> </a>
                         <% if (product.inCart) { %>
                             <a href="/cart" class="btn btn-primary">Go to Cart</a>
-                          <% } else { %>
-                          <!-- <button class="add-to-cart-btn" productId="<%= product._id %>">Add to Cart</button> -->
-                          <button class="btn btn-primary" onclick="addCart(`<%= product._id %>`)">Add to Cart</button>
-                         
-                          <% } %>
-                        <a href="#" class="btn btn-light border border-secondary py-2 icon-hover px-3"> <i
-                                class="me-1 fa fa-heart fa-lg"></i> Save </a>
+                            <% } else { %>
+                                <!-- <button class="add-to-cart-btn" productId="<%= product._id %>">Add to Cart</button> -->
+                                <button class="btn btn-primary" onclick="addCart(`<%= product._id %>`)">Add to
+                                    Cart</button>
+
+                                <% } %>
+                                    <a href="#" class="btn btn-light border border-secondary py-2 icon-hover px-3"> <i
+                                            class="me-1 fa fa-heart fa-lg"></i> Save </a>
                     </div>
                 </main>
             </div>
         </div>
     </section>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script>
+    
+        let zoomer = function () {
+            document.querySelector('#img-zoomer-box')
+                .addEventListener('mousemove', function (e) {
+
+                    let original = document.querySelector('#mainImage'),
+                        magnified = document.querySelector('#img-2'),
+                        style = magnified.style,
+                        x = e.pageX - this.offsetLeft,
+                        y = e.pageY - this.offsetTop,
+                        imgWidth = original.offsetWidth,
+                        imgHeight = original.offsetHeight,
+                        xperc = ((x / imgWidth) * 100),
+                        yperc = ((y / imgHeight) * 100);
+
+                 
+                    if (x > (.01 * imgWidth)) {
+                        xperc += (.15 * xperc);
+                    };
+
+                    //lets user scroll past bottom edge of image
+                    if (y >= (.01 * imgHeight)) {
+                        yperc += (.15 * yperc);
+                    };
+
+                    style.backgroundPositionX = (xperc - 9) + '%';
+                    style.backgroundPositionY = (yperc - 9) + '%';
+
+                    style.left = (x - 180) + 'px';
+                    style.top = (y - 180) + 'px';
+
+                }, false);
+        }();
+    </script>
+
+
+<!-- <script>
+    const imageContainer = document.getElementById("image-container");
+    const overlay = document.getElementById("overlay");
+    const mouseOverlay = document.getElementById("mouse-overlay");
+    
+    const events = {
+      mouse: "mousemove",
+      touch: "touchmove",
+    };
+
+    const isTouchDevice = () => {
+      try {
+        document.createEvent("TouchEvent");
+        return "touch";
+      } catch (e) {
+        return "mouse";
+      }
+    };
+    
+   
+    let deviceType = isTouchDevice();
+    
+ 
+    const hideElements = () => {
+      overlay.style.display = "none";
+      mouseOverlay.style.display = "none";
+    };
+    
+   
+    imageContainer.addEventListener(events[deviceType], (e) => {
+      try {
+        const { pageX, pageY, touches } = e;
+        const touch = touches ? touches[0] : e;
+        const x = touch.pageX;
+        const y = touch.pageY;
+    
+        const imageWidth = imageContainer.offsetWidth;
+        const imageHeight = imageContainer.offsetHeight;
+    
+        const isOutsideContainer =
+          x - imageContainer.offsetLeft < 15 ||
+          imageWidth - (x - imageContainer.offsetLeft) < 15 ||
+          y - imageContainer.offsetTop < 15 ||
+          imageHeight - (y - imageContainer.offsetTop) < 15;
+    
+        if (isOutsideContainer) {
+          hideElements();
+        } else {
+          overlay.style.display = "block";
+          mouseOverlay.style.display = "inline-block";
+        }
+    
+        const posX = ((x - imageContainer.offsetLeft) / imageWidth) * 100;
+        const posY = ((y - imageContainer.offsetTop) / imageHeight) * 100;
+    
+        overlay.style.backgroundPosition = `${posX}% ${posY}%`;
+        mouseOverlay.style.top = `${y}px`;
+        mouseOverlay.style.left = `${x}px`;
+      } catch (error) {
+        console.error("Error handling event:", error);
+      }
+    });
+    </script> -->
     <script>
         $(document).ready(function () {
             $('.decrease-quantity-btn, .increase-quantity-btn').on('click', function () {
@@ -139,27 +334,27 @@
                 const action = $(this).data('action');
                 const quantityInput = $('#quantity_' + productId);
                 let newQuantity = parseInt(quantityInput.val());
-    
+
                 if (action === 'decrease' && newQuantity > 1) {
                     newQuantity--;
                 } else if (action === 'increase') {
                     newQuantity++;
                 }
-    
-           
+
+
                 quantityInput.val(newQuantity);
-    
-             
+
+
                 $.ajax({
                     url: '/cart/update-quantity',
                     method: 'PATCH',
                     data: { productId, newQuantity },
                     success: function (data) {
-                       
+
                     },
                     error: function (error) {
                         console.error('Error updating quantity:', error);
-                      
+
                     }
                 });
             });
@@ -168,30 +363,43 @@
 
     <script>function buynow(id) {
 
-        fetch(`/addtocart/${id}`, {
-            method: 'PATCH',
-        }).then(() => {
-            window.location.assign(`/checkout?id=${id}`);
-        }).catch((error) => {
-            console.error('Error deleting product:', error);
-            // Optionally handle error and show error message to the user
-        });
-    }</script>
-      <script>function addCart(id) {
+            fetch(`/addtocart/${id}`, {
+                method: 'PATCH',
+            }).then(() => {
+                window.location.assign(`/checkout?id=${id}`);
+            }).catch((error) => {
+                console.error('Error deleting product:', error);
+                // Optionally handle error and show error message to the user
+            });
+        }</script>
+    <script>function addCart(id) {
 
-        fetch(`/addtocart/${id}`, {
-            method: 'PATCH',
-        }).then(() => {
-            window.location.assign('/cart')
-        }).catch((error) => {
-            console.error('Error deleting product:', error);
-            // Optionally handle error and show error message to the user
-        });
-    }</script>
+            fetch(`/addtocart/${id}`, {
+                method: 'PATCH',
+            }).then(() => {
+                window.location.assign('/cart')
+            }).catch((error) => {
+                console.error('Error deleting product:', error);
+                // Optionally handle error and show error message to the user
+            });
+        }</script>
+    <script src="https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js" type="application/javascript"></script>
+    <script>
+        var options = {
+            width: 400,
+            height: 250,
+            zoomWidth: 500,
+            offset: { vertical: 0, horizontal: 10 },
+            scale: 1.5
+
+
+        }
+        new ImageZoom(document.getElementById('mainImage'), options)
+    </script>
     <%- include("../partials/userFooter.ejs")%>
-    <!-- content -->
+        <!-- content -->
 
-    <!-- <section class="bg-light border-top py-4">
+        <!-- <section class="bg-light border-top py-4">
         <div class="container">
             <div class="row gx-4">
                 <div class="col-lg-8 mb-4">
@@ -381,8 +589,8 @@
             </div>
         </div>
     </section> -->
-    <!-- Footer -->
-    <!-- <footer class="text-center text-lg-start text-muted bg-primary mt-3">
+        <!-- Footer -->
+        <!-- <footer class="text-center text-lg-start text-muted bg-primary mt-3">
         
         <section class="">
             <div class="container text-center text-md-start pt-4 pb-4">
@@ -513,4 +721,4 @@
             </div>
         </div>
     </footer> -->
-    <!-- Footer -->
+        <!-- Footer -->

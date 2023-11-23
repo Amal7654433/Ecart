@@ -50,6 +50,7 @@ router.get('/admin/products/crop/:productId/:imageIndex', adminControl.imageCrop
 
 router.get('/admin/order',auth.adminLoggedIn,  adminControl.orderManagement)
 router.get('/admin/order/status',auth.adminLoggedIn,  adminControl.orderStatusLoad)
+router.post('/admin/order/status',auth.adminLoggedIn,  adminControl.editOrderStatus)
 
 
 

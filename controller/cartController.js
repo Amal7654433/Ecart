@@ -61,8 +61,7 @@ console.log(productId)
         res.redirect('/cart');
 
 
-        // Redirect to the cart page or another appropriate page
-        // Redirect to the cart page after adding the product to the cart
+
     } catch (error) {
         // Handle any errors, e.g., log them or display an error page
         console.error(error);

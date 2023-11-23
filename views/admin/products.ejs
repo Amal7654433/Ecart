@@ -1,7 +1,6 @@
 <%- include("../partials/adminHeader.ejs")%>
     <%- include("../partials/sideMenu.ejs")%>
         <style>
-            
             .table {
                 background-color: #fff;
                 border-radius: 5px;
@@ -9,7 +8,7 @@
                 margin-bottom: 20px;
             }
 
-           
+
             .table thead th {
                 background-color: #f2f2f2;
                 border-bottom: 2px solid #ddd;
@@ -21,7 +20,7 @@
                 padding: 20px;
             }
 
-           
+
             .table tbody tr {
                 background-color: #fff;
                 border-bottom: 1px solid #ddd;
@@ -159,9 +158,9 @@
             .img-fluid {
 
                 width: 200px;
-               
+
                 height: 200px;
-               
+
                 object-fit: cover;
             }
 
@@ -212,13 +211,16 @@
                                         <%= index+1 %>
                                     </td>
                                     <td title="<%= product.name %>">
-                                        <%= product.name.length > 20 ? product.name.substring(0, 20) + '...' : product.name %>
+                                        <%= product.name.length> 20 ? product.name.substring(0, 20) + '...' :
+                                            product.name %>
                                     </td>
                                     <td title=" <%= product.category.name %>">
-                                        <%= product.category.name.length > 20 ? product.category.name.substring(0, 20) + '...' : product.category.name %>
+                                        <%= product.category.name.length> 20 ? product.category.name.substring(0, 20) +
+                                            '...' : product.category.name %>
                                     </td>
                                     <td title=" <%= product.brand %>">
-                                        <%= product.brand.length > 20 ? product.brand.substring(0, 20) + '...' : product.brand %>
+                                        <%= product.brand.length> 20 ? product.brand.substring(0, 20) + '...' :
+                                            product.brand %>
                                     </td>
                                     <td title=" <%= product.stock %>">
                                         <%= product.stock %>
@@ -255,8 +257,8 @@
 
                                         <% product.image.forEach(function(image, i) { %>
                                             <a href="/admin/products/image/edit/<%= product._id %>">
-                                                <img  src="/images/<%= image %>" alt="Product Image" class="img-fluid"
-                                                    style="max-width: 80px; ; max-height: 80px; <%= i === 0 ? 'display: block;' : 'display: none;' %>">
+                                                <img src="/images/<%= image %>" alt="Product Image" class="img-fluid"
+                                                    style="max-width: 80px;  max-height: 80px; <%= i === 0 ? 'display: block;' : 'display: none;' %>">
                                             </a>
                                             <!-- <a href="/crop-image/<%= product._id %>/<%= i %>" class="crop-link">Crop </a> -->
                                             <% }); %>
@@ -311,7 +313,7 @@
                 </div>
             </div>
         </section>
-      
+
 
 
 

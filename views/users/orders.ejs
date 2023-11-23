@@ -6,7 +6,7 @@
     <title>Orders</title>
 </head>
 
-<body>
+
 
     <section class="h-100 h-custom" style="background-color: #fff;">
         <div class="container py-5 h-100">
@@ -100,12 +100,47 @@
 
     <!-- Dummy JavaScript Function (for reference) -->
     <script>
-        function Cancel(data) {
-            // Dummy function, replace with your logic
-            console.log("Cancel function called for order ID: " + data);
-        }
+      function Cancel(data) {
+        const id = data;
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to cancel this product from Orders!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonText: 'No, keep it',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, cancel it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch("/cancel-order", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                id: id
+              })
+            })
+              .then(response => {
+                return response.json();
+              })
+              .then(data => {
+                Swal.fire(
+                  'Cancelled!',
+                  'Your Order has been cancelled.',
+                  'success'
+                )
+              })
+              .catch(error => {
+                console.log(error);
+              });
+            location.reload();
+          }
+
+        })
+
+      }
     </script>
 
-</body>
 
-</html>

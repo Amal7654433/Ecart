@@ -1,103 +1,112 @@
 <%- include("../partials/userHeader.ejs")%>
 
     <head>
-<style>
-            #foot
-    {
-        margin-top: 10rem;
-     
-    }
-        .product-card {
-            border: 1px solid #e0e0e0;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
-           
-          
-        }
-        .card-body
-        {
-            
-        }
+        <style>
+            #foot {
+                margin-top: 10rem;
 
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        }
+            }
 
-        /* .product-card img {
+            .product-card {
+                border: 1px solid #e0e0e0;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                transition: transform 0.2s;
+
+
+            }
+
+            .card-body {}
+
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            /* .product-card img {
             max-width: 100%;
             height: auto;
         } */
 
-        .product-title {
-            font-size: 1.25rem;
-            font-weight: bold;
-        }
+            .product-title {
+                font-size: 1.25rem;
+                font-weight: bold;
+            }
 
-        .product-description {
-            font-size: 0.9rem;
-            color: #555;
-        }
+            .product-description {
+                font-size: 0.9rem;
+                color: #555;
+            }
 
-        .product-price {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #007bff;
-        }
+            .product-price {
+                font-size: 1.2rem;
+                font-weight: bold;
+                color: #007bff;
+            }
 
-        .add-to-cart-btn {
-            background-color: #007bff;
-            color: #fff;
-        }
-        
+            .add-to-cart-btn {
+                background-color: #007bff;
+                color: #fff;
+            }
 
-        .add-to-cart-btn:hover {
-            background-color: #0056b3;
-        }
-       .next-image-btn {
-   
-    
-   transform: translateY(-50%);
-   background: transparent;
-   border: none;
-   font-size: 12px;
-   cursor: pointer;
-   margin-top: 150px;
-   
-}
-.prev-image-btn
 
-{
-    transform: translateY(-50%);
-   background: transparent;
-   border: none;
-   font-size: 12px;
-   cursor: pointer; 
-   
-  margin-top: 150px;
-}
+            .add-to-cart-btn:hover {
+                background-color: #0056b3;
+            }
 
-.image-container
-{
-    height: 300 px;
-    width: 100%;
-   
-}
-.img-fluid
-{
-    position: relative;
-    height: 300px;
-    width:300px;
-}
-.heading
-{
-    width: 100%;
-    height: 50px;
-  font-size: 30px;
- 
-}
-</style>
+            .next-image-btn {
+
+
+                transform: translateY(-50%);
+                background: transparent;
+                border: none;
+                font-size: 12px;
+                cursor: pointer;
+                margin-top: 150px;
+
+            }
+
+            .prev-image-btn {
+                transform: translateY(-50%);
+                background: transparent;
+                border: none;
+                font-size: 12px;
+                cursor: pointer;
+
+                margin-top: 150px;
+            }
+
+            .image-container {
+                height: 300 px;
+                width: 100%;
+
+            }
+
+            .img-fluid {
+                position: relative;
+                height: 300px;
+                width: 300px;
+            }
+
+            .heading {
+                width: 100%;
+                height: 50px;
+                font-size: 30px;
+
+            }
+
+            .product-link {
+                color: black;
+                /* Default text color */
+                text-decoration: none;
+            }
+
+            .product-link:hover {
+                color: blue;
+                /* Text color on hover */
+                /* Additional styles if needed */
+            }
+        </style>
 
     </head>
 
@@ -118,54 +127,61 @@
                         <a href="#" class="btn btn-primary add-to-cart-btn">Add to Cart</a>
                     </div>
                 </div> -->
-                
-                        <div class="card product-card" id="card"  data-productid="<%= product._id %>" >
-                            <div class="image-container d-flex justify-content-center  "   >
-                                <button class="prev-image-btn"
-                                onclick="showImage('<%= product._id %>', -1)"> <i
-                                    class="fas fa-chevron-left"></i> </button>
+
+                        <div class="card product-card" id="card" data-productid="<%= product._id %>">
+                            <div class="image-container d-flex justify-content-center  ">
+                                <button class="prev-image-btn" onclick="showImage('<%= product._id %>', -1)"> <i
+                                        class="fas fa-chevron-left"></i> </button>
                                 <% product.image.forEach(function(image, i) { %>
-                                   
+
                                     <img src="/images/<%= image %>" alt="Product Image" class="img-fluid"
                                         style=" <%= i === 0 ? 'display: block;' : 'display: none;' %>">
                                     <% }); %>
-                                       
-                                           
-                                            <button class="next-image-btn" onclick="showImage('<%= product._id %>', 1)">
-                                                <i class="fas fa-chevron-right"></i></button>
-                                        
+
+
+                                        <button class="next-image-btn" onclick="showImage('<%= product._id %>', 1)">
+                                            <i class="fas fa-chevron-right"></i></button>
+
                             </div>
                             <!-- <img src="/images/<%= product.image %>" class="card-img-top" alt="<%= product.name %>" style="max-height: 200px; max-width: 100%;" /> -->
                             <div class="card-body" style="background-color:honeydew ; box-shadow: #555; ">
-                                <h5 class="card-title product-title">
-                                    <%= product.name %>
-                                </h5>
+                                <a href="/products/view/<%= product._id %>"   class="product-link">
+                                    <h5 class="card-title product-title">
+                                        <%= product.name %>
+                                    </h5>
+                                </a>
                                 <p class="card-text product-description">
                                     <%= product.details.slice(0,50) %>
                                 </p>
-                               
+
                                 <span style="font-weight: bolder;">
                                     ₹<%= (product.price - (product.price * product.discount / 100)).toFixed(2) %>
                                 </span>
-                                <span style="text-decoration: line-through; color: darkgray;" >
+                                <span style="text-decoration: line-through; color: darkgray;">
                                     ₹<%=product.price%>
                                 </span>
-                                <p> <% if (product.discount !==0) { %>
-                                    <%= product.discount %>% off
-                                      <% } %></p>
-                                      <% if (product.inCart) { %>
+                                <p>
+                                    <% if (product.discount !==0) { %>
+                                        <%= product.discount %>% off
+                                            <% } %>
+                                </p>
+                                <% if (product.stock < 1) { %>
+                                    <span aria-disabled="true">out of stock</span>
+                                    <% } else if (product.inCart) { %>
                                         <a href="/cart" class="btn btn-primary">Go to Cart</a>
-                                      <% } else { %>
-                                      <!-- <button class="add-to-cart-btn" productId="<%= product._id %>">Add to Cart</button> -->
-                                      <button class="btn btn-primary" onclick="addCart(`<%= product._id %>`)">Add to Cart</button>
-                                     
-                                      <% } %>
-                                <a href="/products/view/<%= product._id %>" class="btn btn-primary">View Details</a>
+                                        <% } else { %>
+                                            <!-- <button class="add-to-cart-btn" productId="<%= product._id %>">Add to Cart</button> -->
+                                            <button class="btn btn-primary" onclick="addCart(`<%= product._id %>`)">Add
+                                                to Cart</button>
+
+                                            <% } %>
+                                                <!-- <a href="/products/view/<%= product._id %>" class="btn btn-primary">View
+                                                    Details</a> -->
                             </div>
                         </div>
 
                     </div>
-                 <% }); %>
+                    <% }); %>
                         <!-- Repeat product cards for other products -->
             </div>
         </div>
@@ -175,15 +191,15 @@
     </body>
     <script>function addCart(id) {
 
-        fetch(`/addtocart/${id}`, {
-            method: 'PATCH',
-        }).then(() => {
-            window.location.assign('/cart')
-        }).catch((error) => {
-            console.error('Error deleting product:', error);
-            // Optionally handle error and show error message to the user
-        });
-    }</script>
+            fetch(`/addtocart/${id}`, {
+                method: 'PATCH',
+            }).then(() => {
+                window.location.assign('/cart')
+            }).catch((error) => {
+                console.error('Error deleting product:', error);
+                // Optionally handle error and show error message to the user
+            });
+        }</script>
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -209,7 +225,7 @@
         });
       });
     </script> -->
-   
+
 
     <script>
         const imageContainers = document.querySelectorAll(".image-container");
@@ -244,8 +260,7 @@
             console.log("Product ID: " + productId);
             // Add your logic to handle the product ID here
         });
-        
+
 
     </script>
     <%- include("../partials/userFooter.ejs")%>
-   

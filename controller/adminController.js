@@ -33,11 +33,11 @@ const categoryEditPost = async (req, res) => {
     }
     // const brandWithUpdatedName = await catego.findOne({ name: req.body.name });
     const brandWithUpdatedName = await catego.findOne(
-      { name: { $regex: new RegExp(req.body.name, 'i') }}
+      { name: { $regex: new RegExp(req.body.name, 'i') } }
     );
-    
+
     if (brandWithUpdatedName && brandWithUpdatedName._id.toString() !== req.params.id) {
-      return res.status(400).render('admin/editCategory',{message:'category name is already in use',cat});
+      return res.status(400).render('admin/editCategory', { message: 'category name is already in use', cat });
     }
     // Update brand information based on form data
     cat.name = req.body.name;
@@ -89,15 +89,15 @@ const addBrandPost = async (req, res) => {
     //   { name: req.body.name }
     // );
     const existingBrand = await brand.findOne(
-      { name: { $regex: new RegExp(req.body.name, 'i') }}
+      { name: { $regex: new RegExp(req.body.name, 'i') } }
     );
-    
+
 
     if (existingBrand) {
       // User with the same email or phone number already exists
       return res.render('admin/brandAdd', {
         message: 'brand name already in use. Please try another one.',
-        
+
       });
     }
 
@@ -126,8 +126,8 @@ const brandActive = async (req, res) => {
     await brand.updateOne({ _id: brands }, { $set: { active: true } })
     // const active=await prod.findOne({brand:brands.name})
     // console.log(active)
-    await prod.updateMany({ brand:brandDetails.name }, { $set: { active: true } })
-   
+    await prod.updateMany({ brand: brandDetails.name }, { $set: { active: true } })
+
     res.sendStatus(200)
   } catch (error) {
     console.log(error.message);
@@ -138,10 +138,10 @@ const brandDeactive = async (req, res) => {
   try {
     const brands = req.body.id
     const brandDetails = await brand.findById(brands);
-   
-  
+
+
     await brand.updateOne({ _id: brands }, { $set: { active: false } })
-    await prod.updateMany({ brand:brandDetails.name }, { $set: { active: false } })
+    await prod.updateMany({ brand: brandDetails.name }, { $set: { active: false } })
 
     res.sendStatus(200)
   } catch (error) {
@@ -173,12 +173,12 @@ const brandEditPost = async (req, res) => {
       return res.status(404).send('Brand not found');
     }
     // const brandWithUpdatedName = await brand.findOne({ name: req.body.name });
-    const  brandWithUpdatedName = await brand.findOne(
-      { name: { $regex: new RegExp(req.body.name, 'i') }}
+    const brandWithUpdatedName = await brand.findOne(
+      { name: { $regex: new RegExp(req.body.name, 'i') } }
     );
 
     if (brandWithUpdatedName && brandWithUpdatedName._id.toString() !== req.params.id) {
-      return res.status(400).render('admin/editBrand',{message:'Brand name is already in use',brands});
+      return res.status(400).render('admin/editBrand', { message: 'Brand name is already in use', brands });
     }
 
     // Update brand information based on form data
@@ -229,14 +229,14 @@ const addCategoryPost = async (req, res) => {
     //   { name: req.body.name }
     // );
     const existingCategory = await catego.findOne(
-      { name: { $regex: new RegExp(req.body.name, 'i') }}
+      { name: { $regex: new RegExp(req.body.name, 'i') } }
     );
 
     if (existingCategory) {
       // User with the same email or phone number already exists
       return res.render('admin/addCategory', {
         message: 'category name already in use. Please try another one.',
-        
+
       });
     }
 
@@ -330,7 +330,7 @@ const productsView = async (req, res) => {
   try {
     // Find active categories
     const activeCategories = await catego.find({ active: true });
-    
+
     // Find active brands
     const activeBrands = await brand.find({ active: true });
 
@@ -339,7 +339,7 @@ const productsView = async (req, res) => {
       category: { $in: activeCategories.map(category => category._id) },
       brand: { $in: activeBrands.map(brand => brand.name) },
 
-    }) .populate('category');
+    }).populate('category');
 
     if (products) {
       res.render('admin/products', { products, activeCategories, activeBrands });
@@ -371,17 +371,17 @@ const
       const existingProduct = await prod.findOne(
         { name: req.body.name }
       );
-  
+
       if (existingProduct) {
         // User with the same email or phone number already exists
         return res.render('admin/addProduct', {
-          message: 'product  name already in use. Please try another one.',categories,brands
-          
+          message: 'product  name already in use. Please try another one.', categories, brands
+
         });
       }
       const selectedCategoryName = req.body.category;
       const selectedCategory = await catego.findOne({ name: selectedCategoryName });
-  console.log(selectedCategoryName)
+      console.log(selectedCategoryName)
       if (!selectedCategory) {
         // Handle the case where the selected category does not exist
         // For example, you might render an error message.
@@ -417,24 +417,27 @@ const
       console.log(error.message);
     }
   };
-  const productDetails = async (req, res) => {
-    try {
-      const products = await prod.findById(req.params.id).populate('category');;
-      if (products) {
-      res.render('admin/productDetailView',{products});
+const productDetails = async (req, res) => {
+  try {
+    const products = await prod.findById(req.params.id).populate('category');;
+    if (products) {
+      res.render('admin/productDetailView', { products });
     } else {
       res.status(404).send('products not found');
     }
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 const productEdit = async (req, res) => {
   try {
     // Find the brand by ID in the database
     const products = await prod.findById(req.params.id).populate('category');
     const brands = await brand.find({ active: true })
     const categories = await catego.find({ active: true })
+
+
+
 
     if (products) {
       res.render('admin/editProduct', { products, brands, categories }); // Render the edit brand page
@@ -460,14 +463,14 @@ const productUpdate = async (req, res) => {
     const brandWithUpdatedName = await prod.findOne({ name: req.body.name });
 
     if (brandWithUpdatedName && brandWithUpdatedName._id.toString() !== req.params.id) {
-      return res.status(400).render('admin/editProduct',{message:'product name is already in use',products,categories,brands});
+      return res.status(400).render('admin/editProduct', { message: 'product name is already in use', products, categories, brands });
     }
-console.log( req.body.category)
+    console.log(req.body.category)
     const selectedCategoryName = req.body.category;
     const selectedCategory = await catego.findOne({ name: selectedCategoryName });
-console.log(selectedCategoryName)
+    console.log(selectedCategoryName)
     // if (!selectedCategory) {
-   
+
     //   return res.render('admin/addProduct', {
     //     message: 'Selected category does not exist. Please choose a valid category.',
     //     categories,
@@ -475,7 +478,7 @@ console.log(selectedCategoryName)
     //   });
     // }
     const images = req.files.map((file) => file.filename);
-    
+
     products.name = req.body.name;
 
 
@@ -491,13 +494,13 @@ console.log(selectedCategoryName)
 
     products.image = images
 
-   
-    
+
+
 
 
     // Save the updated brand
     const updatedBrand = await products.save();
-console.log(updatedBrand.image)
+    console.log(updatedBrand.image)
     if (updatedBrand) {
       res.redirect('/admin/products'); // Redirect to the brand listing page after the update
     } else {
@@ -718,7 +721,7 @@ const categoryActive = async (req, res) => {
     const category = req.body.id
     const catDetails = await catego.findById(category);
     await catego.updateOne({ _id: category }, { $set: { active: true } })
-    await prod.updateMany({ category:catDetails.name }, { $set: { active: true } })
+    await prod.updateMany({ category: catDetails.name }, { $set: { active: true } })
     res.send(200)
   } catch (error) {
     console.log(error.message);
@@ -730,7 +733,7 @@ const categoryDeactive = async (req, res) => {
     const category = req.body.id
     const catDetails = await catego.findById(category);
     await catego.updateOne({ _id: category }, { $set: { active: false } })
-    await prod.updateMany({ category:catDetails.name }, { $set: { active: false } })
+    await prod.updateMany({ category: catDetails.name }, { $set: { active: false } })
     res.sendStatus(200)
   } catch (error) {
     console.log(error.message);
@@ -763,7 +766,7 @@ const blockUser = async (req, res) => {
   try {
     const users = req.body.id
     await user.updateOne({ _id: users }, { $set: { blocked: true } })
-    req.session.user=false
+    req.session.user = false
     res.sendStatus(200)
   } catch (error) {
     console.log(error.message);
@@ -780,10 +783,10 @@ const unblockUser = async (req, res) => {
     res.render('error')
   }
 }
-const imageEdit=async (req, res) => {
+const imageEdit = async (req, res) => {
   try {
     const product = await prod.findById(req.params.id);
-   res.render('admin/imageEdit',{product})
+    res.render('admin/imageEdit', { product })
 
   } catch (error) {
     console.log(error.message);
@@ -791,7 +794,7 @@ const imageEdit=async (req, res) => {
   }
 }
 
-const imageCrop=(req, res) => {
+const imageCrop = (req, res) => {
   const productId = req.params.productId;
   const imageIndex = req.params.imageIndex;
 
@@ -819,20 +822,20 @@ const imageCrop=(req, res) => {
     });
 }
 
-const orderManagement=async (req, res) => {
+const orderManagement = async (req, res) => {
   try {
     const orders = await order.find({}).sort({ orderDate: -1 });
-   
+
     return res.render('admin/orders', { orders });
-    
+
   } catch (error) {
     console.log(error.message);
   }
 }
-const orderStatusLoad=async (req, res) => {
+const orderStatusLoad = async (req, res) => {
   try {
     const id = req.query.id;
-  
+    req.session.orderId = id
     const orders = await order.find({ _id: id });
     console.log(orders);
     res.render('admin/orderStatus', { orders });
@@ -840,8 +843,59 @@ const orderStatusLoad=async (req, res) => {
     console.log(error.message);
   }
 }
+
+const editOrderStatus = async (req, res) => {
+  try {
+    const order2Id = req.session.orderId;
+    if (req.query.approve) {
+      const id = req.query.orderId;
+      await order.findOneAndUpdate(
+        { _id: order2Id, 'items._id': id },
+        { $set: { 'items.$.orderStatus': 'Approved' } }
+      );
+      return res.redirect(`/admin/order/status?id=${order2Id}`);
+    } else if (req.query.deny) {
+      const id = req.query.deny;
+      await order.findOneAndUpdate(
+        { _id: order2Id, 'items._id': id },
+        { $set: { 'items.$.orderStatus': 'Cancelled' } }
+      );
+      return res.redirect(`/admin/order/status?id=${order2Id}`);
+    } else if (req.query.shipped) {
+      const id = req.query.orderId;
+      await order.findOneAndUpdate(
+        { _id: order2Id, 'items._id': id },
+        { $set: { 'items.$.orderStatus': 'Shipped' } }
+      );
+      return res.redirect(`/admin/order/status?id=${order2Id}`);
+    } else if (req.query.delivered) {
+      const id = req.query.orderId;
+      const itemId = req.query.itemId;
+      const delivered = await order.findOneAndUpdate(
+        { _id: order2Id, 'items._id': id },
+        { $set: { 'items.$.orderStatus': 'Delivered' } },
+        { new: true }
+      );
+      if (delivered) {
+        await prod.findOneAndUpdate(
+          { _id: itemId },
+          {
+            $inc: { stock: -delivered.items[0].quantity },
+          }
+        );
+      }
+      return res.redirect(`/admin/order/status?id=${order2Id}`);
+    } else {
+      return res.redirect(`/admin/order/status?id=${order2Id}`);
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 module.exports =
-{orderManagement,orderStatusLoad,
+{
+  orderManagement, orderStatusLoad, editOrderStatus,
   adminLogin,
   productsView,
   customerView,
@@ -871,7 +925,7 @@ module.exports =
   adminLoginPost,
   userManagement,
   blockUser,
-  unblockUser,imageCrop,productDetails,imageEdit
+  unblockUser, imageCrop, productDetails, imageEdit
 }
 
 

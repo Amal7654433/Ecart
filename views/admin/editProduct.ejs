@@ -102,7 +102,7 @@
                             <label for="image" class="form-label">Product Image</label>
                             <!-- <% products.image.forEach(function(product) { %> -->
                                 <!-- <input type="text" class="form-control" id="existingImage "name="existingImage" value="<%=product  %>" readonly> -->
-                                <input type="file" class="form-control" id="image" name="image" accept="image/*"
+                                <input type="file" class="form-control" id="image" name="image" accept="image/*"  value="<%= products.image[0].file %>"
                                      multiple>
                               
                                 <!-- <% }); %> -->
