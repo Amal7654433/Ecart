@@ -1,10 +1,9 @@
-<%- include("../partials/adminHeader.ejs")%>
-    <%- include("../partials/sideMenu.ejs")%>
+<%- include("../partials/adminSidebar.ejs")%>
         <style>
             /* Customize the table */
             .table {
                 background-color: #fff;
-                border-radius: 5px;
+                border-radius: 30px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                 margin-bottom: 20px;
             }
@@ -17,8 +16,7 @@
                 font-weight: bold;
                 text-align: center;
                 vertical-align: middle;
-                font-size: 18px;
-                padding: 20px;
+                
             }
 
             /* Customize the table body */
@@ -35,38 +33,13 @@
                 border-top: none;
                 text-align: center;
                 vertical-align: middle;
-                font-size: 16px;
-                padding: 20px;
+               
             }
 
             /* Customize the edit and delete buttons */
-            .btn-primary {
-                background-color: #007bff;
-                border-color: #007bff;
-                color: #fff;
-                font-size: 16px;
-                padding: 10px 20px;
-            }
+       
 
-            .btn-primary:hover {
-                background-color: #0069d9;
-                border-color: #0062cc;
-                color: #fff;
-            }
-
-            .btn-red {
-                background-color: #dc3545;
-                border-color: #dc3545;
-                color: #fff;
-                font-size: 16px;
-                padding: 10px 20px;
-            }
-
-            .btn-red:hover {
-                background-color: #c82333;
-                border-color: #bd2130;
-                color: #fff;
-            }
+    
 
             /* Customize the modal */
             .modal-content {
@@ -95,19 +68,8 @@
                 border-top: none;
             }
 
-            .btn-secondary {
-                background-color: #6c757d;
-                border-color: #6c757d;
-                color: #fff;
-                font-size: 16px;
-                padding: 10px 20px;
-            }
+          
 
-            .btn-secondary:hover {
-                background-color: #5a6268;
-                border-color: #545b62;
-                color: #fff;
-            }
 
             /* Customize the pagination */
             .pagination {
@@ -147,6 +109,18 @@
                 margin-top: 40px;
 
             }
+            .status
+            {
+               
+
+              
+            }
+            .btn-size
+            {
+               width: 100px; 
+font-size: 12px;
+               
+            }
         </style>
         <section>
             <div class="heading"> <i class="fas fa-list-alt fa-fw"
@@ -155,7 +129,7 @@
 
 
                 <div class="row ">
-                    <div> <a href="/admin/category/add" class="btn btn-primary ml-auto">add category</a></div>
+                    <div> <a href="/admin/category/add" class="btn btn-primary ml-auto">Add category</a></div>
                 </div>
                 <div class="table-responsive mt-3">
                     <table class="table  ">
@@ -165,7 +139,7 @@
                                 <th scope="col">Category Name</th>
                                 <th scope="col">Description</th>
                                 <th scope="col">Edit</th>
-                                <th scope="col">Status</th>
+                                <th scope="col">Activation</th>
 
 
                             </tr>
@@ -181,21 +155,22 @@
                                         <%= c.name %>
                                     </td> -->
                                     <td title="<%= c.name %>">
-                                       
-                                        <%= c.name.length > 20 ? c.name.substring(0, 20) + '...' : c.name %>
+
+                                        <%= c.name.length> 20 ? c.name.substring(0, 20) + '...' : c.name %>
                                     </td>
                                     <td title="<%= c.description %>">
                                         <!-- <%= c.description %> -->
-                                        <%= c.description.length > 30 ? c.description.substring(0, 30) + '...' : c.description %>
+                                        <%= c.description.length> 30 ? c.description.substring(0, 30) + '...' :
+                                            c.description %>
                                     </td>
                                     <td>
                                         <!-- Edit button for each brand -->
                                         <a href="/admin/category/edit/<%= c._id %>" class="btn btn-primary">Edit</a>
-                                    </td>
-                                    <% if (c.active) { %>
+                                    </td >
+                                    <!-- <% if (c.active) { %>
 
                                         <td>
-                                            <a onclick="deactive('<%= c._id %>')" class="btn btn-primary">active</a>
+                                            <a data-id="<%= c._id %>" onclick="deactive('<%= c._id %>')" class="btn btn-success">active</a>
 
 
                                         </td>
@@ -204,10 +179,21 @@
 
 
                                             <td>
-                                                <a onclick="active('<%= c._id %>')" class="btn btn-dark">deactive</a>
+                                                <a data-id="<%= c._id %>" onclick="active('<%= c._id %>')" class="btn btn-danger">deactive</a>
                                             </td>
-                                            <% } %>
-
+                                            <% } %>  -->
+                                            <td >
+                                               
+                                    <div class="status">
+                                           
+                                                <a onclick="active('<%= c._id %>')" id="activeBtn_<%= c._id %>" class="btn btn-danger btn-size text-white" <% if (c.active) { %>style="display: none;"<% } %>>Deactive</a>
+                                    
+                                        
+                                                <a onclick="deactive('<%= c._id %>')" id="deactiveBtn_<%= c._id %>" class="btn btn-success btn-size text-white" <% if (!c.active) { %>style="display: none;"<% } %>>Active</a>
+                                            </div>
+                                            </td>
+                                   
+                                   
                                 </tr>
                                 <% }); %>
                         </tbody>
@@ -215,8 +201,63 @@
                 </div>
             </div>
         </section>
+        <!-- Include jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-        <script>
+      
+<script>
+           function active(id) {
+                    console.log(id);
+
+                    $.ajax({
+                        url: "/admin/category/active",
+                        type: "PATCH",
+                        contentType: "application/json",
+                        data: JSON.stringify({ id: id }),
+                        success: function (data) {
+                            // Update the content dynamically if needed
+                            console.log("Request successful:", data);
+
+
+                    
+
+                            $(`#activeBtn_${id}`).hide();
+                            $(`#deactiveBtn_${id}`).show();
+                        },
+                        error: function (error) {
+                            console.log("Error:", error);
+                        }
+                    });
+                };
+           
+
+            function deactive(id) {
+                console.log(id);
+
+                $.ajax({
+                    url: "/admin/category/deactive",
+                    type: "PATCH",
+                    contentType: "application/json",
+                    data: JSON.stringify({ id: id }),
+                    success: function (data) {
+
+                        console.log("Request successful:", data);
+
+
+
+                  
+
+                        $(`#activeBtn_${id}`).show();
+                        $(`#deactiveBtn_${id}`).hide();
+                    },
+                    error: function (error) {
+                        console.log("Error:", error);
+                    }
+                });
+            };
+</script>
+
+        <!-- <script>
             function active(id) {
 
                 console.log(id)
@@ -262,5 +303,5 @@
                     });
             };
 
-        </script>
+        </script> -->
         <%- include("../partials/adminFooter.ejs") %>

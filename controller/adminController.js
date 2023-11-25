@@ -126,7 +126,7 @@ const brandActive = async (req, res) => {
     await brand.updateOne({ _id: brands }, { $set: { active: true } })
     // const active=await prod.findOne({brand:brands.name})
     // console.log(active)
-    await prod.updateMany({ brand: brandDetails.name }, { $set: { active: true } })
+    // await prod.updateMany({ brand: brandDetails.name }, { $set: { active: true } })
 
     res.sendStatus(200)
   } catch (error) {
@@ -141,7 +141,7 @@ const brandDeactive = async (req, res) => {
 
 
     await brand.updateOne({ _id: brands }, { $set: { active: false } })
-    await prod.updateMany({ brand: brandDetails.name }, { $set: { active: false } })
+    // await prod.updateMany({ brand: brandDetails.name }, { $set: { active: false } })
 
     res.sendStatus(200)
   } catch (error) {
@@ -328,10 +328,10 @@ const adminLoginPost = async (req, res) => {
 // };
 const productsView = async (req, res) => {
   try {
-    // Find active categories
+   
     const activeCategories = await catego.find({ active: true });
 
-    // Find active brands
+    
     const activeBrands = await brand.find({ active: true });
 
     // Find products that belong to active categories and brands
@@ -721,8 +721,8 @@ const categoryActive = async (req, res) => {
     const category = req.body.id
     const catDetails = await catego.findById(category);
     await catego.updateOne({ _id: category }, { $set: { active: true } })
-    await prod.updateMany({ category: catDetails.name }, { $set: { active: true } })
-    res.send(200)
+    // await prod.updateMany({ category: catDetails._id }, { $set: { active: true } })
+    res.sendStatus(200)
   } catch (error) {
     console.log(error.message);
     res.render('error')
@@ -733,7 +733,7 @@ const categoryDeactive = async (req, res) => {
     const category = req.body.id
     const catDetails = await catego.findById(category);
     await catego.updateOne({ _id: category }, { $set: { active: false } })
-    await prod.updateMany({ category: catDetails.name }, { $set: { active: false } })
+    // await prod.updateMany({ category: catDetails._id}, { $set: { active: false } })
     res.sendStatus(200)
   } catch (error) {
     console.log(error.message);
@@ -764,6 +764,7 @@ const productDeactive = async (req, res) => {
 }
 const blockUser = async (req, res) => {
   try {
+    console.log(req.params.id)
     const users = req.body.id
     await user.updateOne({ _id: users }, { $set: { blocked: true } })
     req.session.user = false
@@ -775,6 +776,7 @@ const blockUser = async (req, res) => {
 }
 const unblockUser = async (req, res) => {
   try {
+    console.log(req.body.id)
     const users = req.body.id
     await user.updateOne({ _id: users }, { $set: { blocked: false } })
     res.sendStatus(200)

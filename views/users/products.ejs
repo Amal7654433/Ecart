@@ -158,7 +158,9 @@
                                     ₹<%= (product.price - (product.price * product.discount / 100)).toFixed(2) %>
                                 </span>
                                 <span style="text-decoration: line-through; color: darkgray;">
+                                    <% if (product.discount !==0) { %>
                                     ₹<%=product.price%>
+                                    <% } %>
                                 </span>
                                 <p>
                                     <% if (product.discount !==0) { %>

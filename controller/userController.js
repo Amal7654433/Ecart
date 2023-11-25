@@ -6,6 +6,7 @@ const prod = require('../models/adminProducts');
 const randomString = require('randomstring')
 const catego = require('../models/categoryModel')
 const { v4: uuidv4 } = require('uuid');
+const brand = require('../models/brandsModel');
 const { ObjectId } = require('mongoose').Types;
 
 
@@ -198,15 +199,16 @@ const productsByCategory = async (req, res) => {
 
     // Step 3: Fetch Category by ID
     const category = await catego.findOne({ _id: categoryIdentifier, active: true });
-    
+
     // Step 4: Check if Category Exists
     if (category) {
       // Step 5: Fetch Products by Category
-      const products = await prod.find({ category: category._id, active: true });
+      const activeBrands = await brand.find({ active: true });
+      const products = await prod.find({ category: category._id, active: true, brand: { $in: activeBrands.map(brand => brand.name) } });
 
-      // Step 6: Check if Products Exist
+
       if (products) {
-        // Step 7: Handle User Cart Information
+
         if (req.session.user) {
           const userId = req.session.user;
           const users = await user.findById(userId);
@@ -342,8 +344,14 @@ const productsByCategory = async (req, res) => {
 //   };
 const productsPage = async (req, res) => {
   try {
+    const activeCategories = await catego.find({ active: true });
+    const activeBrands = await brand.find({ active: true });
+    const products = await prod.find({
+      active: true,
+      category: { $in: activeCategories.map(category => category._id) },
+      brand: { $in: activeBrands.map(brand => brand.name) },
 
-    const products = await prod.find({ active: true });
+    }).populate('category');
 
 
     const cat = await catego.find({ active: true });

@@ -1,5 +1,5 @@
-<%- include("../partials/adminHeader.ejs")%>
-    <%- include("../partials/sideMenu.ejs")%>
+
+    <%- include("../partials/adminSidebar.ejs")%>
         <style>
             .table {
                 background-color: #fff;
@@ -16,8 +16,8 @@
                 font-weight: bold;
                 text-align: center;
                 vertical-align: middle;
-                font-size: 18px;
-                padding: 20px;
+             
+               
             }
 
 
@@ -34,38 +34,14 @@
                 border-top: none;
                 text-align: center;
                 vertical-align: middle;
-                font-size: 16px;
-                padding: 20px;
+               
+               
             }
 
             /* Customize the edit and delete buttons */
-            .btn-primary {
-                background-color: #007bff;
-                border-color: #007bff;
-                color: #fff;
-                font-size: 16px;
-                padding: 10px 20px;
-            }
-
-            .btn-primary:hover {
-                background-color: #0069d9;
-                border-color: #0062cc;
-                color: #fff;
-            }
-
-            .btn-red {
-                background-color: #dc3545;
-                border-color: #dc3545;
-                color: #fff;
-                font-size: 16px;
-                padding: 10px 20px;
-            }
-
-            .btn-red:hover {
-                background-color: #c82333;
-                border-color: #bd2130;
-                color: #fff;
-            }
+          
+           
+          
 
             /* Customize the modal */
             .modal-content {
@@ -94,19 +70,9 @@
                 border-top: none;
             }
 
-            .btn-secondary {
-                background-color: #6c757d;
-                border-color: #6c757d;
-                color: #fff;
-                font-size: 16px;
-                padding: 10px 20px;
-            }
+        
 
-            .btn-secondary:hover {
-                background-color: #5a6268;
-                border-color: #545b62;
-                color: #fff;
-            }
+         
 
             /* Customize the pagination */
             .pagination {
@@ -173,8 +139,18 @@
                 margin-top: 40px;
 
             }
+            .status
+            {
+               height: auto;
+              
+            }
+            .btn-size
+            {
+width: 100px;
+                font-size: 12px;
+            }
         </style>
-        <section>
+        <section id="res">
             <div class="heading"> <i class="fas fa-shopping-cart fa-fw"
                     style="width:max-content; margin-top: 10px; color: #0069d9;"> Products</i> </div>
             <div class="container">
@@ -197,7 +173,7 @@
                                 <th scope="col">Details</th>
                                 <th scope="col">Image</th>
                                 <th scope="col">Edit</th>
-                                <th scope="col">Activation</th>
+                                <th scope="col">Status</th>
 
 
                             </tr>
@@ -285,10 +261,10 @@
                                             class="btn btn-primary">Edit</a>
                                     </td>
 
-                                    <% if (product.active) { %>
+                                    <!-- <% if (product.active) { %>
 
-                                        <td>
-                                            <a onclick="deactive('<%= product._id %>')"
+                                        <td id="dc">
+                                            <a onclick="deactive('<%= product._id %>')" id="hyy"
                                                 class="btn btn-primary">Deactive</a>
 
 
@@ -297,11 +273,21 @@
                                         <% } else { %>
 
 
-                                            <td>
-                                                <a onclick="active('<%= product._id %>')"
+                                            <td id="ac">
+                                                <a onclick="active('<%= product._id %>')" id="hyy"
                                                     class="btn btn-dark">Active</a>
                                             </td>
-                                            <% } %>
+                                            <% } %> -->
+                                                <td >
+                                               
+                                    <div class="status">
+                                           
+                                                <a  onclick="active('<%= product._id %>')" id="activeBtn_<%= product._id %>" class="btn btn-danger btn-size text-white" <% if (product.active) { %>style="display: none;"<% } %>>Deactive</a>
+                                    
+                                        
+                                                <a onclick="deactive('<%= product._id %>')" id="deactiveBtn_<%= product._id %>" class="btn btn-success btn-size text-white" <% if (!product.active) { %>style="display: none;"<% } %>>Active</a>
+                                            </div>
+                                            </td>
 
 
                                 </tr>
@@ -315,53 +301,104 @@
         </section>
 
 
-
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
         <script>
-            function active(id) {
 
-                console.log(id)
-                fetch("/admin/products/active", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        id: id
-                    })
-                })
+            // function active(id) {
+
+            //     console.log(id)
+            //     fetch("/admin/products/active", {
+            //         method: "POST",
+            //         headers: {
+            //             "Content-Type": "application/json"
+            //         },
+            //         body: JSON.stringify({
+            //             id: id
+            //         })
+            //     })
 
 
-                    .then(data => {
-                        location.reload()
-                    })
-                    .catch(error => {
-                        console.log(error);
+            //         .then(data => {
+            //             location.reload()
+            //         })
+            //         .catch(error => {
+            //             console.log(error);
+            //         });
+            // };
+       
+                function active(id) {
+                    console.log(id);
+
+                    $.ajax({
+                        url: "/admin/products/active",
+                        type: "PATCH",
+                        contentType: "application/json",
+                        data: JSON.stringify({ id: id }),
+                        success: function (data) {
+                            // Update the content dynamically if needed
+                            console.log("Request successful:", data);
+
+
+                    
+
+                            $(`#activeBtn_${id}`).hide();
+                            $(`#deactiveBtn_${id}`).show();
+                        },
+                        error: function (error) {
+                            console.log("Error:", error);
+                        }
                     });
-            };
-
+                };
+           
 
             function deactive(id) {
+                console.log(id);
 
-                console.log(id)
-                fetch("/admin/products/deactive", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
+                $.ajax({
+                    url: "/admin/products/deactive",
+                    type: "PATCH",
+                    contentType: "application/json",
+                    data: JSON.stringify({ id: id }),
+                    success: function (data) {
+
+                        console.log("Request successful:", data);
+
+
+
+                  
+
+                        $(`#activeBtn_${id}`).show();
+                        $(`#deactiveBtn_${id}`).hide();
                     },
-                    body: JSON.stringify({
-                        id: id
-                    })
-                })
-
-
-                    .then(data => {
-                        location.reload()
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
+                    error: function (error) {
+                        console.log("Error:", error);
+                    }
+                });
             };
+
+
+            // function deactive(id) {
+
+            //     console.log(id)
+            //     fetch("/admin/products/deactive", {
+            //         method: "POST",
+            //         headers: {
+            //             "Content-Type": "application/json"
+            //         },
+            //         body: JSON.stringify({
+            //             id: id
+            //         })
+            //     })
+
+
+            //         .then(data => {
+            //             location.reload()
+            //         })
+            //         .catch(error => {
+            //             console.log(error);
+            //         });
+            // };
         </script>
         <script>
             const imageContainers = document.querySelectorAll(".image-container");

@@ -39,6 +39,7 @@ app.use((req, res, next) => {
 
 app.use(async (req, res, next) => {
     try {
+
       const cat = await catego.find({ active: true });
       res.locals.cat = cat;
       next();

@@ -1,5 +1,4 @@
-<%- include("../partials/adminHeader.ejs")%>
-    <%- include("../partials/sideMenu.ejs")%>
+<%- include("../partials/adminSidebar.ejs")%>
     <style>
          .heading {
                 display: flex;
@@ -155,7 +154,7 @@
                     printError('brandErr', '');
                 }
 
-                if (discount.trim() === '' || isNaN(discount) || discount <= 0 || discount > 100) {
+                if (discount.trim() === '' || isNaN(discount) || discount < 0 || discount > 100) {
                     printError('discountErr', 'Please enter a valid discount percentage (0-100)');
                     isValid = false;
                 } else {

@@ -85,6 +85,17 @@
     height: 300px;
     width:300px;
 }
+.product-link {
+                color: black;
+                /* Default text color */
+                text-decoration: none;
+            }
+
+            .product-link:hover {
+                color: blue;
+                /* Text color on hover */
+                /* Additional styles if needed */
+            }
           
         </style>
     </head>
@@ -117,9 +128,11 @@
                                         
                             </div>
                             <div class="card-body">
-                                <h5 class="card-title product-title">
-                                    <%= product.name%>
-                                </h5>
+                                <a href="/products/view/<%= product._id %>"   class="product-link">
+                                    <h5 class="card-title product-title">
+                                        <%= product.name %>
+                                    </h5>
+                                </a>
                                 <p class="card-text product-description">
                                     <%= product.details.slice(0,50) %>
                                 </p>
@@ -129,14 +142,17 @@
                                 <p> <% if (product.discount !==0) { %>
                                     <%= product.discount %>% off
                                       <% } %></p>
-                                      <% if (product.inCart) { %>
-                                        <a href="/cart" class="btn btn-primary">Go to Cart</a>
-                                      <% } else { %>
-                                      <!-- <button class="add-to-cart-btn" productId="<%= product._id %>">Add to Cart</button> -->
-                                      <button class="btn btn-primary" onclick="addCart(`<%= product._id %>`)">Add to Cart</button>
-                                     
-                                      <% } %>
-                                <a href="/products/view/<%= product._id %>" class="btn btn-primary">View Details</a>
+                                      <% if (product.stock < 1) { %>
+                                        <span aria-disabled="true">out of stock</span>
+                                        <% } else if (product.inCart) { %>
+                                            <a href="/cart" class="btn btn-primary">Go to Cart</a>
+                                            <% } else { %>
+                                                <!-- <button class="add-to-cart-btn" productId="<%= product._id %>">Add to Cart</button> -->
+                                                <button class="btn btn-primary" onclick="addCart(`<%= product._id %>`)">Add
+                                                    to Cart</button>
+    
+                                                <% } %>
+
                             </div>
                         </div>
 

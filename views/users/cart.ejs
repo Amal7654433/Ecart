@@ -70,15 +70,22 @@
                                                 <p><strong>
                                                         <%= item.prod_id.name %>
                                                     </strong></p>
-                                                <span style="font-weight: bolder;">
-                                                    <%= (item.prod_id.price -(item.prod_id.price*item.prod_id.discount /
-                                                        100)).toFixed(2) %>
-                                                </span>
+                                                    <span style="font-weight: bolder;">
+                                                        <% if (item.prod_id.discount === 0) { %>
+                                                            ₹&nbsp;<%= item.prod_id.price.toFixed(2) %>
+                                                        <% } else { %>
+                                                            <%= (item.prod_id.price - (item.prod_id.price * item.prod_id.discount / 100)).toFixed(2) %>
+                                                        <% } %>
+                                                    </span>
+                                                    
                                                 <span style="text-decoration: line-through; color: darkgray;">
-                                                    ₹<%= item.prod_id.price %>
+                                                    <% if (item.prod_id.discount !== 0) { %>
+                                                    ₹<%= item.prod_id.price.toFixed(2) %>
+                                                    <% } %>
                                                 </span>
-                                                <p>
-                                                    <%= item.prod_id.discount %>% off
+                                                <p> <% if (item.prod_id.discount !== 0) { %>
+                                                    <%= item.prod_id.discount %>%&nbsp;off
+                                                    <% } %>
                                                 </p>
                                                 <button type="button" onclick="removeCart(`<%= item.prod_id._id %>`)"
                                                     class="delete-button btn btn-primary btn-sm me-1 mb-2"
@@ -108,7 +115,7 @@
                                                         <input id="quantity_<%= item.prod_id._id %>" min="1"
                                                             data-stock-limit="<%= item.prod_id.stock %>" name="quantity"
                                                             value="<%= item.qty %>" type="number"
-                                                            class="form-control" />
+                                                            class="form-control" readonly />
                                                         <label class="form-label"
                                                             for="quantity_<%= item.prod_id._id %>">Quantity</label>
                                                     </div>
@@ -167,7 +174,7 @@
                                                 class="list-group-item d-flex justify-content-between align-items-center px-0">
                                                 <%= item.prod_id.name %>
 
-                                                    <span><strong>+ ₹<%= item.qty*item.prod_id.price %></strong></span>
+                                                    <span><strong>+ ₹<%= (item.qty*item.prod_id.price).toFixed(2) %></strong></span>
                                             </li>
                                             <% }); %>
                                                 <li
@@ -182,7 +189,7 @@
                                                             <%=cart.reduce((total,item)=>
                                                                 {
                                                                 return total+(item.prod_id.price*item.qty)
-                                                                },0) %>
+                                                                },0).toFixed(2) %>
                                                         </strong></span>
 
                                                 </li>
@@ -217,7 +224,7 @@
                                                             <%=cart.reduce((total,item)=>
                                                                 {
                                                                 return total+item.total_price
-                                                                },0) %>
+                                                                },0).toFixed(2) %>
                                                         </strong></span>
 
                                                 </li>
