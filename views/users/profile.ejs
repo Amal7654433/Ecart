@@ -18,11 +18,24 @@
             margin-left: 30px;
             position: relative;
             margin-top: 10px;
+            width:300px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
 
         }
+        #ellipse
+        {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            
+
+        }
+        
     </style>
     <div class="welcomeHead">
-        <h3 class="welcome">Welcome
+        <h3 data-toggle="tooltip" title="  <%=userData.name%>" class="welcome ">Welcome
             <%=userData.name%>
         </h3>
     </div>
@@ -67,13 +80,13 @@
                                 <p class="mb-0">Username</p>
                             </div>
                             <div class="col-sm-6">
-                                <p class="text-muted mb-0">
+                                <p class="text-muted mb-0" id="ellipse" title=" <%=userData.name%>">
                                     <%=userData.name%>
                                 </p>
                             </div>
                             <div class="col-sm-3">
                                 <a href="/profile/name/edit"><button class="btn btn-primary">Edit</button></a>
-                                
+
                             </div>
                         </div>
                         <hr>
@@ -88,7 +101,7 @@
                             </div>
                             <div class="col-sm-3">
                                 <a href="/profile/email/edit"><button class="btn btn-primary">Edit</button></a>
-                                
+
                             </div>
                         </div>
                         <hr>
@@ -103,7 +116,7 @@
                             </div>
                             <div class="col-sm-3">
                                 <a href="/profile/phone/edit"><button class="btn btn-primary">Edit</button></a>
-                                
+
                             </div>
 
                         </div>
@@ -140,11 +153,13 @@
                                                     </div>
                                                     <div class="d-flex ">
                                                         <div class="ms-2" style="font-size:10px;">
-                                                            <a href="/profile/address/edit/<%=address._id%>"> <button class="btn btn-primary">Edit</button></a>
-                                                           
+                                                            <a href="/profile/address/edit/<%=address._id%>"> <button
+                                                                    class="btn btn-primary">Edit</button></a>
+
                                                         </div>
                                                         <div class="ms-2">
-                                                            <button class="btn btn-primary"  onclick="removeAddress('<%= address._id %>')"><i
+                                                            <button class="btn btn-primary"
+                                                                onclick="removeAddress('<%= address._id %>')"><i
                                                                     class="fas fa-trash"></i></button>
                                                         </div>
                                                     </div>
@@ -160,9 +175,11 @@
                                                     <% } %>
                                 </div>
                                 <% } else { %>
-                                    <div class="mt-3"> <p>No addresses found.</p></div>
+                                    <div class="mt-3">
+                                        <p>No addresses found.</p>
+                                    </div>
                                     <!-- Message for no addresses -->
-                                   
+
                                     <% } %>
 
                         </div>
@@ -174,24 +191,43 @@
         </div>
         </div>
     </section>
+    <!-- <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script> -->
     <script>
         function removeAddress(addressId) {
-          fetch(`/profile/address/remove/${addressId}`, {
-            method: 'DELETE',
-          })
-          .then(response => {
-            location.reload()
-            if (response.ok) {
-              console.log('Address removed successfully');
-              // Optionally, update the view to reflect the removal
-            } else {
-              console.error('Error removing address:', response.statusText);
-            }
-          })
-          .catch(error => {
-            console.error('Error removing address:', error);
-          });
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to remove this address?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonText: 'No, keep it',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, remove it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/profile/address/remove/${addressId}`, {
+                        method: 'DELETE',
+                    })
+                        .then(response => {
+                            location.reload()
+                            if (response.ok) {
+                                console.log('Address removed successfully');
+                                // Optionally, update the view to reflect the removal
+                            } else {
+                                console.error('Error removing address:', response.statusText);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error removing address:', error);
+                        });
+                }
+            })
+
         }
-      </script>
-     
+    </script>
+
     <%- include("../partials/userFooter.ejs")%>

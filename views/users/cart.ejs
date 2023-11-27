@@ -239,25 +239,52 @@
                     </div>
                 </div>
             </section>
-
             <script>
+                function removeCart(id) {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You want to remove this item from the cart?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonText: 'No, keep it',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, remove it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(`/cart/remove/${id}`, {
+                                method: 'DELETE',
+                            })
+                            .then(() => {
+                                window.location.reload();
+                            })
+                            .catch((error) => {
+                                console.error('Error deleting product:', error);
+                                // Optionally handle error and show an error message to the user
+                            });
+                        }
+                    });
+                }
+            </script>
+            
+            <!-- <script>
                 function removeCart(id) {
 
                     fetch(`/cart/remove/${id}`, {
                         method: 'DELETE',
                     }).then(() => {
                         window.location.reload()
-                        // $('#myDiv').load(' #myDiv')
+                      
 
 
 
 
                     }).catch((error) => {
                         console.error('Error deleting product:', error);
-                        // Optionally handle error and show error message to the user
+
                     });
                 }
-            </script>
+            </script> -->
 
             <!-- <script>
         $(document).ready(function () {

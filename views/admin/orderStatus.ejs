@@ -16,8 +16,7 @@
                 font-weight: bold;
                 text-align: center;
                 vertical-align: middle;
-                font-size: 18px;
-                padding: 20px;
+                
             }
 
             /* Customize the table body */
@@ -34,8 +33,7 @@
                 border-top: none;
                 text-align: center;
                 vertical-align: middle;
-                font-size: 16px;
-                padding: 20px;
+              
             }
 
            
@@ -148,7 +146,7 @@
                                     <td >₹ <%= item.price %></td>
                                     <td ><%= item.orderStatus %></td>
 
-                                    <% if (item.orderStatus === "Processed") { %>
+                                   <% if (item.orderStatus === "Processed") { %>
                                         <td>
                                           <div class="d-flex">
                                             <form class="mx-2" action="/admin/order/status?orderId=<%= item._id %>&approve=true" method="post">
@@ -181,7 +179,38 @@
                                             <button type="submit" disabled class="btn btn-secondary border-dark">Delivered</button>
                                           </form>
                                         </td>
-                                        <% } %>
+                                        <% } else if (item.orderStatus === 'Return initiated') { %>
+                                          <td>
+                                            <button type="submit" disabled
+                                            class="btn btn-secondary border-dark">Returned</button>
+                                          </td>
+                                        <% } %> 
+                                        <!-- <td>
+                                          <div class="d-flex">
+                                              <% if (item.orderStatus === "Processed") { %>
+                                                  <form class="mx-2">
+                                                      <button class="btn btn-success border-dark approve-btn" data-order-id="<%= item._id %>">Approve</button>
+                                                  </form>
+                                                  <form>
+                                                      <button class="btn btn-danger border-dark deny-btn" data-order-id="<%= item._id %>">Deny</button>
+                                                  </form>
+                                              <% } else if (item.orderStatus === "Cancelled") { %>
+                                                  <button class="btn btn-secondary border-dark" disabled>Cancelled</button>
+                                              <% } else if (item.orderStatus === "Approved") { %>
+                                                  <form class="mx-2">
+                                                      <button class="btn btn-warning border-dark shipped-btn" data-order-id="<%= item._id %>">to Ship</button>
+                                                  </form>
+                                              <% } else if (item.orderStatus === "Shipped") { %>
+                                                  <form class="mx-2">
+                                                      <button class="btn btn-info border-dark deliver-btn" data-order-id="<%= item._id %>">to Deliver</button>
+                                                  </form>
+                                              <% } else if (item.orderStatus === "Delivered") { %>
+                                                  <form class="mx-2">
+                                                      <button class="btn btn-secondary border-dark" disabled>Delivered</button>
+                                                  </form>
+                                              <% } %>
+                                          </div>
+                                      </td> -->
 
 
                                 </tr>
@@ -193,12 +222,57 @@
                 </div>
             </div>
         </section>
-        <script>
-            $(document).ready( function () {
-              $('#mytable').DataTable();
-            });
-            
-           
-          </script>
+
+<!-- Add this line before your script tag -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!-- <script>
+  $(document).ready(function () {
+      $('#mytable').DataTable();
+
+      // Add click event handling for the buttons
+      $('.approve-btn').click(function (event) {
+          event.preventDefault();
+          handleStatusChange($(this).attr('data-order-id'), true);
+      });
+
+      $('.deny-btn').click(function (event) {
+          event.preventDefault();
+          handleStatusChange($(this).attr('data-order-id'), false);
+      });
+
+      $('.shipped-btn').click(function (event) {
+          event.preventDefault();
+          handleStatusChange($(this).attr('data-order-id'), true);
+      });
+
+      $('.deliver-btn').click(function (event) {
+          event.preventDefault();
+          handleStatusChange($(this).attr('data-order-id'), true);
+      });
+
+      // Function to handle the status change via AJAX
+      function handleStatusChange(orderId, approve) {
+          $.ajax({
+              url: '/admin/order/status',
+              type: 'POST',
+              data: {
+                  orderId: orderId,
+                  approve: approve
+              },
+              success: function (response) {
+                  // Update the UI as needed
+                  console.log(response); // Log the server response
+              },
+              error: function (error) {
+                  console.error('Error:', error);
+              }
+          });
+      }
+  });
+</script> -->
+
+
+
        
         <%- include("../partials/adminFooter.ejs") %>

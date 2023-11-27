@@ -149,6 +149,15 @@
 width: 100px;
                 font-size: 12px;
             }
+            #ellipse
+        {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 50px;
+            
+
+        }
         </style>
         <section id="res">
             <div class="heading"> <i class="fas fa-shopping-cart fa-fw"
@@ -207,8 +216,8 @@ width: 100px;
                                     <td>
                                         <%= product.discount %>
                                     </td>
-                                    <td title=" <%= product.details %>">
-                                        <%= product.details.slice(0,30) %>
+                                    <td id="ellipse" title=" <%= product.details %>">
+                                        <%= product.details.slice(0,20) %>
                                             <a style="text-decoration: none;"
                                                 href="/admin/products/details/<%= product._id %>">
                                                 <p>more</p>

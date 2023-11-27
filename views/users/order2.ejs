@@ -107,14 +107,14 @@
                                                             <button type="button" disabled
                                                                 class="btn btn-secondary border-dark">Cancelled</button>
                                                         </h6>
-                                                        <% } else if (item.orderStatus !=='Delivered' ) { %>
+                                                        <% } else if (item.orderStatus !=='Delivered'&& item.orderStatus !=='Return initiated' ) { %>
                                                             <a>
                                                                 <button onclick="Cancel('<%= item._id %>')"
                                                                     type="button"
                                                                     class="btn btn-warning border-dark">Cancel</button>
                                                             </a>
-                                                            <% } else { %>
-                                                                <form action="/returnOrder?id=<%= item._id %>"
+                                                            <% } else if(item.orderStatus==='Delivered') { %>
+                                                                <form action="/return-order?id=<%= item._id %>"
                                                                     method="post">
                                                                     <h6>
                                                                         <button type="submit"
@@ -272,3 +272,4 @@
   
         }
       </script>
+      

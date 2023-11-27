@@ -328,10 +328,10 @@ const adminLoginPost = async (req, res) => {
 // };
 const productsView = async (req, res) => {
   try {
-   
+
     const activeCategories = await catego.find({ active: true });
 
-    
+
     const activeBrands = await brand.find({ active: true });
 
     // Find products that belong to active categories and brands
@@ -848,46 +848,68 @@ const orderStatusLoad = async (req, res) => {
 
 const editOrderStatus = async (req, res) => {
   try {
-    const order2Id = req.session.orderId;
-    if (req.query.approve) {
-      const id = req.query.orderId;
-      await order.findOneAndUpdate(
-        { _id: order2Id, 'items._id': id },
-        { $set: { 'items.$.orderStatus': 'Approved' } }
-      );
-      return res.redirect(`/admin/order/status?id=${order2Id}`);
-    } else if (req.query.deny) {
-      const id = req.query.deny;
-      await order.findOneAndUpdate(
-        { _id: order2Id, 'items._id': id },
-        { $set: { 'items.$.orderStatus': 'Cancelled' } }
-      );
-      return res.redirect(`/admin/order/status?id=${order2Id}`);
-    } else if (req.query.shipped) {
-      const id = req.query.orderId;
-      await order.findOneAndUpdate(
-        { _id: order2Id, 'items._id': id },
-        { $set: { 'items.$.orderStatus': 'Shipped' } }
-      );
-      return res.redirect(`/admin/order/status?id=${order2Id}`);
-    } else if (req.query.delivered) {
-      const id = req.query.orderId;
-      const itemId = req.query.itemId;
-      const delivered = await order.findOneAndUpdate(
-        { _id: order2Id, 'items._id': id },
-        { $set: { 'items.$.orderStatus': 'Delivered' } },
-        { new: true }
-      );
-      if (delivered) {
-        await prod.findOneAndUpdate(
-          { _id: itemId },
-          {
-            $inc: { stock: -delivered.items[0].quantity },
-          }
+    const id = req.query.orderId;
+    console.log("itemid--"+id)
+    const orders = await order.findOne({ _id: req.session.orderId })
+console.log("orders--"+orders)
+    const selectedItem = orders.items.find(item => item._id.toString() == id);
+
+    if (selectedItem.orderStatus !== 'Cancelled') {
+
+
+      const order2Id = req.session.orderId;
+      if (req.query.approve) {
+        const id = req.query.orderId;
+        await order.findOneAndUpdate(
+          { _id: order2Id, 'items._id': id },
+          { $set: { 'items.$.orderStatus': 'Approved' } }
         );
+        return res.redirect(`/admin/order/status?id=${order2Id}`);
+      } else if (req.query.deny) {
+        const id = req.query.deny;
+        await order.findOneAndUpdate(
+          { _id: order2Id, 'items._id': id },
+          { $set: { 'items.$.orderStatus': 'Cancelled' } }
+        );
+        return res.redirect(`/admin/order/status?id=${order2Id}`);
+      } else if (req.query.shipped) {
+        const id = req.query.orderId;
+        await order.findOneAndUpdate(
+          { _id: order2Id, 'items._id': id },
+          { $set: { 'items.$.orderStatus': 'Shipped' } }
+        );
+        return res.redirect(`/admin/order/status?id=${order2Id}`);
+      } else if (req.query.delivered) {
+        const id = req.query.orderId;
+
+
+        const itemId = req.query.itemId;
+        const delivered = await order.findOneAndUpdate(
+          { _id: order2Id, 'items._id': id },
+          { $set: { 'items.$.orderStatus': 'Delivered' } },
+          { new: true }
+        );
+        if (delivered) {
+
+          const orders = await order.findOne({ _id: order2Id })
+
+          const selectedItem = orders.items.find(item => item._id.toString() == id);
+
+          console.log(selectedItem.quantity)
+          await prod.findOneAndUpdate(
+            { _id: itemId },
+            {
+              $inc: { stock: -selectedItem.quantity },
+            }
+          );
+        }
+        return res.redirect(`/admin/order/status?id=${order2Id}`);
+      } else {
+        return res.redirect(`/admin/order/status?id=${order2Id}`);
       }
-      return res.redirect(`/admin/order/status?id=${order2Id}`);
-    } else {
+    }
+    else
+    {const order2Id = req.session.orderId;
       return res.redirect(`/admin/order/status?id=${order2Id}`);
     }
   } catch (error) {

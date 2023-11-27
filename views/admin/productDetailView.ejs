@@ -23,6 +23,14 @@
                 margin-top:10px;
                 
             } 
+            #ellipse
+        {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 300px;
+
+        }
     </style>
 
 
@@ -58,8 +66,8 @@
                 </script>
                 
                 <main class="col-lg-6">
-                    <div class="ps-lg-3">
-                        <h4 class="title text-dark">
+                    <div class="ps-lg-3 " id="ellipse" >
+                        <h4 class="title text-dark" title="  <%=products.name%>">
                             <%=products.name%>
                         </h4>
                      
@@ -67,7 +75,7 @@
                        
                        
 
-                        <p>
+                        <p title="<%=products.details%>">
                             <%=products.details%>
                         </p>
 

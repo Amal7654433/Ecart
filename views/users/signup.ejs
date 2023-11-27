@@ -242,10 +242,20 @@
             if (password.trim() === '') {
                 printError('passwordError', 'Please enter your password');
                 isValid = false;
-            } else if (password.length < 3) {
-                printError('passwordError', 'Password must be at least 3 characters long');
+            } else if (password.length < 6) {
+                printError('passwordError', 'Password must be at least 6 characters long');
                 isValid = false;
             }
+            else if (!/\d/.test(password)) {
+            printError('passwordError', 'Password must include at least one number');
+            isValid = false;
+        }
+
+        // Check for at least one special character
+       else if (!/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password)) {
+            printError('passwordError', 'Password must include at least one special character');
+            isValid = false;
+        }
 
             return isValid;
         }
