@@ -220,10 +220,10 @@ const productsByCategory = async (req, res) => {
           }));
 
           // Step 8: Render the Page for Logged-in User
-          res.render('users/productsByCategory', { products: productsWithCartFlag, category, cat });
+          res.render('users/categoryProduct', { products: productsWithCartFlag, category, cat });
         } else {
           // Step 8: Render the Page for Non-logged-in User
-          res.render('users/productsByCategory', { products, category, cat });
+          res.render('users/categoryProduct', { products, category, cat });
         }
       } else {
         // Step 6: Handle Product Fetching Error
@@ -372,10 +372,10 @@ const productsPage = async (req, res) => {
         }));
 
 
-        res.render('users/products', { products: productsWithCartFlag, cat });
+        res.render('users/landing', { products: productsWithCartFlag, cat });
       } else {
 
-        res.render('users/products', { products, cat });
+        res.render('users/landing', { products, cat });
       }
     } else {
 
@@ -432,29 +432,29 @@ const productsPage = async (req, res) => {
 // }
 const productsView = async (req, res) => {
   try {
-    // Extract the product ID from the request parameters
+   
     const productId = req.params.productId;
     console.log(productId)
-    // Use Mongoose to find the product by its ID
+    
     const product = await prod.findById(productId);
 
-    // Fetch all active categories
+  
     const cat = await catego.find({ active: true });
 
     if (!product) {
-      // If the product with the given ID is not found, handle it by rendering an error page
+
       return res.status(404).render('error', { message: 'Product not found' });
     }
 
-    // Check if a user is logged in
+ 
     if (req.session.user) {
       const userId = req.session.user;
 
-      // Fetch the user and extract product IDs in their cart
+  
       const users = await user.findById(userId);
       const userCartProductIds = users ? users.cart.map(item => item.prod_id.toString()) : [];
 
-      // Add 'inCart' property to the product based on whether it's in the user's cart
+
       product.inCart = userCartProductIds.includes(productId);
     }
     const userId = req.session.user;
@@ -887,7 +887,7 @@ const verifyPassword = async (req, res) => {
 const userLogout = async (req, res) => {
   try {
 
-    req.session.destroy()
+    req.session.user=false
     res.redirect('/home')
   } catch (error) {
     console.log(error.message);

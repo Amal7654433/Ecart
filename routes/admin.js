@@ -6,7 +6,7 @@ const auth = require('../middlewares/auth')
 
 // /* GET home page. */
 router.get('/admin',auth.adminLogout, adminControl.adminLogin)
-router.post('/admin',auth.adminLogout ,adminControl.adminLoginPost)
+router.post('/admin' ,adminControl.adminLoginPost)
  router.get('/admin/logout',auth.adminLoggedIn,  adminControl.adminLogout)
 router.get('/admin/products', auth.adminLoggedIn, adminControl.productsView)
 router.get('/admin/category', auth.adminLoggedIn,  adminControl.categoryView)
@@ -38,11 +38,17 @@ router.get('/admin/products/details/:id', auth.adminLoggedIn, adminControl.produ
 router.get('/admin/products/image/edit/:id',auth.adminLoggedIn,  adminControl.imageEdit);
 
 router.get('/admin/dashboard', auth.adminLoggedIn,   adminControl.dashboardView)
+router.get('/admin/dashboard/report', auth.adminLoggedIn, adminControl.orderReport)
+router.get('/admin/exportExcel', auth.adminLoggedIn, adminControl.orderExcel)
+router.post('/admin/orderSearch', auth.adminLoggedIn, adminControl.orderSearch)
 router.get('/admin/customer',auth.adminLoggedIn,  adminControl.userManagement)
+
+router.get('/admin/banner',auth.adminLoggedIn,  adminControl.loadBanner)
 
 router.patch('/admin/customer/block-user', adminControl.blockUser)
 router.patch('/admin/customer/unblock-user', adminControl.unblockUser)
-router.get('/admin/products/crop/:productId/:imageIndex', adminControl.imageCrop)
+
+router.patch('/admin/products/crop/:productId', adminControl.imageCrop)
 
 
 // router.get('/admin/delete-user',adminControl.deleteUser)

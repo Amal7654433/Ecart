@@ -1,45 +1,62 @@
 <%- include("../partials/adminSidebar.ejs")%>
-<style>
-    .heading {
-           display: flex;
-           justify-content: center;
-      font-size: 30px;
-           height: 60px;
-           width: 100%;
-           margin-top:40px;
-           
-       }  
-</style>
-<aside class="justify-content-center">
-    <div class="heading">Edit Image</div>
-    <div class=" d-flex justify-content-center">
-        <img id="mainImage" style="max-width: 100%; max-height: 50vh; margin: auto;" class="rounded-4 fit"
-             src="/images/<%= product.image[0] %>" />
-    </div>
-    <div class="d-flex justify-content-center mb-3 mt-5">
-        <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image"
-        
-           class="item-thumb">
-            <% product.image.forEach(function(image, i) { %>
-                <img width="60" height="60" class="rounded-2" src="/images/<%= image %>" onclick="changeMainImage('<%= image %>')"/>
-            <% }); %>
-        </a>
-    </div>
-    <div class="d-flex justify-content-center">
-        <!-- Delete Image Button -->
-        <button onclick="deleteImage()">Delete Image</button>
+    <style>
+        .heading {
+            display: flex;
+            justify-content: center;
+            font-size: 30px;
+            height: 60px;
+            width: 100%;
+            margin-top: 40px;
+
+        }
+    </style>
+    <aside class="justify-content-center">
+        <div class="heading">Edit Image</div>
+        <div class=" d-flex justify-content-center">
+            <img id="mainImage" style="max-width: 100%; max-height: 50vh; margin: auto;" class="rounded-4 fit"
+                src="/images/<%= product.image[0] %>" />
+        </div>
+        <div class="d-flex justify-content-center mb-3 mt-5">
+            <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image"
+                class="item-thumb">
+                <% product.image.forEach(function(image, i) { %>
+                    <img width="60" height="60" class="rounded-2" src="/images/<%= image %>"
+                        onclick="changeMainImage('<%= image %>')" />
+                    <% }); %>
+            </a>
+        </div>
+        <div class="d-flex justify-content-center">
+            <!-- Delete Image Button -->
+            <button onclick="cropImage(`<%=product._id%>`,`<%=product.image[0]%>`)">Crop Image</button>
         </div>
 
         <!-- Crop Image Button -->
         <!-- <button onclick="cropImage()">Crop Image</button> -->
 
-</aside>
-<script>
-    function changeMainImage(newImage) {
-      
-        var mainImage = document.getElementById("mainImage");
+    </aside>
+    <script>
+        function changeMainImage(newImage) {
 
-        mainImage.src = "/images/" + newImage;
-    }
-</script>
-<%- include("../partials/adminFooter.ejs") %>
+            var mainImage = document.getElementById("mainImage");
+
+            mainImage.src = "/images/" + newImage;
+        }
+    </script>
+    <script>
+        function cropImage(id, index) {
+            fetch(`/admin/products/crop/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ data: index })
+            }).then(() => {
+                window.location.assign('/admin/products')
+            }).catch((error) => {
+                console.error('Error deleting product:', error);
+                // Optionally handle error and show error message to the user
+            });
+        }
+    </script>
+
+    <%- include("../partials/adminFooter.ejs") %>

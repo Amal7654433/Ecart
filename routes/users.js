@@ -5,6 +5,7 @@ const auth=require('../middlewares/auth')
 const cartControl=require("../controller/cartController")
 const profileControl=require("../controller/profileController")
 const orderControl=require("../controller/orderController")
+const walletControl=require("../controller/walletController")
 /* GET users listing. */
 router.get('/home',auth.emailTempClear,userControl.productsPage)
 router.get('/',auth.emailTempClear,userControl.productsPage)
@@ -76,5 +77,8 @@ router.get('/profile',auth.userLoggedIn,profileControl.profileView)
  router.get('/orders',auth.userLoggedIn,orderControl.ordersView)
  router.post('/cancel-order',auth.userLoggedIn,orderControl.cancelOrder)
  router.post('/return-order',auth.userLoggedIn,orderControl.returnOrder)
+ router.get('/invoice',auth.userLoggedIn,orderControl.invoice)
+ router.get('/wallet',auth.userLoggedIn,walletControl.wallet)
+
 
 module.exports = router;

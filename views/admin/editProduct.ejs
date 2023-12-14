@@ -16,7 +16,7 @@
                 <div class="col-md-6">
                     <div class="heading">Edit Product</div>
                     <form id="productForm" onsubmit="return validateProductForm()"
-                        action="/admin/products/update/<%= products._id %>" method="post" enctype="multipart/form-data">
+                        action="/admin/products/update/<%= products._id %>" method="post"  enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="name" class="form-label">Product Name</label>
                             <input type="text" class="form-control" id="name" name="name" value="<%= products.name %>"
@@ -99,12 +99,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="image" class="form-label">Product Image</label>
-                            <!-- <% products.image.forEach(function(product) { %> -->
-                                <!-- <input type="text" class="form-control" id="existingImage "name="existingImage" value="<%=product  %>" readonly> -->
+
                                 <input type="file" class="form-control" id="image" name="image" accept="image/*"  value="<%= products.image[0].file %>"
                                      multiple>
                               
-                                <!-- <% }); %> -->
+                      
                                     <span id="imageErr" class="text-danger"></span>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>

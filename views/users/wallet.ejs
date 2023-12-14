@@ -1,0 +1,106 @@
+<%- include("../partials/userHeader.ejs")%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Page Title</title>
+
+  <!-- Add your CSS links here -->
+
+</head>
+
+<body>
+
+  <!-- User Header -->
+
+
+  <!-- Spinner Start -->
+  <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+  <!-- Spinner End -->
+
+  <!-- User Navbar -->
+
+
+  <!-- Hero Start -->
+  <div class="container-fluid bg-primary hero-header mb-5">
+    <div class="container text-center">
+      <h1 class="display-4 text-white mb-3 animated slideInDown">My wallet</h1>
+      <p>Access and manage funds</p>
+    </div>
+  </div>
+  <!-- Hero End -->
+
+  <!-- Wallet Start -->
+  <main class="container-md px-md-5">
+    <div class="col-md-9 p-3 text-center">
+      <div class="py-5 mb-2" style="background-color: #f7f7f7">
+        <h5>Total Wallet Balance</h5>
+        <h1>₹ Your_wallet_balance_here </h1>
+      </div>
+      <br /><br />
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <h5 class="fw-bold mb-1">Wallet History</h5>
+          <br /><br />
+          <thead class="table-header">
+            <tr>
+              <th><a id="name" class="filter__link">Date</a></th>
+              <th><a id="draws" class="filter__link filter__link--number">Type</a></th>
+              <th><a id="losses" class="filter__link filter__link--number">Amount</a></th>
+            </tr>
+          </thead>
+          <tbody class="table-content">
+            <!-- Iterate over historyDetails and populate the table -->
+            <tr class="table-row">
+              <td class="table-data">Date_here</td>
+              <td class="table-data">Type_here</td>
+              <td class="table-data text-success">+ ₹ Amount_here</td>
+            </tr>
+            <!-- Repeat this block for other historyDetails -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <!-- Wallet End -->
+
+  <!-- Newsletter Start -->
+  <div class="container-fluid newsletter bg-primary py-5 my-5">
+    <div class="container py-5">
+      <div class="mx-auto text-center wow fadeIn" data-wow-delay="0.1s" style="max-width: 600px">
+        <h1 class="text-white mb-3">
+          <span class="fw-light text-dark">Let's Subscribe</span> The Newsletter
+        </h1>
+        <p class="text-white mb-4">
+          Subscribe now to get 15% discount on any of our products
+        </p>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-7 wow fadeIn" data-wow-delay="0.5s">
+          <div class="position-relative w-100 mt-3 mb-2">
+            <input class="form-control w-100 py-4 ps-4 pe-5" type="text" placeholder="Enter Your Email"
+              style="height: 48px" />
+            <button type="button" class="btn shadow-none position-absolute top-0 end-0 mt-1 me-2">
+              <i class="fa fa-paper-plane text-white fs-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Newsletter End -->
+
+  <!-- User Footer -->
+ 
+
+  <!-- Add your JavaScript links here -->
+
+</body>
+
+</html>

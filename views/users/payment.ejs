@@ -1,117 +1,113 @@
+
 <%- include("../partials/userHeader.ejs")%>
-<style>
-    body {
-            background: #eee;
-        }
-  .card {
-    background-color: #fff;
-  border-radius: 15px;
-
-}
-
-.card-header {
+<style>  .checkout-heading {
+  font-family: 'YourChosenFont', sans-serif; 
 
 
-  border-radius: 15px 15px 0 0;
-}
-
-.card-title {
-  font-size: 24px;
-}
-
-
-
-
-</style>
-<body>
-  
-
-<div class="container-fluid my-5">
-    <div class="row justify-content-center">
-      <div class="col-xl-10" >
-        <div class="card " >
-          <div class="row p-2 mt-3 justify-content-between mx-sm-2">
-            <!-- Other content goes here -->
+}</style>
+<div class="row justify-content-center mt-4">
+  <div class="col-lg-8 text-center mb-4 bg-primary">
+    <h4 class=" text-white checkout-heading mt-2">Payment</h4>
+  </div>
+</div>
+<div class="container ">
+  <div class="row justify-content-center">
+    <div class="col-lg-4 mx-auto">
+      <div class="card border-secondary mb-5">
+        <div class="card-header bg-secondary border-0">
+          <h4 class="font-weight-semi-bold m-0 text-white">Order Total</h4>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <h6 class="font-weight-medium">Subtotal</h6>
+            <h6 class="font-weight-medium">
+            </h6>
           </div>
-  
-          <div class="row justify-content-around">
-            <div class="col-md-5">
-              <div class="card border-0">
-                <div class="card-header ">
-                  <h2 class="card-title space">Payment Option</h2>
-                  <hr class="my-0 mt-4">
-<!--   
-                  <div class="">
-                    <p class="card-text text-muted mt-5 mb-2 space">HAVE A COUPON CODE?</p>
-                  </div>
-                  <h5 class="text-uppercase mb-2 mt-4">Give code</h5>
-  
-                  <div class="mb-5">
-                    <div class="form-outline">
-                      <div style="display: flex; gap: 2px;">
-                        <input style="border: 1px solid black;" name="coupon" placeholder="enter your code" type="text" id="form3Examplea2" class="form-control form-control-lg" />
-                        <button type="submit" class="btn btn-warning ms-2 border-dark">Apply</button>
-                      </div>
-                      <span style="color: green;" id="validation2" class="ps-3"><b></b></span>
-                      <span style="color: red;" class="ps-3"><b id="validation"></b></span>
-                    </div>
-                  </div> -->
-                  <div class="">
-                    <p class="card-text text-muted mt-4 mb-2 space">SELECT PAYMENT OPTION</p>
-                  </div>
-  
-                  <form id="checkout-form" method="post" >
-                    <!-- <div class="form-check">
-                        <input class="form-check-input js-radioInput" type="radio" name="radio" value="razorpay" id="flexRadioDefault1">
-                        <label class="form-check-label" for="flexRadioDefault1">
-<p>online payment</p>
-                        </label>
-                      </div> -->
-                      <div class="form-check">
-                        <input class="form-check-input js-radioInput" type="radio" name="cod" value="COD" id="flexRadioDefault2">
-                        <label class="form-check-label" for="flexRadioDefault2">
-                          <p>cash on delivery</p>
-                        </label>
-                        <input type="hidden" value="">
-                      </div>
-                      <button id="my_button" class=" btn btn-primary" disabled="disabled" >place order</button>
-                  </form>
-                </div>
-              </div>
-            </div>
-            <!-- <div class="col-md-5 mt-4">
-              <div class="card border-0 ">
-                <div class="card-header card-2">
-                  <p class="card-text text-muted mt-md-4 space">ORDER SUMMARY</p>
-                  <hr class="my-2">
-                </div>
-  
-                <div class="card-body pt-5">
-                 
-                </div>
-              </div>
-            </div> -->
+          <div class="d-flex justify-content-between">
+            <h6 class="font-weight-medium">Shipping</h6>
+            <h6 class="font-weight-medium">₹ 10
+            </h6>
+          </div>
+          <div class="d-flex justify-content-between">
+            <h6 class="font-weight-medium">Discount <b>
+
+              </b></h6>
+            <h6 class="font-weight-medium text-danger">- ₹
+
+            </h6>
+          </div>
+        </div>
+        <div class="card-footer border-secondary bg-transparent">
+          <div class="d-flex justify-content-between mt-2">
+            <h5 class="font-weight-bold">Total</h5>
+            <h5 class="font-weight-bold" id="total">
+              <input id="finalPrice" type="hidden" value="" name="finalPrice">
+            </h5>
           </div>
         </div>
       </div>
     </div>
+    <div class="col-lg-4 mx-auto">
+      <div class="card border-secondary mb-5">
+        <div class="card-header bg-secondary border-0">
+          <h4 class="font-weight-semi-bold m-0 text-white">Payment Options</h4>
+        </div>
+
+        <div class="card-body">
+          <form action="" method="post">
+          <div class="form-group">
+            <div class="custom-control custom-radio">
+              <!-- <input type="hidden" name="selectedAddressForm" value=""> -->
+              <input type="radio" class="custom-control-input" value="cod" name="radio" id="Cash-on-delivery"
+                value="Cash on delivery" checked>
+              <label class="custom-control-label" for="Cash-on-delivery">Cash on delivery</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="custom-control custom-radio">
+              <input type="radio" class=" js-radioInput custom-control-input" name="radio" value="online"  id="Online-payment"
+                value="Online payment">
+              <label class="custom-control-label" for="Online-payment">Online payment</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="custom-control custom-radio">
+              <input type="radio" class="custom-control-input" name="payment" id="Wallet" value="Wallet">
+              <label class="custom-control-label" for="Wallet">Wallet</label>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer border-secondary bg-transparent">
+          <a class="text-decoration-none"><button
+              class=" my_button btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3" type="submit">Place
+              Order</button></a>
+        </div>
+      </form>
+      </div>
+    </div>
   </div>
-</body>
-  <script>
-    const inputElems = document.getElementsByClassName("js-radioInput");
-    const myButton = document.getElementById("my_button");
-  
-    for (let i = 0; i < inputElems.length; i++) {
-      const elem = inputElems[i];
-      elem.addEventListener("change", function() {
-        let isDisabled = true;
-        for (let j = 0; j < inputElems.length; j++) {
-          if (inputElems[j].checked) {
-            isDisabled = false;
-            break;
-          }
+</div>
+
+
+
+
+<script>
+  const inputElems = document.getElementsByClassName("js-radioInput");
+  const myButton = document.getElementById("my_button");
+
+  for (let i = 0; i < inputElems.length; i++) {
+    const elem = inputElems[i];
+    elem.addEventListener("change", function () {
+      let isDisabled = true;
+      for (let j = 0; j < inputElems.length; j++) {
+        if (inputElems[j].checked) {
+          isDisabled = false;
+          break;
         }
-        myButton.disabled = isDisabled;
-      });
-    }
-  </script>
+      }
+      myButton.disabled = isDisabled;
+    });
+  }
+</script>
+     
+   

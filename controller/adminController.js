@@ -6,8 +6,10 @@ const multer = require("../middlewares/multer");
 const brand = require('../models/brandsModel');
 const sharp = require('sharp');
 const fs = require('fs');
+const excelJs = require('exceljs');
 const order = require('../models/orderModel');
 const catego = require('../models/categoryModel')
+
 const categoryEditLoad = async (req, res) => {
   try {
     // Find the brand by ID in the database
@@ -201,10 +203,11 @@ const brandEditPost = async (req, res) => {
 
 const categoryView = async (req, res) => {
   try {
-
+const count=await catego.find().estimatedDocumentCount()
+console.log(count)
     const cat = await catego.find()
     if (cat) {
-      res.render('admin/categoriesList', { cat });
+      res.render('admin/categoriesList', { cat,count });
     }
     else {
       throw new Error('error while fetching products from database');
@@ -275,7 +278,7 @@ const adminLoginPost = async (req, res) => {
     const adminData = await Admin.findOne({ email, password });
     if (adminData) {
       req.session.admin = adminData._id
-      res.render('admin/dashboard', { message: '' });
+      res.redirect('/admin/dashboard');
     } else {
 
       res.render('admin/adminLogin', { message: 'wrong credentials' });
@@ -547,12 +550,157 @@ const customerView = async (req, res) => {
 };
 const dashboardView = async (req, res) => {
   try {
-    res.render('admin/dashboard');
+    const months = {};
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    
+    const orders = await order.find({});
+    orders.forEach((order) => {
+      const month = monthNames[order.orderDate.getMonth()];
+      if (!months[month]) {
+        months[month] = 0;
+      }
+      months[month]++;
+
+    });
+
+    const paymentModeStats = await order.aggregate([
+      {
+        $group: { _id: '$paymentMode', count: { $sum: 1 } },
+      },
+    ]);
+
+    const orderCount = await order.find({ __v: 0 }).count();
+    const userCount = await user.find().count();
+
+    const orderSum = await order.aggregate([
+      { $unwind: '$items' },
+      { $match: { 'items.orderStatus': 'Delivered' } },
+      { $group: { _id: null, totalBill: { $sum: '$items.bill' } } },
+    ]);
+    const quantitySum = await order.aggregate([
+      { $unwind: '$items' },
+      { $match: { 'items.orderStatus': 'Delivered' } },
+      { $group: { _id: null, totalProducts: { $sum: '$items.quantity' } } },
+    ]);
+ 
+  
+
+    res.render('admin/dashboard', {
+    months,
+      data: JSON.stringify(paymentModeStats),
+      totalBill: orderSum[0].totalBill,
+      orderCount,
+      userCount,
+      totalQuantity: quantitySum[0].totalProducts,
+    });
+  
+   
   } catch (error) {
     console.log(error.message);
   }
 };
+const orderReport= async (req, res) => {
+  try {
+    req.session.filterDate = false;
+    const formatDate = function (date) {
+      const day = ('0' + date.getDate()).slice(-2);
+      const month = ('0' + (date.getMonth() + 1)).slice(-2);
+      const year = date.getFullYear().toString();
+      return `${day}-${month}-${year}`;
+    };
+    const orders = await order.find({ 'items.orderStatus': 'Delivered' });
+    res.render('admin/reports', { orders, formatDate });
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+const orderExcel= async (req, res) => {
+  try {
+    let salesReport;
+    if (req.session.filterDate) {
+      const from = req.session.from;
+      const to = req.session.to;
+      salesReport = await order.find({
+        'items.orderStatus': 'Delivered',
+        orderDate: { $gte: from, $lte: to },
+      });
+    } else {
+      salesReport = await order.find({ 'items.orderStatus': 'Delivered' });
+    }
+    const workbook = new excelJs.Workbook();
+    const worksheet = workbook.addWorksheet('sales Report');
+    worksheet.columns = [
+      {
+        header: 'S no.',
+        key: 's_no',
+        width: 10,
+      },
+      { header: 'OrderID', key: '_id', width: 30 },
+      { header: 'Date', key: 'orderDate', width: 20 },
+      { header: 'Products', key: 'ProductName', width: 30 },
+      { header: 'Method', key: 'paymentMode', width: 10 },
+      { header: 'Amount', key: 'orderBill' },
+    ];
+    let counter = 1;
+    salesReport.forEach((report) => {
+      report.s_no = counter;
+      report.ProductName = '';
+      report.items.forEach((eachProduct) => {
+        report.ProductName += eachProduct.productName + ',';
+      });
+      worksheet.addRow(report);
+      counter++;
+    });
+    worksheet.getRow(1).eachCell((cell) => {
+      cell.font = { bold: true };
+    });
+    res.header('Content-Type', 'application/vnd.oppenxmlformats-officedocument.spreadsheatml.sheet');
+    res.header('Content-Disposition', 'attachment; filename=report.xlsx');
 
+    workbook.xlsx.write(res);
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+const orderSearch= async (req, res) => {
+  try {
+    req.session.orderSearchErr = '';
+    const formatDate = function (date) {
+      const day = ('0' + date.getDate()).slice(-2);
+      const month = ('0' + (date.getMonth() + 1)).slice(-2);
+      const year = date.getFullYear().toString();
+      return `${day}-${month}-${year}`;
+    };
+
+    const from = new Date(req.body.fromdate);
+    const to = new Date(req.body.todate);
+    req.session.filterDate = true;
+    req.session.from = from;
+    req.session.to = to;
+    
+
+    if (from > to) {
+      req.session.orderSearchErr = "Invalid date range. 'From' date must be before or equal to 'To' date.";
+      return res.render('admin/reports', { orders: [], formatDate, message: req.session.orderSearchErr });
+    }
+
+    const orders = await order.find({
+      'items.orderStatus': 'Delivered',
+      orderDate: { $gte: from, $lte: to },
+    });
+
+    if (orders.length === 0) {
+      req.session.orderSearchErr = 'No orders found';
+      return res.render('admin/reports', { orders: [], formatDate, message: req.session.orderSearchErr });
+    }
+
+    res.render('admin/reports', { orders, formatDate, message: req.session.orderSearchErr });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send('Internal Server Error');
+  }
+}
 
 const verifyLogin = async (req, res) => {
   const { email, password } = req.body;
@@ -603,7 +751,7 @@ const verifyLogin = async (req, res) => {
 // };
 const adminLogout = async (req, res) => {
   try {
-    req.session.destroy()
+    req.session.admin=false
     res.redirect('/admin')
   } catch (error) {
     console.log(error.message);
@@ -798,10 +946,12 @@ const imageEdit = async (req, res) => {
 
 const imageCrop = (req, res) => {
   const productId = req.params.productId;
-  const imageIndex = req.params.imageIndex;
-
+ 
+  const imageIndex = req.body.data;
+console.log('index=',imageIndex)
   // Load the original image path from your database or source
-  const originalImagePath = `/path/to/original_images/${productId}/${imageIndex}.jpg`;
+
+  const originalImagePath = `public/images/${imageIndex}`;
 
   // Define the cropping dimensions
   const cropWidth = 200;
@@ -809,18 +959,26 @@ const imageCrop = (req, res) => {
 
   // Create a sharp instance for the original image
   const image = sharp(originalImagePath);
-
-  // Perform the crop operation
   image
-    .resize(cropWidth, cropHeight)
-    .toFile(`/path/to/cropped_images/${productId}/${imageIndex}_cropped.jpg`, (err) => {
-      if (err) {
-        console.error('Error cropping image', err);
-        return res.status(500).send('Error cropping image');
-      }
+  .resize(cropWidth, cropHeight)
+  .toBuffer((err, croppedBuffer) => {
+    if (err) {
+      console.error('Error cropping image', err);
+      return res.status(500).send('Error cropping image');
+    }
+
+  // image
+  //   .resize(cropWidth, cropHeight)
+  //   .toFile(`/path/to/cropped_images/${productId}/${imageIndex}_cropped.jpg`, (err) => {
+  //     if (err) {
+  //       console.error('Error cropping image', err);
+  //       return res.status(500).send('Error cropping image');
+  //     }
       // Send the cropped image to the client
-      const croppedImagePath = `/path/to/cropped_images/${productId}/${imageIndex}_cropped.jpg`;
-      res.render('cropImage', { imagePath: croppedImagePath });
+      const croppedImagePath = `public/images/${imageIndex}`;
+      fs.writeFileSync(croppedImagePath, croppedBuffer);
+res.redirect('/admin/products')
+      // res.render('cropImage', { imagePath: croppedImagePath });
     });
 }
 
@@ -916,9 +1074,15 @@ console.log("orders--"+orders)
     console.log(error.message);
   }
 }
-
+const loadBanner= async (req, res) => {
+  try {
+    res.render('admin/banner')
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 module.exports =
-{
+{loadBanner,
   orderManagement, orderStatusLoad, editOrderStatus,
   adminLogin,
   productsView,
@@ -949,7 +1113,7 @@ module.exports =
   adminLoginPost,
   userManagement,
   blockUser,
-  unblockUser, imageCrop, productDetails, imageEdit
+  unblockUser, imageCrop, productDetails, imageEdit,orderReport,orderExcel,orderSearch
 }
 
 

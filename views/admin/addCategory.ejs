@@ -28,6 +28,11 @@
                                 placeholder="enter the description" >
                                 <span id="detailsErr" class="text-danger"></span>
                         </div>
+                        <!-- <div class="mb-3">
+                            <label for="discount" class="form-label">Discount</label>
+                            <input type="text" class="form-control" id="discount" name="discount" placeholder="enter the discount">
+                            <span id="discountErr" class="text-danger"></span>
+                        </div> -->
                         <% if(typeof message!=='undefined' ){ %>
                             <p class="d-flex justify-content-center" style="color: red ; margin-left: 50px;">
                                 <%= message%>
@@ -51,7 +56,7 @@
 
                 const details = document.getElementById('details').value;
 
-
+                const discount = document.getElementById('discount').value;
                 if (name.trim() === '') {
                     printError('nameErr', 'Please enter a category name');
                     isValid = false;
@@ -68,6 +73,12 @@
                 } else {
                     printError('detailsErr', '');
                 }
+                // if (discount.trim() === '' || isNaN(discount) || discount < 0 || discount > 100) {
+                //     printError('discountErr', 'Please enter a valid discount percentage (0-100)');
+                //     isValid = false;
+                // } else {
+                //     printError('discountErr', '');
+                // }
 
 
 

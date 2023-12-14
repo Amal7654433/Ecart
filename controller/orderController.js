@@ -8,6 +8,10 @@ const randomString = require('randomstring')
 const catego = require('../models/categoryModel')
 const { v4: uuidv4 } = require('uuid');
 const { ObjectId } = require('mongoose').Types;
+const fs = require('fs');
+const easyinvoice = require('easyinvoice');
+const helper = require('../helpers/helperDate');
+const Swal = require('sweetalert2');
 
 const getTotalSum = async function (id) {
     try {
@@ -52,8 +56,9 @@ const checkOutView = async (req, res) => {
             else {
                 buynow = false
                 const totalBill = await getTotalSum(userData._id);
+               
 
-                res.render('users/checkout', { userData, totalBill, buynow });
+                res.render('users/checkout', { userData, totalBill, buynow, });
             }
 
         }
@@ -70,8 +75,33 @@ const checkOutPost = async (req, res) => {
         console.log(selectedAddressIndex)
         const selectedAddress = userData.address[selectedAddressIndex];
         req.session.addr = selectedAddress;
+        const cartItems = userData.cart;
+        const productIds = cartItems.map(item => item.prod_id);
+        const productsData = await prod.find({ _id: { $in: productIds } });
 
-        res.redirect('/checkout/payment')
+
+        let redirectFlag = false;
+
+        cartItems.forEach(cartItem => {
+            const productData = productsData.find(p => p._id.equals(cartItem.prod_id));
+            console.log("david"+productData)
+            if (cartItem.qty > productData.stock) {
+
+                redirectFlag = true;
+                const errorMessage = `Sorry, the quantity for ${productData.name} exceeds the available stock.`;
+                return res.send(`<script>alert('${errorMessage}'); window.location.href='/home';</script>`);
+             
+  
+
+            }
+        });
+
+
+        if (!redirectFlag) {
+            res.redirect('/checkout/payment')
+        }
+
+       
 
 
     } catch (error) {
@@ -91,7 +121,8 @@ const paymentView = async (req, res) => {
         });
         console.log(req.session.addr)
         if (userData.cart.length !== 0 && req.session.addr) {
-            res.render('users/payment', {});
+            const totalBill = await getTotalSum(userData._id);
+            res.render('users/payment', {totalBill});
         }
         else {
             return res.redirect('/cart');
@@ -112,8 +143,8 @@ const paymentPost = async (req, res) => {
             },
         });
 
-        const paymentModelSelect = req.body.cod
-        console.log(req.body.cod)
+        const paymentModelSelect = req.body.radio
+      
 
 
         const selectedAddress = req.session.addr
@@ -155,7 +186,36 @@ const paymentPost = async (req, res) => {
         const orders = new order(orderData);
         // await orders.save()
         req.session.addr = false
-        res.redirect('/orders-redirect')
+        const userId = await user.findById(req.session.user)
+        cartData=userId.cart
+        const productIds = cartData.map(item => item.prod_id);
+        const productsData = await prod.find({ _id: { $in: productIds } });
+
+
+        let redirectFlag = false;
+
+        cartData.forEach(cartItem => {
+            const productData = productsData.find(p => p._id.equals(cartItem.prod_id));
+
+
+            if (cartItem.qty > productData.stock) {
+
+                redirectFlag = true;
+                const errorMessage = `Sorry, the quantity for ${productData.name} exceeds the available stock.`;
+                return res.send(`<script>alert('${errorMessage}'); window.location.href='/home';</script>`);
+             
+  
+
+            }
+        });
+
+
+        if (!redirectFlag) {
+            res.redirect('/orders-redirect')
+        }
+
+
+      
     } catch (error) {
         console.log(error.message);
     }
@@ -221,37 +281,38 @@ const cancelOrder = async (req, res) => {
         console.log('hello david');
         const id = req.body.id;
 
-        const orders = await order.findOne({   user_id: users._id,
-            'items._id': id })
-console.log(orders)
-        const selectedItem = orders.items.find(item => item._id.toString() == id);
-if(selectedItem.orderStatus!=="Delivered")
-{
-    const result = await order.findOneAndUpdate(
-        {
+        const orders = await order.findOne({
             user_id: users._id,
-            'items._id': id,
-        },
-        {
-            $set: { 'items.$.orderStatus': 'Cancelled' },
-        },
-        { new: true }
-    );
+            'items._id': id
+        })
+        console.log(orders)
+        const selectedItem = orders.items.find(item => item._id.toString() == id);
+        if (selectedItem.orderStatus !== "Delivered") {
+            const result = await order.findOneAndUpdate(
+                {
+                    user_id: users._id,
+                    'items._id': id,
+                },
+                {
+                    $set: { 'items.$.orderStatus': 'Cancelled' },
+                },
+                { new: true }
+            );
 
-    if (!result) {
-        return res.status(404).json({ error: 'Order or item not found' });
-    }
-   
-    // Uncomment the following block if you want to update product stock
-    // const result2 = await prod.findOneAndUpdate(
-    //   { _id: result.items[0].productId },
-    //   { $inc: { stock: result.items[0].quantity } }
-    // );
-    // res.json(result2);
+            if (!result) {
+                return res.status(404).json({ error: 'Order or item not found' });
+            }
 
-    res.json(result); 
-}
-       // Assuming you want to send the updated order details as the response
+            // Uncomment the following block if you want to update product stock
+            // const result2 = await prod.findOneAndUpdate(
+            //   { _id: result.items[0].productId },
+            //   { $inc: { stock: result.items[0].quantity } }
+            // );
+            // res.json(result2);
+
+            res.json(result);
+        }
+        // Assuming you want to send the updated order details as the response
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ error: 'Internal Server Error' }); // Adjust the status code and message accordingly
@@ -262,8 +323,8 @@ const returnOrder = async (req, res) => {
 
         const userData = req.session.user;
         const users = await user.findById(userData)
-        const id = req.query.id;
-
+        // const id = req.query.id;
+   const id = req.body.id;
         console.log("david")
         console.log(id)
         const result = await order.findOneAndUpdate(
@@ -275,8 +336,10 @@ const returnOrder = async (req, res) => {
                 $set: { 'items.$.orderStatus': 'Return initiated' },
             }
         );
-        const orders = await order.findOne({   user_id: users._id,
-            'items._id': id })
+        const orders = await order.findOne({
+            user_id: users._id,
+            'items._id': id
+        })
 
         const selectedItem = orders.items.find(item => item._id.toString() == id);
 
@@ -290,8 +353,94 @@ const returnOrder = async (req, res) => {
     }
 };
 
+const invoice = async (req, res) => {
+    try {
+        const orderId = req.query.order_id
+
+
+        const orders = await order.findById(orderId);
+
+        if (!orders) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+
+        // const item = orders.items.find((item) => item._id.equals(itemId));
+
+
+        const productIds = orders.items.map(itme => itme.productId)
+        console.log("mapped ids of the products" + productIds)
+        const productsData = await prod.find({ _id: { $in: productIds } });
+        console.log("collected products data" + productsData)
+        let totalDiscount = 0;
+        const ddd = orders.items.reduce((total, item) => {
+            return total + (item.price * item.quantity)
+        }, 0)
+        const abc = ddd - orders.orderBill
+        console.log("discount", abc)
+        dis = (abc / ddd) * 100
+
+
+        const address = orders.address;
+        const date = helper.formatDate(orders.orderDate);
+
+        const data = {
+            images: {
+                logo: "https://content.jdmagicbox.com/comp/warangal/s6/pwfl1537687529m6p3s6/catalogue/-0qgktw1xss.jpg",
+            },
+            sender: {
+                company: 'Ecart',
+                address: 'HustleHub Techpark',
+                city: 'mumbai',
+                country: 'maharahtra',
+            },
+            client: {
+                company: address.name,
+                address: address.address,
+                zip: address.pincode,
+                city: address.district,
+                country: address.state,
+            },
+            information: {
+                number: 'REF#' + orders._id,
+                date,
+                'due-date': orders.paymentMode,
+            },
+            // products: [
+            //     {
+            //         quantity: item.quantity,
+            //         description: item.productName,
+            //         'tax-rate': 0,
+            //         price: item.price,
+            //     },
+            // ],
+
+            products: orders.items.map(item => ({
+                quantity: item.quantity,
+                description: item.productName,
+                'tax-rate': -dis,
+
+                price: item.price,
+            })),
+
+            'bottom-notice': 'Thank you for shopping with us',
+            settings: {
+                currency: 'INR',
+
+            },
+            translate: {
+                'due-date': 'Payment',
+                vat: 'discount',
+            },
+        };
+
+        res.json(data);
+        console.log("this is the pdf data" + data)
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+};
 
 
 
-
-module.exports = { ordersView, checkOutView, checkOutPost, paymentView, paymentPost, cancelOrder, orderSuccessRedirect, returnOrder }
+module.exports = { ordersView, checkOutView, checkOutPost, paymentView, paymentPost, cancelOrder, orderSuccessRedirect, returnOrder, invoice }

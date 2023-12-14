@@ -101,7 +101,9 @@
                     printError('phoneError', 'Please enter your phone number');
                     isValid = false;
                 } else {
-                    const phoneRegex = /^\d{10}$/;
+                    // const phoneRegex = /^\d{10}$/;
+                    const phoneRegex = /^[1-9]\d{9}$/;
+
                     if (!phoneRegex.test(phone)) {
                         printError('phoneError', 'Please enter a valid 10-digit phone number');
                         isValid = false;
@@ -139,4 +141,4 @@
 
 
     </body>
-    <%- include("../partials/userFooter.ejs")%>
+   

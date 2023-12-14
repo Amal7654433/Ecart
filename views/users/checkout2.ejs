@@ -1,5 +1,21 @@
 <%- include("../partials/userHeader.ejs")%>
-    <div class="container-fluid my-5">
+    <style>
+        .checkout-heading {
+            font-family: 'YourChosenFont', sans-serif;
+     
+
+        }
+        .bg-primary
+        {
+            
+        }
+    </style>
+    <div class="row justify-content-center mt-md-4">
+        <div class="col-lg-9 text-center mb-4 bg-primary">
+            <h4 class=" text-white checkout-heading mt-2">Checkout</h4>
+        </div>
+    </div>
+    <div class="container-fluid ">
         <div class="row justify-content-center">
             <div class="col-xl-10">
                 <div class="card shadow-lg">
@@ -9,12 +25,15 @@
 
                     <!-- Shipping Details Section -->
                     <div class="row justify-content-around">
+
                         <div class="col-md-5">
+
                             <div class="card border-0">
-                                <div class="card-header pb-0">
-                                    <h2 class="card-title space">Checkout</h2>
-                                    <p class="card-text text-muted mt-4 space">SHIPPING DETAILS</p>
-                                    <hr class="my-0">
+                                <div class="card-header pb-0 bg-primary text-white">
+                                    <p class="card-text  mt-4 space text-white">SHIPPING DETAILS</p>
+                                    <hr class="my-2 bg-white  border border-4 ">
+                                </div>
+                                <div class="card-body ">
                                     <div>
                                         <p class="card-text text-muted mt-4 mb-2 space">SELECT DELIVERY ADDRESS</p>
                                     </div>
@@ -162,11 +181,11 @@
                             </div>
                             <% } else { %>
                                 <!-- Order Summary Section -->
-                                <div class="col-md-5 mt-4">
+                                <div class="col-md-5 ">
                                     <div class="card border-0">
-                                        <div class="card-header card-2">
-                                            <p class="card-text text-muted mt-md-4 space">ORDER SUMMARY </p>
-                                            <hr class="my-2">
+                                        <div class="card-header card-2 bg-primary text-white">
+                                            <p class="card-text  mt-md-4 space text-white">ORDER SUMMARY </p>
+                                            <hr class="my-2 bg-white  border border-4 ">
                                         </div>
                                         <div class="card-body mt-3">
                                             <% userData.cart.forEach(function(item) { %>
@@ -210,7 +229,8 @@
                                                                             <%=userData.cart.reduce((total,item)=>
                                                                                 {
 
-                                                                                return total+(item.prod_id.price*item.qty)
+                                                                                return
+                                                                                total+(item.prod_id.price*item.qty)
                                                                                 },0) %>
                                                                         </b></h6>
                                                                 </div>
@@ -220,13 +240,16 @@
                                                                     <h6 class="mb-3"><b>Discount</b></h6>
                                                                 </div>
                                                                 <div class="flex-sm-col col-auto mx-4">
-                                                                    <h6 class="mb-3" style="color: green"><b>- ₹  <%=userData.cart.reduce((total,item)=>
-                                                                        {
-                                                                        return total+(item.prod_id.price*item.qty)
-                                                                        },0)-userData.cart.reduce((total,item)=>
-                                                                        {
-                                                                        return total+item.total_price
-                                                                        },0) %></b>
+                                                                    <h6 class="mb-3" style="color: green"><b>- ₹
+                                                                            <%=userData.cart.reduce((total,item)=>
+                                                                                {
+                                                                                return
+                                                                                total+(item.prod_id.price*item.qty)
+                                                                                },0)-userData.cart.reduce((total,item)=>
+                                                                                {
+                                                                                return total+item.total_price
+                                                                                },0) %>
+                                                                        </b>
                                                                     </h6>
                                                                 </div>
                                                             </div>
@@ -256,7 +279,8 @@
                                                     <div class="row mb-5 mt-4">
                                                         <div class="col-md-7 col-lg-6"> <button id="my_button"
                                                                 type="submit" disabled="disabled" value="submit"
-                                                                name="submit" class="btn btn-block btn-lg border-dark"
+                                                                name="submit"
+                                                                class="btn btn-block  bg-primary text-white"
                                                                 style="width: 100%; border-radius:30px;">Proceed to
                                                                 Payment</button>
 
@@ -275,7 +299,7 @@
     </div>
 
     <!-- Dummy footer content -->
-    
+
 
     <script>
         // Dummy script as EJS syntax is removed
@@ -296,9 +320,8 @@
             });
         }
     </script>
-   
+
     <footer>
 
 
     </footer>
-    

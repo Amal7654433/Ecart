@@ -131,6 +131,10 @@ font-size: 12px;
                 <div class="row ">
                     <div> <a href="/admin/category/add" class="btn btn-primary ml-auto">Add category</a></div>
                 </div>
+                <!-- <div style="font-size: medium;" class="badge badge-pill badge-primary d-flex float-end mb-2 px-2">
+                    Total:<%=count%> 
+                 </div> -->
+                 
                 <div class="table-responsive mt-3">
                     <table class="table  ">
                         <thead>
@@ -138,6 +142,7 @@ font-size: 12px;
                                 <th scope="col">No</th>
                                 <th scope="col">Category Name</th>
                                 <th scope="col">Description</th>
+                                <th scope="col">Offer</th>
                                 <th scope="col">Edit</th>
                                 <th scope="col">Activation</th>
 
@@ -163,6 +168,7 @@ font-size: 12px;
                                         <%= c.description.length> 30 ? c.description.substring(0, 30) + '...' :
                                             c.description %>
                                     </td>
+                                    <td></td>
                                     <td>
                                         <!-- Edit button for each brand -->
                                         <a href="/admin/category/edit/<%= c._id %>" class="btn btn-primary">Edit</a>
