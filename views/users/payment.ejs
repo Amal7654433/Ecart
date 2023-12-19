@@ -1,113 +1,231 @@
-
 <%- include("../partials/userHeader.ejs")%>
-<style>  .checkout-heading {
-  font-family: 'YourChosenFont', sans-serif; 
+  <style>
+    .checkout-heading {
+      font-family: 'YourChosenFont', sans-serif;
 
 
-}</style>
-<div class="row justify-content-center mt-4">
-  <div class="col-lg-8 text-center mb-4 bg-primary">
-    <h4 class=" text-white checkout-heading mt-2">Payment</h4>
+    }
+  </style>
+  <div class="row justify-content-center mt-4">
+    <div class="col-lg-8 text-center mb-4 bg-primary">
+      <h4 class=" text-white checkout-heading mt-2">Payment</h4>
+    </div>
   </div>
-</div>
-<div class="container ">
-  <div class="row justify-content-center">
-    <div class="col-lg-4 mx-auto">
-      <div class="card border-secondary mb-5">
-        <div class="card-header bg-secondary border-0">
-          <h4 class="font-weight-semi-bold m-0 text-white">Order Total</h4>
-        </div>
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <h6 class="font-weight-medium">Subtotal</h6>
-            <h6 class="font-weight-medium">
-            </h6>
+  <div class="container ">
+    <div class="row justify-content-center">
+      <div class="col-lg-4 mx-auto">
+        <div class="card border-secondary mb-5">
+          <div class="card-header bg-secondary border-0">
+            <h4 class="font-weight-semi-bold m-0 text-white">Order Total</h4>
           </div>
-          <div class="d-flex justify-content-between">
-            <h6 class="font-weight-medium">Shipping</h6>
-            <h6 class="font-weight-medium">₹ 10
-            </h6>
-          </div>
-          <div class="d-flex justify-content-between">
-            <h6 class="font-weight-medium">Discount <b>
+          <div class="card-body">
+            <div class="d-flex justify-content-between">
+              <h6 class="font-weight-medium">Subtotal</h6>
+              <h6 class="font-weight-medium">
+              </h6>
+            </div>
+            <div class="d-flex justify-content-between">
+              <h6 class="font-weight-medium">Shipping</h6>
+              <h6 class="font-weight-medium">₹ 10
+              </h6>
+            </div>
+            <div class="d-flex justify-content-between">
+              <h6 class="font-weight-medium">Discount <b>
 
-              </b></h6>
-            <h6 class="font-weight-medium text-danger">- ₹
+                </b></h6>
+              <h6 class="font-weight-medium text-danger">- ₹
 
-            </h6>
+              </h6>
+            </div>
           </div>
-        </div>
-        <div class="card-footer border-secondary bg-transparent">
-          <div class="d-flex justify-content-between mt-2">
-            <h5 class="font-weight-bold">Total</h5>
-            <h5 class="font-weight-bold" id="total">
-              <input id="finalPrice" type="hidden" value="" name="finalPrice">
-            </h5>
+          <div class="card-footer border-secondary bg-transparent">
+            <div class="d-flex justify-content-between mt-2">
+              <h5 class="font-weight-bold">Total</h5>
+              <h5 class="font-weight-bold" id="total">
+                <input id="finalPrice" type="hidden" value="" name="finalPrice">
+              </h5>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-lg-4 mx-auto">
-      <div class="card border-secondary mb-5">
-        <div class="card-header bg-secondary border-0">
-          <h4 class="font-weight-semi-bold m-0 text-white">Payment Options</h4>
-        </div>
+      <div class="col-lg-4 mx-auto">
+        <div class="card border-secondary mb-5">
+          <div class="card-header bg-secondary border-0">
+            <h4 class="font-weight-semi-bold m-0 text-white">Payment Options</h4>
+          </div>
 
-        <div class="card-body">
-          <form action="" method="post">
-          <div class="form-group">
-            <div class="custom-control custom-radio">
-              <!-- <input type="hidden" name="selectedAddressForm" value=""> -->
-              <input type="radio" class="custom-control-input" value="cod" name="radio" id="Cash-on-delivery"
-                value="Cash on delivery" checked>
-              <label class="custom-control-label" for="Cash-on-delivery">Cash on delivery</label>
-            </div>
+          <div class="card-body">
+            <form id="checkout-form" action="" method="post">
+              <div class="form-group">
+                <div class="custom-control custom-radio">
+                  <!-- <input type="hidden" name="selectedAddressForm" value=""> -->
+                  <input type="radio" class="custom-control-input" value="cod" name="radio" id="Cash-on-delivery"
+                    value="Cash on delivery" checked>
+                  <label class="custom-control-label" for="Cash-on-delivery">Cash on delivery</label>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="custom-control custom-radio">
+                  <input type="radio" class=" js-radioInput custom-control-input" name="radio" value="online"
+                    id="Online-payment" value="Online payment">
+                  <label class="custom-control-label" for="Online-payment">Online payment</label>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="custom-control custom-radio">
+                  <input type="radio" class="custom-control-input" name="radio" id="Wallet" value="wallet">
+                  <label class="custom-control-label" for="Wallet">Wallet</label>
+                </div>
+              </div>
           </div>
-          <div class="form-group">
-            <div class="custom-control custom-radio">
-              <input type="radio" class=" js-radioInput custom-control-input" name="radio" value="online"  id="Online-payment"
-                value="Online payment">
-              <label class="custom-control-label" for="Online-payment">Online payment</label>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="custom-control custom-radio">
-              <input type="radio" class="custom-control-input" name="payment" id="Wallet" value="Wallet">
-              <label class="custom-control-label" for="Wallet">Wallet</label>
-            </div>
-          </div>
+          <% if(locals.keyId){%>
+            <input type="hidden" id="keyId" value="<%= keyId %>">
+            <% }%>
+              <div class="card-footer border-secondary bg-transparent">
+                <a class="text-decoration-none"><button
+                    class=" my_button btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3" type="submit">Place
+                    Order</button></a>
+              </div>
+              </form>
         </div>
-        <div class="card-footer border-secondary bg-transparent">
-          <a class="text-decoration-none"><button
-              class=" my_button btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3" type="submit">Place
-              Order</button></a>
-        </div>
-      </form>
       </div>
     </div>
   </div>
-</div>
 
 
+  <script>console.log("amal")</script>
 
+  <script>
 
-<script>
-  const inputElems = document.getElementsByClassName("js-radioInput");
-  const myButton = document.getElementById("my_button");
+    const inputElems = document.getElementsByClassName("js-radioInput");
+    const myButton = document.getElementById("my_button");
 
-  for (let i = 0; i < inputElems.length; i++) {
-    const elem = inputElems[i];
-    elem.addEventListener("change", function () {
-      let isDisabled = true;
-      for (let j = 0; j < inputElems.length; j++) {
-        if (inputElems[j].checked) {
-          isDisabled = false;
-          break;
+    for (let i = 0; i < inputElems.length; i++) {
+      const elem = inputElems[i];
+      elem.addEventListener("change", function () {
+        let isDisabled = true;
+        for (let j = 0; j < inputElems.length; j++) {
+          if (inputElems[j].checked) {
+            isDisabled = false;
+            break;
+          }
         }
-      }
-      myButton.disabled = isDisabled;
-    });
-  }
-</script>
-     
-   
+        myButton.disabled = isDisabled;
+      });
+    }
+  </script>
+
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    $("#checkout-form").submit((e) => {
+      e.preventDefault()
+      $.ajax({
+        url: '/checkout/payment',
+        method: 'post',
+        data: $('#checkout-form').serialize(),
+        success: (response) => {
+          if (response.cod) {
+            console.log("COD working")
+            location.replace('/orders-redirect')
+          } else if (response.walletSuccess) {
+            console.log("wallet payment working")
+            location.replace('/orders-redirect')
+          }
+          else if (response.balance) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Insufficient Balance',
+              text: 'You do not have enough balance to make this withdrawal.',
+              showCancelButton: true,
+              confirmButtonText: 'OK',
+            
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = '/checkout/payment';
+              }
+            });
+          }
+
+          else if (response.razorpay) {
+            console.log("razorpay working")
+            razorpay(response.order)
+          }
+          else if (response.cartEmpty) {
+            location.replace('/cart')
+          }
+        }
+      })
+    })
+
+    function razorpay(order) {
+      var keyId = document.getElementById('keyId').value
+      var options = {
+        "key": keyId, // Enter the Key ID generated from the Dashboard
+        "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "currency": "INR",
+        "name": "Ecart",
+        "description": "Test Transaction",
+        "image": "https://example.com/your_logo",
+        "order_id": order.id,
+        "handler": function (response) {
+          verifyPayment(response, order);
+        },
+        "prefill": {
+          "name": "Ecart",
+          "email": "ecart@gmail.com",
+          "contact": "7356251073"
+        },
+        "notes": {
+          "address": "Razorpay Corporate Office"
+        },
+        "theme": {
+          "color": "#3399cc"
+        }
+      };
+      var rzp1 = new Razorpay(options);
+      rzp1.open();
+    };
+    function verifyPayment(payment, order) {
+      location.replace('/orders-redirect')
+
+      // $.ajax({
+      //   url: '/userhome/razo-verify-payment',
+      //   data: {
+      //     payment,
+      //     order
+      //   },
+      //   method: 'post',
+      //   success: (response) => {
+      //     if (response.status) {
+      //       console.log("succes")
+      //       location.href = '/orders'
+      //     } else {
+      //       // need to render payment faild page
+      //       location.href = '/orderFailed'
+      //     }
+      //   }
+      // })
+    }
+
+    // function verifyPayment(payment, order) {
+    //   location.replace('/orders-redirect')
+    //   const amount = document.getElementById('total').value;
+    //   $.ajax({
+    //     url: '/verifyPayment',
+    //     type: 'POST',
+    //     data: {
+    //       payment: payment,
+    //       amount: amount * 100,
+    //       order: order
+    //     },
+    //     success: function (response) {
+    //       if (response.payment) {
+    //         window.location.href = "/success"
+    //       }
+    //     }
+    //   })
+    // };
+
+  </script>
+  <!-- Checkout End -->

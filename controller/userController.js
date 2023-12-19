@@ -10,10 +10,6 @@ const brand = require('../models/brandsModel');
 const { ObjectId } = require('mongoose').Types;
 
 
-
-
-
-
 const securePassword = async (password) => {
   const spassword = await bcrypt.hash(password, 10)
   return spassword
@@ -29,103 +25,6 @@ const homeView = async (req, res) => {
     console.log(error.message);
   }
 };
-
-
-
-
-
-// const forgetPasswordEmailSend = async (name, email, token) => {
-//   try {
-//     const transporter = mail.createTransport({
-//       service: 'gmail',
-//       auth: {
-//         user: 'amal790257@gmail.com',
-//         pass: 'oazg dytp cbaw ovml'
-
-//       },
-
-//     })
-//     const mailOptions = {
-//       from: 'amal790257@gmail.com',
-//       to: email,
-//       subject: 'for reset password',
-//       html: '<p>Hii ' + name + ',plaese click here to <a href="http://localhost:7000/resetpassword?token=' + token + '"'
-//     }
-//     transporter.sendMail(mailOptions, function (error, info) {
-//       if (error) {
-//         console.log(error.message)
-//       }
-//       else {
-//         console.log("email has been send", info.response)
-//       }
-
-//     })
-
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
-
-
-// const forgetVerify = async (req, res) => {
-//   try {
-//     console.log('worked')
-//     const email = req.body.email
-//     const userData = await user.findOne({ email: email })
-//     if (userData) {
-
-//       if (userData.is_verified === 0) {
-//         res.render('users/forgetPasswordEmailEnter', { message: 'please verify your email' })
-//       }
-//       else {
-//         const random = randomString.generate()
-//         const updatedData = await user.updateOne({ email: email }, { $set: { token: random } })
-//         console.log(updatedData)
-//         forgetPasswordEmailSend(userData.name, userData.email, random)
-//         res.render('users/forgetPasswordEmailEnter', { message: "plz check your mail for reset password" })
-//       }
-//     }
-//     else {
-//       res.render('users/forgetPasswordEmailEnter', { message: "email is incorrect" })
-//     }
-
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
-
-// const resetPasswordLoad = async (req, res) => {
-//   try {
-
-//     const token = req.query.token
-//     const tokenData = user.findOne({ token: token })
-
-//     if (tokenData) {
-//       res.render('users/resetPassword', { user_id: tokenData._id })
-//     }
-//     else {
-//       res.render('404', { message: "token is invalid" })
-//     }
-//     res.render('users/userLogin');
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
-// const resetPassword = async (req, res) => {
-//   try {
-//     const password = req.body.password
-//     const id = req.body.user_id
-//     const spass = await securePassword(password)
-//     const updatedData = await user.findByIdAndUpdate({ _id: id }, { $set: { password: spass, token: '' } })
-//     res.redirect('/login');
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
-
-
-
-
 
 const loadLogin = async (req, res) => {
   try {
@@ -191,18 +90,15 @@ const verifyLogin = async (req, res) => {
 };
 const productsByCategory = async (req, res) => {
   try {
-    // Step 1: Category Identification
+
     const categoryIdentifier = req.params.categoryId;
 
-    // Step 2: Fetch Active Categories
     const cat = await catego.find({ active: true });
 
-    // Step 3: Fetch Category by ID
     const category = await catego.findOne({ _id: categoryIdentifier, active: true });
 
-    // Step 4: Check if Category Exists
+
     if (category) {
-      // Step 5: Fetch Products by Category
       const activeBrands = await brand.find({ active: true });
       const products = await prod.find({ category: category._id, active: true, brand: { $in: activeBrands.map(brand => brand.name) } });
 
@@ -219,129 +115,28 @@ const productsByCategory = async (req, res) => {
             inCart: userCartProductIds.includes(product._id.toString())
           }));
 
-          // Step 8: Render the Page for Logged-in User
-          res.render('users/categoryProduct', { products: productsWithCartFlag, category, cat });
+          res.render('users/categoryProduct', { products: productsWithCartFlag, category, cat,activeBrands });
         } else {
-          // Step 8: Render the Page for Non-logged-in User
-          res.render('users/categoryProduct', { products, category, cat });
+
+          res.render('users/categoryProduct', { products, category, cat, activeBrands });
         }
       } else {
-        // Step 6: Handle Product Fetching Error
+
         throw new Error('Error while fetching products from the database');
       }
     } else {
-      // Step 4: Handle Category Not Found
+
       res.status(404).send('Category not found');
     }
   } catch (error) {
-    // Step 9: Error Handling
+
     console.log(error.message);
     res.status(500).send('Internal Server Error');
   }
 };
 
 
-// const productsByCategory = async (req, res) => {
-//   try {
 
-//     const categoryIdentifier = req.params.categoryId;
-//     const cat = await catego.find({ active: true })
-
-//     const category = await catego.findOne({ _id: categoryIdentifier, active: true });
-//     console.log(category.name)
-//     if (category) {
-
-//       const products = await prod.find({ category: category._id, active: true });
-//       console.log(products)
-//       if (products) {
-
-//         if (req.session.user) {
-//           const userId = req.session.user;
-
-
-//           const users = await user.findById(userId);
-//           const userCartProductIds = users ? users.cart.map(item => item.prod_id.toString()) : [];
-
-
-//           const productsWithCartFlag = products.map(product => ({
-//             ...product._doc,
-//             inCart: userCartProductIds.includes(product._id.toString())
-//           }));
-//           res.render('users/productsByCategory', { products: productsWithCartFlag, category, cat });
-//         } else {
-//           res.render('users/productsByCategory', { products, category, cat });
-//         }
-//       } else {
-
-//         throw new Error('Error while fetching products from the database');
-//       }else {
-
-//         res.status(404).send('Category not found');
-//       }
-//     }
-//   } catch (error) {
-//     console.log(error.message);
-//     res.status(500).send('Internal Server Error');
-//   }
-// };
-// const  productsByCategory=async (req, res) => {
-//   try {
-//     const cat = await catego.find({ active: true })
-//     const categoryId = req.params.categoryId;
-
-//     // Fetch the category details based on the category identifier
-//     const category = await catego.findById(categoryId).exec();
-
-//     if (!category) {
-//       return res.status(404).send('Category not found');
-//     }
-
-//     // Fetch products that belong to the selected category and are active
-//     const products = await prod.find({ category: category.name, active: true })
-//     console.log('prod:', products)
-
-//     // Render the products page with the selected category and its products
-//     res.render('users/productsByCategory', { products, category ,cat});
-//   } catch (error) {
-//     console.log(error.message);
-//     res.status(500).send('Internal Server Error');
-//   }
-// }
-
-
-
-// const
-//   productsPage = async (req, res) => {
-//     try {
-//       const products = await prod.find({ active: true })
-//       const cat = await catego.find({ active: true })
-//       id= req.params.id
-//       console.log(id)
-//       const users = req.session.user
-//       const productDetails = await prod.findOne({ _id: id })
-//       const userDetails = await user.findOne({ id: users._id })
-
-//       let isCart
-//       if (userDetails) {
-//           // isWishlist = userDetails.wishlist.find((prd) => prd == prd_id)
-//           userDetails.cart.forEach(item => {
-//               if (item.prod_id == id) {
-//                   isCart = true
-//                   return
-//               }
-//           });
-//       }
-
-//       if (products) {
-
-//         res.render('users/products', { products, cat,isCart });
-//       } else {
-//         throw new Error('error while fetching products from database');
-//       }
-//     } catch (error) {
-//       console.log(error.message);
-//     }
-//   };
 const productsPage = async (req, res) => {
   try {
     const activeCategories = await catego.find({ active: true });
@@ -432,13 +227,13 @@ const productsPage = async (req, res) => {
 // }
 const productsView = async (req, res) => {
   try {
-   
+
     const productId = req.params.productId;
     console.log(productId)
-    
+
     const product = await prod.findById(productId);
 
-  
+
     const cat = await catego.find({ active: true });
 
     if (!product) {
@@ -446,11 +241,11 @@ const productsView = async (req, res) => {
       return res.status(404).render('error', { message: 'Product not found' });
     }
 
- 
+
     if (req.session.user) {
       const userId = req.session.user;
 
-  
+
       const users = await user.findById(userId);
       const userCartProductIds = users ? users.cart.map(item => item.prod_id.toString()) : [];
 
@@ -887,7 +682,7 @@ const verifyPassword = async (req, res) => {
 const userLogout = async (req, res) => {
   try {
 
-    req.session.user=false
+    req.session.user = false
     res.redirect('/home')
   } catch (error) {
     console.log(error.message);

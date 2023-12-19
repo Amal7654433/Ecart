@@ -32,7 +32,12 @@
             
 
         }
-        
+   
+        #walletBox {
+    margin-top: 1rem;
+    position: absolute;
+    
+}
     </style>
     <div class="welcomeHead">
         <h3 data-toggle="tooltip" title="  <%=userData.name%>" class="welcome ">Welcome
@@ -49,7 +54,17 @@
                     </nav>
                 </div>
             </div>
-
+            <div class="col-lg-4 d-flex float-end">
+                <!-- New box for displaying wallet amount -->
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        <h5 class="my-3">Wallet Amount</h5>
+                        <!-- Assuming your wallet amount is stored in userData.walletAmount -->
+                        <p class="text-muted mb-0"><%= userData.wallet %>₹</p>
+                        <!-- Add more styling or information as needed -->
+                    </div>
+                </div>
+            </div>
             <!-- <div class="row">
                 <div class="col-lg-4">
                     <div class="card mb-4">
@@ -89,6 +104,7 @@
 
                             </div>
                         </div>
+                        
                         
                         <!-- <div class="row">
                             <div class="col-sm-3">
@@ -190,7 +206,9 @@
             </div>
         </div>
         </div>
+        
     </section>
+    
     <!-- <script>
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();

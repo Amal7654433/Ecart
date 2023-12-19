@@ -6,6 +6,8 @@ const cartControl=require("../controller/cartController")
 const profileControl=require("../controller/profileController")
 const orderControl=require("../controller/orderController")
 const walletControl=require("../controller/walletController")
+const wishlistControl=require("../controller/wishlistController")
+const productControl=require("../controller/productController")
 /* GET users listing. */
 router.get('/home',auth.emailTempClear,userControl.productsPage)
 router.get('/',auth.emailTempClear,userControl.productsPage)
@@ -29,7 +31,7 @@ router.get('/logout',userControl.userLogout)
 router.get('/products',auth.emailTempClear,userControl.productsPage)
 router.get('/products/view/:productId',auth.emailTempClear,userControl.productsView)
 router.get('/products/category/:categoryId',auth.emailTempClear,userControl.productsByCategory)
-
+router.get('/products/category/filter/:categoryId',auth.userLoggedIn,productControl.filterProduct)
 // router.get('/products/view',userControl.productsView)
 
 router.get('/forgetpassword',auth.userLogout,auth.emailTempClear,userControl.forgetPasswordEmail)
@@ -74,11 +76,22 @@ router.get('/profile',auth.userLoggedIn,profileControl.profileView)
  router.get('/checkout/payment',auth.userLoggedIn,orderControl.paymentView)
  router.post('/checkout/payment',auth.userLoggedIn,orderControl.paymentPost)
  router.get('/orders-redirect',auth.userLoggedIn,orderControl.orderSuccessRedirect)
+ router.get('/razorpay',auth.userLoggedIn,orderControl.razorpayRedirect)
  router.get('/orders',auth.userLoggedIn,orderControl.ordersView)
  router.post('/cancel-order',auth.userLoggedIn,orderControl.cancelOrder)
  router.post('/return-order',auth.userLoggedIn,orderControl.returnOrder)
  router.get('/invoice',auth.userLoggedIn,orderControl.invoice)
  router.get('/wallet',auth.userLoggedIn,walletControl.wallet)
 
+
+
+
+ router.get('/wishlist',auth.userLoggedIn,wishlistControl.wishlistLoad)
+ router.patch('/add-wishlist/:productId',auth.userLoggedIn,wishlistControl.wishlistAdd)
+ router.patch('/remove-wishlist/:productId',auth.userLoggedIn,wishlistControl.removeWishlistItem)
+
+
+
+ 
 
 module.exports = router;

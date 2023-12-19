@@ -68,6 +68,10 @@ const userSchema = new Schema({
     type: Boolean,
     default: false
   },
+  wallet: {
+    type: Number,
+    default: 0,
+  },
   cart: [cartItemSchema],
   address: {
     type: [{

@@ -1,0 +1,157 @@
+<%- include("../partials/userHeader.ejs")%>
+<style>     .empty {
+    display: flex;
+
+
+    align-items: center;
+    justify-content: center;
+ 
+    margin: 0;
+}
+</style>
+    <% if (wishlist && wishlist.products.length> 0) { %>
+        <section class="bg-light my-5">
+            <div class="container">
+                <div class="row">
+                    <!-- cart -->
+                    <div class="col-lg-9">
+                        <div class="card border shadow-0">
+                            <div class="m-4">
+                                <h4 class="card-title mb-4">Your Wishlist </h4>
+                                <% wishlist.products.forEach(product=> { %>
+                                    <div class="row gy-3 mb-4">
+                                        <div class="col-lg-5">
+                                            <div class="me-lg-5">
+                                                <div class="d-flex">
+                                                    <img src="/images/<%=product.productId.image[0]%>"
+                                                        class="border rounded me-3"
+                                                        style="width: 96px; height: 96px;" />
+                                                    <div class="">
+                                                        <a href="#" class="nav-link">
+                                                            <%= product.productId.name %>
+                                                        </a>
+                                                        <!-- <p class="text-muted">Yellow, Jeans</p> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
+
+                                            <div class="">
+                                                <text class="h6"></text>
+                                                <%= product.productId.price %> <br />
+                                                    <!-- <small class="text-muted text-nowrap"> $460.00 / per item </small> -->
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="col-lg col-sm-6 d-flex justify-content-sm-center justify-content-md-start justify-content-lg-center justify-content-xl-end mb-2">
+                                            <div class="float-md-end">
+                                                <a href="#!" class="btn btn-light border px-2 icon-hover-primary" onclick="addCart(`<%= product.productId._id %>`)">
+                                                    Add to cart</a>
+                                                <a href="#" class="btn btn-light border text-danger icon-hover-danger"
+                                                    onclick="removeFromWishlist('<%= product.productId._id %>')">
+                                                    Remove</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    
+                                    <% }); %>
+
+
+
+                            </div>
+                            
+
+
+                        </div>
+                    </div>
+                    <!-- cart -->
+                    <!-- summary -->
+
+                    <!-- <div class="card mb-3 border shadow-0">
+                        <div class="card-body">
+                            <form>
+                                <div class="form-group">
+                                    <label class="form-label">Have coupon?</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control border" name=""
+                                            placeholder="Coupon code" />
+                                        <button class="btn btn-light border">Apply</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </section>
+        <% } else { %>
+            <div class=" empty " id="emp">
+                <img src="https://kozasko.com/images/no_item.jpg"
+                    alt="">
+                <% if(typeof message!=='undefined' ){ %>
+                    <div class="text-container">
+                        <p class="text-dark" style="font-size: 30px;">
+                            <%= message %>
+                        </p>
+                    </div>
+                    <% } %>
+            </div>
+            <% } %>
+                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                <script>
+                    function removeFromWishlist(productId) {
+                        Swal.fire({
+                            title: 'Are you sure?',
+
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonText: 'No, keep it',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'Yes, remove it!'
+                        })
+                            .then((willRemove) => {
+                                if (willRemove) {
+                                    fetch(`/remove-wishlist/${productId}`, {
+                                        method: 'PATCH',
+                                    })
+                                        .then((response) => {
+                                            if (response.ok) {
+                                                return response.json();
+                                            } else {
+                                                throw new Error('Failed to remove product from wishlist');
+                                            }
+                                        })
+                                        .then((data) => {
+                                            if (data.success) {
+
+                                                window.location.reload();
+                                            } else {
+                                                console.error('Error removing product from wishlist:', data.message);
+                                                // Handle other errors or show a general error message
+                                                swal('Error', 'Failed to remove product from wishlist', 'error');
+                                            }
+                                        })
+                                        .catch((error) => {
+                                            console.error('Error removing product from wishlist:', error);
+                                            // Handle other errors or show a general error message
+                                            swal('Error', 'Failed to remove product from wishlist', 'error');
+                                        });
+                                }
+                            })
+                    }
+                </script>
+                  <script>function addCart(id) {
+
+                    fetch(`/addtocart/${id}`, {
+                      method: 'PATCH',
+                    }).then(() => {
+                      window.location.assign('/cart')
+                    }).catch((error) => {
+                      console.error('Error deleting product:', error);
+                      // Optionally handle error and show error message to the user
+                    });
+                  }</script>

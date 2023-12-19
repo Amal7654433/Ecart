@@ -63,12 +63,12 @@
 
                                     </div>
                              
-                                    <div class="d-flex">
+                                    <div class="d-flex ">
                                         <button
-                                            class=" generatePDF btn btn-link p-0 me-3 d-none d-lg-block btn-icon-text"
+                                            class=" generatePDF btn btn-link p-0 me-3 d-none d-lg-block btn-icon-text "
                                             data-order-id="<%= order._id %>" ><i
                                                 class="bi bi-download"></i> <span class="text">Invoice</span></button>
-                                        <div class="dropdown">
+                                        <!-- <div class="dropdown">
                                             <button class="btn btn-link p-0 text-muted" type="button"
                                                 data-bs-toggle="dropdown">
                                                 <i class="bi bi-three-dots-vertical"></i>
@@ -80,7 +80,7 @@
                                                 <li><a class="dropdown-item" href="#"><i class="bi bi-printer"></i>
                                                         Print</a></li>
                                             </ul>
-                                        </div>
+                                        </div> -->
                                        
                                     </div>
                                     
@@ -121,7 +121,7 @@
                                                         <% } else if (item.orderStatus !=='Delivered' &&
                                                             item.orderStatus !=='Return initiated' ) { %>
                                                             <a>
-                                                                <button onclick="Cancel('<%= item._id %>')"
+                                                                <button onclick="Cancel('<%= item._id %>','<%= order.paymentMode%>','<%= item.bill%>')"
                                                                     type="button"
                                                                     class="btn btn-warning border-dark">Cancel</button>
                                                             </a>
@@ -278,8 +278,11 @@
         });
     </script>
     <script>
-        function Cancel(data) {
+        function Cancel(data,paymentMode,refund) {
             const id = data;
+        const paymode=paymentMode
+        console.log('furst',id)
+        console.log('helllllllllo david',paymode)
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You want to cancel this product from Orders!",
@@ -297,7 +300,10 @@
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            id: id
+                            id: id,
+                            paymode:paymode,
+                            refund:refund
+                         
                         })
                     })
                         .then(response => {

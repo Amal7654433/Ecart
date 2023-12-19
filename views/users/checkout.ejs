@@ -18,7 +18,7 @@
                                     <div>
                                         <p class="card-text text-muted mt-4 mb-2 space">SELECT DELIVERY ADDRESS</p>
                                     </div>
-                                    <form action="/checkout" method="post" class="">
+                                    <form action="/checkout" method="post" id="checkout-form">
 
                                         <!-- Dummy content for addresses -->
                                         <% userData.address.forEach(function(item ,index) { %>
@@ -296,9 +296,33 @@
             });
         }
     </script>
+  <!-- Include SweetAlert library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+  $("#checkout-form").submit((e) => {
+    e.preventDefault();
+    $.ajax({
+      url: '/checkout',
+      method: 'post',
+      data: $('#checkout-form').serialize(),
+      success: (response) => {
+        if (response.flag) {
+          // Display SweetAlert
+          Swal.fire({
+            icon: 'warning',
+            title: 'Quantity Exceeds Stock',
+            text: 'The quantity you selected exceeds the available stock.',
+            confirmButtonText: 'OK',
+          }).then(() => {
+            // Redirect to another URL
+            window.location.href = '/home';
+          });
+        }
+        else if(response.success){location.replace('/checkout/payment')}
+      }
+    });
+  });
+</script>
+
    
-    <footer>
-
-
-    </footer>
-    

@@ -11,7 +11,15 @@ const { ObjectId } = require('mongoose').Types;
 const fs = require('fs');
 const easyinvoice = require('easyinvoice');
 const helper = require('../helpers/helperDate');
-const Swal = require('sweetalert2');
+const config=require('../config/connection')
+const Razorpay = require('razorpay');
+var instance = new Razorpay({ key_id: process.env.RAZORPAY_ID_KEY, key_secret: process.env.RAZORPAY_SECRET_KEY })
+
+
+//    var razorpayInstance = new Razorpay({
+//         key_id: process.env.RAZORPAY_ID_KEY,
+//         key_secret: process.env.RAZORPAY_SECRET_KEY
+//       })
 
 const getTotalSum = async function (id) {
     try {
@@ -84,12 +92,13 @@ const checkOutPost = async (req, res) => {
 
         cartItems.forEach(cartItem => {
             const productData = productsData.find(p => p._id.equals(cartItem.prod_id));
-            console.log("david"+productData)
+          
             if (cartItem.qty > productData.stock) {
 
                 redirectFlag = true;
-                const errorMessage = `Sorry, the quantity for ${productData.name} exceeds the available stock.`;
-                return res.send(`<script>alert('${errorMessage}'); window.location.href='/home';</script>`);
+                res.json({flag:true})
+                // const errorMessage = `Sorry, the quantity for ${productData.name} exceeds the available stock.`;
+                // return res.send(`<script>alert('${errorMessage}'); window.location.href='/home';</script>`);
              
   
 
@@ -98,7 +107,8 @@ const checkOutPost = async (req, res) => {
 
 
         if (!redirectFlag) {
-            res.redirect('/checkout/payment')
+            // res.redirect('/checkout/payment')
+            res.json({success:true})
         }
 
        
@@ -122,7 +132,8 @@ const paymentView = async (req, res) => {
         console.log(req.session.addr)
         if (userData.cart.length !== 0 && req.session.addr) {
             const totalBill = await getTotalSum(userData._id);
-            res.render('users/payment', {totalBill});
+            const keyId = process.env.RAZORPAY_ID_KEY
+            res.render('users/payment', {totalBill,keyId});
         }
         else {
             return res.redirect('/cart');
@@ -144,7 +155,7 @@ const paymentPost = async (req, res) => {
         });
 
         const paymentModelSelect = req.body.radio
-      
+      console.log('radio',paymentModelSelect)
 
 
         const selectedAddress = req.session.addr
@@ -183,36 +194,76 @@ const paymentPost = async (req, res) => {
             orderDate: Date(),
         };
         req.session.order = orderData;
-        const orders = new order(orderData);
+        if(paymentModelSelect==="cod")
+        {
+          res.json({cod:true})
+        }
+        else if(paymentModelSelect==="online")
+        {
+           
+          
+            const totalBill = await getTotalSum(userData._id);
+ 
+            var options = {
+              amount: totalBill * 100, // to smallest currency  paisa
+              currency: 'INR',
+            };
+            instance.orders.create(options, (err, order) => {
+                if (err) {
+                    console.log("orderkkdjdkdk=",order)
+                  console.log(err);
+                } else {
+                   
+                  res.json({ order,razorpay:true });
+                }
+              });
+
+            
+        }
+        else if (paymentModelSelect == 'wallet') {
+        
+            if (userData.wallet >= totalBill) {
+             
+              await user.findByIdAndUpdate({ _id: userData._id }, { $inc: { wallet: -totalBill } });
+              res.json({ walletSuccess: true });
+            }
+            else
+            {
+               
+                    res.json({ balance: true });
+                
+            }
+          }
+      
         // await orders.save()
-        req.session.addr = false
-        const userId = await user.findById(req.session.user)
-        cartData=userId.cart
-        const productIds = cartData.map(item => item.prod_id);
-        const productsData = await prod.find({ _id: { $in: productIds } });
+        // req.session.addr = false
+        // const userId = await user.findById(req.session.user)
+        // cartData=userId.cart
+        // const productIds = cartData.map(item => item.prod_id);
+        // const productsData = await prod.find({ _id: { $in: productIds } });
 
 
-        let redirectFlag = false;
+        // let redirectFlag = false;
 
-        cartData.forEach(cartItem => {
-            const productData = productsData.find(p => p._id.equals(cartItem.prod_id));
+        // cartData.forEach(cartItem => {
+        //     const productData = productsData.find(p => p._id.equals(cartItem.prod_id));
 
 
-            if (cartItem.qty > productData.stock) {
+        //     if (cartItem.qty > productData.stock) {
 
-                redirectFlag = true;
-                const errorMessage = `Sorry, the quantity for ${productData.name} exceeds the available stock.`;
-                return res.send(`<script>alert('${errorMessage}'); window.location.href='/home';</script>`);
+        //         redirectFlag = true;
+        //         const errorMessage = `Sorry, the quantity for ${productData.name} exceeds the available stock.`;
+        //         return res.send(`<script>alert('${errorMessage}'); window.location.href='/home';</script>`);
              
   
 
-            }
-        });
+        //     }
+        // });
 
 
-        if (!redirectFlag) {
-            res.redirect('/orders-redirect')
-        }
+        // if (!redirectFlag) {
+        //     res.redirect('/orders-redirect')
+        // }
 
 
       
@@ -251,6 +302,30 @@ const orderSuccessRedirect = async (req, res) => {
     }
 };
 
+const razorpayRedirect = async (req, res) => {
+    try {
+        console.log('hello')
+        const userData = await user.findById(req.session.user).populate({
+            path: 'cart.prod_id',
+            model: 'productDetails',
+            populate: {
+                path: 'category',
+                model: 'Category',
+            },
+        });
+        const totalBill = await getTotalSum(userData._id);
+ 
+      var options = {
+        amount: totalBill * 100, // to smallest currency  paisa
+        currency: 'INR',
+      };
+      const order = await razorpayInstance.orders.create(options);
+          return res.render('users/razorpay', { order, key_id:config.RsecretId,totalBill});
+
+} catch (error) {
+    console.log(error.message);
+}
+}
 const ordersView = async (req, res) => {
     try {
         const userId = req.session.user;
@@ -278,14 +353,16 @@ const cancelOrder = async (req, res) => {
     try {
         const userData = req.session.user;
         const users = await user.findById(userData)
-        console.log('hello david');
+       
         const id = req.body.id;
+      const paymode=req.body.paymode
+   const refund=req.body.refund
 
         const orders = await order.findOne({
             user_id: users._id,
             'items._id': id
         })
-        console.log(orders)
+       
         const selectedItem = orders.items.find(item => item._id.toString() == id);
         if (selectedItem.orderStatus !== "Delivered") {
             const result = await order.findOneAndUpdate(
@@ -302,7 +379,10 @@ const cancelOrder = async (req, res) => {
             if (!result) {
                 return res.status(404).json({ error: 'Order or item not found' });
             }
-
+            if(paymode==='wallet' || paymode==='online')
+            {
+                await user.findByIdAndUpdate({ _id: users._id }, { $inc: { wallet: refund } });
+            }
             // Uncomment the following block if you want to update product stock
             // const result2 = await prod.findOneAndUpdate(
             //   { _id: result.items[0].productId },
@@ -325,8 +405,7 @@ const returnOrder = async (req, res) => {
         const users = await user.findById(userData)
         // const id = req.query.id;
    const id = req.body.id;
-        console.log("david")
-        console.log(id)
+    
         const result = await order.findOneAndUpdate(
             {
                 user_id: users._id,
@@ -443,4 +522,4 @@ const invoice = async (req, res) => {
 
 
 
-module.exports = { ordersView, checkOutView, checkOutPost, paymentView, paymentPost, cancelOrder, orderSuccessRedirect, returnOrder, invoice }
+module.exports = { ordersView, checkOutView, checkOutPost, paymentView, paymentPost, cancelOrder, orderSuccessRedirect, returnOrder, invoice ,razorpayRedirect}
