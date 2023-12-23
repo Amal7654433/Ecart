@@ -11,15 +11,15 @@ const { ObjectId } = require('mongoose').Types;
 const fs = require('fs');
 const easyinvoice = require('easyinvoice');
 const helper = require('../helpers/helperDate');
-const config=require('../config/connection')
+const config = require('../config/connection')
+const Coupon = require('../models/couponModel')
 const Razorpay = require('razorpay');
+
+
 var instance = new Razorpay({ key_id: process.env.RAZORPAY_ID_KEY, key_secret: process.env.RAZORPAY_SECRET_KEY })
 
 
-//    var razorpayInstance = new Razorpay({
-//         key_id: process.env.RAZORPAY_ID_KEY,
-//         key_secret: process.env.RAZORPAY_SECRET_KEY
-//       })
+
 
 const getTotalSum = async function (id) {
     try {
@@ -64,7 +64,7 @@ const checkOutView = async (req, res) => {
             else {
                 buynow = false
                 const totalBill = await getTotalSum(userData._id);
-               
+
 
                 res.render('users/checkout', { userData, totalBill, buynow, });
             }
@@ -92,15 +92,15 @@ const checkOutPost = async (req, res) => {
 
         cartItems.forEach(cartItem => {
             const productData = productsData.find(p => p._id.equals(cartItem.prod_id));
-          
+
             if (cartItem.qty > productData.stock) {
 
                 redirectFlag = true;
-                res.json({flag:true})
+                res.json({ flag: true })
                 // const errorMessage = `Sorry, the quantity for ${productData.name} exceeds the available stock.`;
                 // return res.send(`<script>alert('${errorMessage}'); window.location.href='/home';</script>`);
-             
-  
+
+
 
             }
         });
@@ -108,10 +108,10 @@ const checkOutPost = async (req, res) => {
 
         if (!redirectFlag) {
             // res.redirect('/checkout/payment')
-            res.json({success:true})
+            res.json({ success: true })
         }
 
-       
+
 
 
     } catch (error) {
@@ -129,11 +129,18 @@ const paymentView = async (req, res) => {
                 model: 'Category',
             },
         });
-        console.log(req.session.addr)
+
         if (userData.cart.length !== 0 && req.session.addr) {
+            const cart = userData.cart;
             const totalBill = await getTotalSum(userData._id);
             const keyId = process.env.RAZORPAY_ID_KEY
-            res.render('users/payment', {totalBill,keyId});
+
+
+
+
+            res.render('users/payment', { totalBill, keyId, userData, cart });
+
+
         }
         else {
             return res.redirect('/cart');
@@ -155,7 +162,7 @@ const paymentPost = async (req, res) => {
         });
 
         const paymentModelSelect = req.body.radio
-      console.log('radio',paymentModelSelect)
+        console.log('radio', paymentModelSelect)
 
 
         const selectedAddress = req.session.addr
@@ -194,71 +201,83 @@ const paymentPost = async (req, res) => {
             orderDate: Date(),
         };
         req.session.order = orderData;
-        if(paymentModelSelect==="cod")
-        {
-          res.json({cod:true})
-        }
-        else if(paymentModelSelect==="online")
-        {
-           
-          
-            const totalBill = await getTotalSum(userData._id);
- 
-            var options = {
-              amount: totalBill * 100, // to smallest currency  paisa
-              currency: 'INR',
-            };
-            instance.orders.create(options, (err, order) => {
-                if (err) {
-                    console.log("orderkkdjdkdk=",order)
-                  console.log(err);
-                } else {
-                   
-                  res.json({ order,razorpay:true });
-                }
-              });
 
-            
+        const productIds = carts.map(item => item.prod_id);
+        console.log('amal', productIds)
+
+        const productsData = await prod.find({ _id: { $in: productIds } });
+        console.log('product david', productsData)
+        let redirectFlag = false;
+        console.log("rono", carts)
+        carts.forEach(cartItem => {
+            console.log("messi items", cartItem)
+            const productData = productsData.find(p => p._id.equals(cartItem.prod_id._id));
+            console.log("under loop", productData)
+            console.log("under loop stock", productData.stock)
+
+            if (cartItem.qty > productData.stock) {
+                redirectFlag = true;
+
+            }
+        });
+        if (redirectFlag == true) {
+            res.json({ flag: true })
         }
-        else if (paymentModelSelect == 'wallet') {
-        
-            if (userData.wallet >= totalBill) {
-             
-              await user.findByIdAndUpdate({ _id: userData._id }, { $inc: { wallet: -totalBill } });
-              res.json({ walletSuccess: true });
+        else {
+
+
+            if (paymentModelSelect === "cod") {
+                res.json({ cod: true })
             }
-            else
-            {
-               
+            else if (paymentModelSelect === "online") {
+
+
+                const totalBill = await getTotalSum(userData._id);
+
+                var options = {
+                    amount: totalBill * 100, // to smallest currency  paisa
+                    currency: 'INR',
+                };
+                instance.orders.create(options, (err, order) => {
+                    if (err) {
+                        console.log("orderkkdjdkdk=", order)
+                        console.log(err);
+                    } else {
+
+                        res.json({ order, razorpay: true });
+                    }
+                });
+
+
+            }
+            else if (paymentModelSelect == 'wallet') {
+
+                if (userData.wallet >= totalBill) {
+
+                    await user.findByIdAndUpdate({ _id: userData._id }, {
+                        $inc: { wallet: -totalBill }, $push: {
+                            walletHistory: {
+                                date: new Date(),
+                                amount: totalBill,
+                                status: "Debit",
+                            },
+                        },
+                    });
+                    res.json({ walletSuccess: true });
+                }
+                else {
+
                     res.json({ balance: true });
-                
+
+                }
             }
-          }
-      
+        }
+
         // await orders.save()
         // req.session.addr = false
-        // const userId = await user.findById(req.session.user)
-        // cartData=userId.cart
-        // const productIds = cartData.map(item => item.prod_id);
-        // const productsData = await prod.find({ _id: { $in: productIds } });
 
 
-        // let redirectFlag = false;
 
-        // cartData.forEach(cartItem => {
-        //     const productData = productsData.find(p => p._id.equals(cartItem.prod_id));
-
-
-        //     if (cartItem.qty > productData.stock) {
-
-        //         redirectFlag = true;
-        //         const errorMessage = `Sorry, the quantity for ${productData.name} exceeds the available stock.`;
-        //         return res.send(`<script>alert('${errorMessage}'); window.location.href='/home';</script>`);
-             
-  
-
-        //     }
-        // });
 
 
         // if (!redirectFlag) {
@@ -266,7 +285,7 @@ const paymentPost = async (req, res) => {
         // }
 
 
-      
+
     } catch (error) {
         console.log(error.message);
     }
@@ -293,7 +312,7 @@ const orderSuccessRedirect = async (req, res) => {
             { new: true }
         );
 
-
+        // res.status(200).json({ success: true, message: 'Order placed successfully.' });
 
         return res.redirect('/orders');
     } catch (error) {
@@ -314,17 +333,17 @@ const razorpayRedirect = async (req, res) => {
             },
         });
         const totalBill = await getTotalSum(userData._id);
- 
-      var options = {
-        amount: totalBill * 100, // to smallest currency  paisa
-        currency: 'INR',
-      };
-      const order = await razorpayInstance.orders.create(options);
-          return res.render('users/razorpay', { order, key_id:config.RsecretId,totalBill});
 
-} catch (error) {
-    console.log(error.message);
-}
+        var options = {
+            amount: totalBill * 100, // to smallest currency  paisa
+            currency: 'INR',
+        };
+        const order = await razorpayInstance.orders.create(options);
+        return res.render('users/razorpay', { order, key_id: config.RsecretId, totalBill });
+
+    } catch (error) {
+        console.log(error.message);
+    }
 }
 const ordersView = async (req, res) => {
     try {
@@ -353,16 +372,16 @@ const cancelOrder = async (req, res) => {
     try {
         const userData = req.session.user;
         const users = await user.findById(userData)
-       
+
         const id = req.body.id;
-      const paymode=req.body.paymode
-   const refund=req.body.refund
+        const paymode = req.body.paymode
+        const refund = req.body.refund
 
         const orders = await order.findOne({
             user_id: users._id,
             'items._id': id
         })
-       
+
         const selectedItem = orders.items.find(item => item._id.toString() == id);
         if (selectedItem.orderStatus !== "Delivered") {
             const result = await order.findOneAndUpdate(
@@ -379,9 +398,17 @@ const cancelOrder = async (req, res) => {
             if (!result) {
                 return res.status(404).json({ error: 'Order or item not found' });
             }
-            if(paymode==='wallet' || paymode==='online')
-            {
-                await user.findByIdAndUpdate({ _id: users._id }, { $inc: { wallet: refund } });
+            if (paymode === 'wallet' || paymode === 'online') {
+                await user.findByIdAndUpdate({ _id: users._id }, {
+                    $inc: { wallet: refund }, $push: {
+                        walletHistory: {
+                            date: new Date(),
+                            amount: refund,
+                            status: "Credit",
+                        },
+                    },
+                });
+
             }
             // Uncomment the following block if you want to update product stock
             // const result2 = await prod.findOneAndUpdate(
@@ -404,8 +431,8 @@ const returnOrder = async (req, res) => {
         const userData = req.session.user;
         const users = await user.findById(userData)
         // const id = req.query.id;
-   const id = req.body.id;
-    
+        const id = req.body.id;
+
         const result = await order.findOneAndUpdate(
             {
                 user_id: users._id,
@@ -520,6 +547,52 @@ const invoice = async (req, res) => {
     }
 };
 
+// const applyCoupon = async (req, res) => {
+//     try {
+//         console.log("ehmmo ajdjdjdjsj")
+//         const code = req.body.coupon;
+//         const bill = req.body.bill;
+//         console.log("code=", code, "bill=", bill)
+//         const couponFound = await Coupon.findOne({ code });
+//         if (couponFound) {
+//             if (couponFound.Status === 'Active') {
+//                 const coupDate = new Date(couponFound.expiryDate);
+//                 const currDate = new Date();
+//                 const status = currDate.getTime() > coupDate.getTime() ? 'Expired' : 'Active';
 
+//                 await Coupon.findOneAndUpdate({ code }, { $set: { Status: status } });
 
-module.exports = { ordersView, checkOutView, checkOutPost, paymentView, paymentPost, cancelOrder, orderSuccessRedirect, returnOrder, invoice ,razorpayRedirect}
+//                 const Vcoupon = await Coupon.findOne({ code }); // Extra validation
+
+//                 if (Vcoupon.minBill < bill) {
+//                     req.session.appliedCoupon = Vcoupon;
+//                     const deduction = (bill * Vcoupon.value) / 100;
+//                     let final;
+//                     if (Vcoupon.maxAmount > deduction) {
+//                         final = bill - (bill * Vcoupon.value) / 100;
+//                     } else {
+//                         final = bill - Vcoupon.maxAmount;
+//                     }
+
+//                     req.session.orderBill = final;
+//                 }
+//                 res.json(couponFound);
+//             } else {
+//                 res.json(couponFound);
+//             }
+//         } else {
+//             res.json(307);
+//         }
+//     } catch (error) {
+//         console.log(error.message);
+//     }
+// };
+
+const orderSuccess = async (res, req) => {
+    try {
+        res.render('users/orderSuccess');
+    } catch (error) {
+        console.log(error.message);
+    }
+};
+module.exports = { ordersView, orderSuccess, checkOutView, checkOutPost, paymentView, paymentPost, cancelOrder, orderSuccessRedirect, returnOrder, invoice, razorpayRedirect,  }

@@ -95,7 +95,7 @@
                                                 <!-- Include this JavaScript in your HTML file -->
 
 
-                                                <button type="button" class="btn btn-danger btn-sm mb-2"
+                                                <button type="button" class="btn btn-danger btn-sm mb-2"    onclick="addToWishlist('<%= item.prod_id._id %>')"
                                                     data-mdb-toggle="tooltip" title="Move to the wish list">
                                                     <i class="fas fa-heart"></i>
                                                 </button>
@@ -387,4 +387,39 @@
                     });
                 });
             </script>
+            <script>
+                function addToWishlist(id) {
+                  console.log('amal');
+                  fetch(`/add-wishlist/${id}`, {
+                    method: 'PATCH',
+                  })
+                    .then((response) => {
+                      if (response.ok) {
+                        return response.json();
+                      } else {
+                        throw new Error('Failed to add product to wishlist');
+                      }
+                    })
+                    .then((data) => {
+                      if (data.exist) {
+                        Swal.fire({
+                          title: 'Product Already in Wishlist',
+                          icon: 'info',
+                        });
+                      } else if (data.success) {
+                        Swal.fire({
+                          title: 'Product Added to Wishlist',
+                          icon: 'success',
+                        }).then(() => {
+                          window.location.assign('/wishlist');
+                        });
+                      }
+                    })
+                    .catch((error) => {
+                      console.error('Error adding product to wishlist:', error);
+                      // Handle other errors or show a general error message
+                      swal('Error', 'Failed to add product to wishlist', 'error');
+                    });
+                }
+              </script>
             <% } %>

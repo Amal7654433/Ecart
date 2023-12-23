@@ -5,12 +5,13 @@ const auth=require('../middlewares/auth')
 const cartControl=require("../controller/cartController")
 const profileControl=require("../controller/profileController")
 const orderControl=require("../controller/orderController")
-const walletControl=require("../controller/walletController")
+const couponControl=require("../controller/couponController")
 const wishlistControl=require("../controller/wishlistController")
 const productControl=require("../controller/productController")
+
 /* GET users listing. */
-router.get('/home',auth.emailTempClear,userControl.productsPage)
-router.get('/',auth.emailTempClear,userControl.productsPage)
+router.get('/home',auth.emailTempClear,userControl.langingPage)
+router.get('/',auth.emailTempClear,userControl.langingPage)
 // router.get('/category',userControl.categoryView)
 
 
@@ -28,7 +29,7 @@ router.get('/verify',auth.userLogout,userControl.verifyMail)
 router.get('/logout',userControl.userLogout)
 // router.get('/blocked',userControl.userBlock)
 
-router.get('/products',auth.emailTempClear,userControl.productsPage)
+router.get('/products',auth.emailTempClear,userControl.langingPage)
 router.get('/products/view/:productId',auth.emailTempClear,userControl.productsView)
 router.get('/products/category/:categoryId',auth.emailTempClear,userControl.productsByCategory)
 router.get('/products/category/filter/:categoryId',auth.userLoggedIn,productControl.filterProduct)
@@ -75,13 +76,15 @@ router.get('/profile',auth.userLoggedIn,profileControl.profileView)
  router.post('/checkout',auth.userLoggedIn,orderControl.checkOutPost)
  router.get('/checkout/payment',auth.userLoggedIn,orderControl.paymentView)
  router.post('/checkout/payment',auth.userLoggedIn,orderControl.paymentPost)
+ router.patch('/apply-coupon',auth.userLoggedIn,couponControl.applyCoupon)
  router.get('/orders-redirect',auth.userLoggedIn,orderControl.orderSuccessRedirect)
  router.get('/razorpay',auth.userLoggedIn,orderControl.razorpayRedirect)
  router.get('/orders',auth.userLoggedIn,orderControl.ordersView)
  router.post('/cancel-order',auth.userLoggedIn,orderControl.cancelOrder)
  router.post('/return-order',auth.userLoggedIn,orderControl.returnOrder)
  router.get('/invoice',auth.userLoggedIn,orderControl.invoice)
- router.get('/wallet',auth.userLoggedIn,walletControl.wallet)
+
+ router.get('/order-success',auth.userLoggedIn,orderControl.orderSuccess)
 
 
 

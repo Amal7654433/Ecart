@@ -18,26 +18,28 @@
             margin-left: 30px;
             position: relative;
             margin-top: 10px;
-            width:300px;
+            width: 300px;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
 
         }
-        #ellipse
-        {
+
+        #ellipse {
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
-            
+
 
         }
-   
+
         #walletBox {
-    margin-top: 1rem;
-    position: absolute;
-    
-}
+            margin-top: 1rem;
+            position: absolute;
+
+        }
+
+  
     </style>
     <div class="welcomeHead">
         <h3 data-toggle="tooltip" title="  <%=userData.name%>" class="welcome ">Welcome
@@ -60,9 +62,38 @@
                     <div class="card-body text-center">
                         <h5 class="my-3">Wallet Amount</h5>
                         <!-- Assuming your wallet amount is stored in userData.walletAmount -->
-                        <p class="text-muted mb-0"><%= userData.wallet %>₹</p>
+                        <p class="text-muted mb-0">
+                            <%= userData.wallet %>₹
+                        </p>
                         <!-- Add more styling or information as needed -->
+                        <div class="table-responsive-sm" style="max-height: 300px; overflow: auto; ">
+                            <table class="table mt-3" style="width: 100%; max-width: 100%;"> 
+                          
+                                <thead class="sticky-top">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                
+                              
+                                <tbody>
+                                    <% walletHistory.forEach(function(history,index) { %>
+                                    <tr>
+                                        <td>  <%=new Date(history.date).toLocaleDateString() %></td>
+                                        <td><%=history.amount%></td>
+                                        <td><%=history.status%></td>
+                                    </tr>
+                                
+                                    <% }); %>
+                                    <!-- Add more rows as needed -->
+                                </tbody>
+                            </table>
+                        </div>
+
                     </div>
+
                 </div>
             </div>
             <!-- <div class="row">
@@ -104,8 +135,8 @@
 
                             </div>
                         </div>
-                        
-                        
+
+
                         <!-- <div class="row">
                             <div class="col-sm-3">
                                 <p class="mb-0">Email</p>
@@ -206,9 +237,9 @@
             </div>
         </div>
         </div>
-        
+
     </section>
-    
+
     <!-- <script>
         $(document).ready(function () {
             $('[data-toggle="tooltip"]').tooltip();

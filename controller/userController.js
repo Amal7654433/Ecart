@@ -8,6 +8,7 @@ const catego = require('../models/categoryModel')
 const { v4: uuidv4 } = require('uuid');
 const brand = require('../models/brandsModel');
 const { ObjectId } = require('mongoose').Types;
+const Banner = require('../models/bannerModel');
 
 
 const securePassword = async (password) => {
@@ -137,8 +138,9 @@ const productsByCategory = async (req, res) => {
 
 
 
-const productsPage = async (req, res) => {
+const langingPage = async (req, res) => {
   try {
+    const banner=await Banner.find({active:true})
     const activeCategories = await catego.find({ active: true });
     const activeBrands = await brand.find({ active: true });
     const products = await prod.find({
@@ -167,10 +169,10 @@ const productsPage = async (req, res) => {
         }));
 
 
-        res.render('users/landing', { products: productsWithCartFlag, cat });
+        res.render('users/landing', { products: productsWithCartFlag, cat,banner });
       } else {
 
-        res.render('users/landing', { products, cat });
+        res.render('users/landing', { products, cat,banner });
       }
     } else {
 
@@ -725,7 +727,7 @@ const deactivateAccount = async (req, res) => {
 
 module.exports = {
   homeView,
-  productsPage,
+  langingPage,
   productsView
   , productsByCategory,
   loadLogin,

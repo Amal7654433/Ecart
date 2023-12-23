@@ -16,8 +16,12 @@ const profileView = async (req, res) => {
       
         const cat = await catego.find({ active: true })
         const userData = await user.findById({ _id: req.session.user })
+        console.log(userData.wallet)
+        console.log(userData.walletHistory)
+       const walletHistory=userData.walletHistory
+       
 
-        res.render('users/profile', { cat, userData });
+        res.render('users/profile', { cat, userData,walletHistory });
     } catch (error) {
         console.log(error.message);
     }

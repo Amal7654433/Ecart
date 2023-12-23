@@ -8,13 +8,12 @@
 const user = require('../models/userSignup');
 const
   userLoggedIn = async (req, res, next) => {
-    console.log(req.session.user
-    )
+
     if (req.session.user) {
       try {
         const users = req.session.user;
         const userDetails = await user.findOne({ _id: users });
-        console.log(userDetails)
+      
         req.userDetails = userDetails;
         if (userDetails.blocked) {
           req.session.destroy((err) => {

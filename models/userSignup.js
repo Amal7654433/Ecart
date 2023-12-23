@@ -72,6 +72,19 @@ const userSchema = new Schema({
     type: Number,
     default: 0,
   },
+  walletHistory: [
+    {
+      date: {
+        type: Date,
+      },
+      amount: {
+        type: Number,
+      },
+      status: {
+        type: String,
+      },
+    },
+  ],
   cart: [cartItemSchema],
   address: {
     type: [{

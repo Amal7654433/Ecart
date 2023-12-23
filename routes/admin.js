@@ -43,7 +43,7 @@ router.get('/admin/exportExcel', auth.adminLoggedIn, adminControl.orderExcel)
 router.post('/admin/orderSearch', auth.adminLoggedIn, adminControl.orderSearch)
 router.get('/admin/customer',auth.adminLoggedIn,  adminControl.userManagement)
 
-router.get('/admin/banner',auth.adminLoggedIn,  adminControl.loadBanner)
+
 
 router.patch('/admin/customer/block-user', adminControl.blockUser)
 router.patch('/admin/customer/unblock-user', adminControl.unblockUser)
@@ -59,5 +59,23 @@ router.get('/admin/order/status',auth.adminLoggedIn,  adminControl.orderStatusLo
 router.post('/admin/order/status',auth.adminLoggedIn,  adminControl.editOrderStatus)
 
 
+router.get('/admin/coupon',auth.adminLoggedIn,  adminControl.couponLoad)
+
+
+router.post('/admin/coupon/add', auth.adminLoggedIn,  adminControl.couponAdd)
+router.get('/admin/coupon/Deactivate', auth.adminLoggedIn, adminControl.couponDeactivate)
+router.get('/admin/coupon/Activate', auth.adminLoggedIn, adminControl.couponActivate)
+router.get('/admin/coupon/edit', auth.adminLoggedIn, adminControl.couponEdit)
+router.post('/admin/coupon/update', auth.adminLoggedIn,  adminControl.couponUpdate)
+
+
+
+router.get('/admin/banner', auth.adminLoggedIn, adminControl.bannerLoad)
+router.post('/admin/banner/add', auth.adminLoggedIn, upload.single('image'), adminControl.bannerAdd)
+// router.get('/admin/banner/edit', auth.adminLoggedIn, adminControl.bannerEdit)
+router.post('/admin/banner/update/:id', auth.adminLoggedIn, upload.single('image'), adminControl.bannerUpdate)
+router.patch('/admin/banner/disable', auth.adminLoggedIn, adminControl.bannerDisable)
+router.patch('/admin/banner/enable', auth.adminLoggedIn, adminControl.bannerEnable)
+router.get('/sales', auth.adminLoggedIn, adminControl.salesReport)
 
 module.exports = router;

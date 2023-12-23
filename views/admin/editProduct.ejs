@@ -98,7 +98,7 @@
                             <span id="detailsErr" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            <label for="image" class="form-label">Product Image</label>
+                            <label for="image" class="form-label"><%=products.image%></label>
 
                                 <input type="file" class="form-control" id="image" name="image" accept="image/*"  value="<%= products.image[0].file %>"
                                      multiple>
@@ -190,12 +190,12 @@
                     printError('discountErr', '');
                 }
 
-                if (image.trim() === '') {
-                    printError('imageErr', 'Please select an image for the product');
-                    isValid = false;
-                } else {
-                    printError('imageErr', '');
-                }
+                // if (image.trim() === '') {
+                //     printError('imageErr', 'Please select an image for the product');
+                //     isValid = false;
+                // } else {
+                //     printError('imageErr', '');
+                // }
 
                 return isValid;
             }

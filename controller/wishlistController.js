@@ -6,7 +6,7 @@ exports.wishlistLoad = async (req, res) => {
   try {
     const userId = await user.findById(req.session.user);
     const wishlist = await wish.findOne({ user: userId }).populate('products.productId');
-    console.log("wishlist items==", wishlist)
+    
     res.render('users/wishlist', { wishlist })
   } catch (error) {
     console.log(error.message);

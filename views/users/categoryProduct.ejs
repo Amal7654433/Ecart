@@ -289,7 +289,7 @@
                 <!-- sidebar -->
                 <!-- content -->
                 <div class="col-lg-9">
-                    <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
+                    <!-- <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
                         <strong class="d-block py-2">32 Items found </strong>
                         <div class="ms-auto">
                             <select class="form-select d-inline-block w-auto border pt-1">
@@ -307,7 +307,7 @@
                                 </a>
                             </div>
                         </div>
-                    </header>
+                    </header> -->
                     <div id="productContainer">
 
                         <% products.forEach(function(product, index) { %>
@@ -377,7 +377,7 @@
                                                             <% } else if (product.inCart) { %>
                                                                 <a href="/cart" class="btn btn-primary">Go to Cart</a>
                                                                 <a href="#!"
-                                                                    class="btn btn-light border px-2 pt-2 icon-hover"><i
+                                                                    class="btn btn-light border px-2 pt-2 icon-hover"  onclick="addToWishlist('<%= product._id %>')"><i
                                                                         class="fas fa-heart fa-lg px-1"></i></a>
                                                                 <% } else { %>
                                                                     <button class="btn btn-primary shadow-0"
@@ -385,7 +385,7 @@
                                                                         type="button">Add to cart
                                                                     </button>
                                                                     <a href="#!"
-                                                                        class="btn btn-light border px-2 pt-2 icon-hover"><i
+                                                                        class="btn btn-light border px-2 pt-2 icon-hover"  onclick="addToWishlist('<%= product._id %>')"><i
                                                                             class="fas fa-heart fa-lg px-1"></i></a>
                                                                     <% } %>
                                                     </div>
@@ -461,4 +461,39 @@
         });
       });
     });
+  </script>
+  <script>
+    function addToWishlist(id) {
+      console.log('amal');
+      fetch(`/add-wishlist/${id}`, {
+        method: 'PATCH',
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Failed to add product to wishlist');
+          }
+        })
+        .then((data) => {
+          if (data.exist) {
+            Swal.fire({
+              title: 'Product Already in Wishlist',
+              icon: 'info',
+            });
+          } else if (data.success) {
+            Swal.fire({
+              title: 'Product Added to Wishlist',
+              icon: 'success',
+            }).then(() => {
+              window.location.assign('/wishlist');
+            });
+          }
+        })
+        .catch((error) => {
+          console.error('Error adding product to wishlist:', error);
+          // Handle other errors or show a general error message
+          swal('Error', 'Failed to add product to wishlist', 'error');
+        });
+    }
   </script>

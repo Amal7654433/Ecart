@@ -16,7 +16,7 @@ const http = require('http'); // Or another HTTP library if you prefer
 const cookie = require('cookie');
 const catego = require('./models/categoryModel');
 const prod = require('./models/adminProducts');
-var app = express();
+const app = express();
 
 
 app.set('views', path.join(__dirname, 'views'));
@@ -28,8 +28,8 @@ app.use(session({ secret: process.env.SECRET_KEY, cookie: { maxAge: 6000000 }, r
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
@@ -58,12 +58,7 @@ app.use(async (req, res, next) => {
       next(error);
     }
   });
-//   app.use((req, res, next) => {
 
-//     res.locals.goToCart=false
-//     next();
-//   });
-  
 
 app.use(usersRouter)
 app.use(adminRouter);

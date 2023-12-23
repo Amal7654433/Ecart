@@ -68,6 +68,23 @@
 
 
         }
+
+        .chartCard {
+
+
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chartBox {
+            width: 700px;
+            padding: 20px;
+            border-radius: 20px;
+            border: solid 3px rgba(54, 162, 235, 1);
+            background: white;
+        }
     </style>
 
 
@@ -77,11 +94,7 @@
                 <div class="card card-registration card-registration-2 border-0">
                     <div class="card-body p-0" style="background-color: #FEFFE0;">
                         <h3 class="fw-bold mt-2 pt-1">Hai Admin Welcome <span class="text-danger">Back</span></h3>
-                        <!-- <label for="timePeriod">Select Time Period:</label>
-                            <select id="timePeriod" onchange="updateChart()">
-                                <option value="monthly">Monthly</option>
-                                <option value="yearly">Yearly</option>
-                            </select> -->
+                       
                         <div class="row g-0">
                             <div class="col-lg-8">
                                 <div class="">
@@ -94,10 +107,23 @@
                                             </h6>
                                         </a>
                                     </div>
+                                    <label for="timePeriod">Select Time Period:</label>
+                                    <select id="timePeriod" onchange="updateChart()">
+                                        <option value="monthly">Monthly</option>
+                                        <option value="yearly">Yearly</option>
+                                    </select>
                                     <hr class="my-4">
-                                    <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                        <div>
+                                    <div class="chartCard mb-4 d-flex justify-content-between align-items-center">
+                                        <div class="chartBox">
                                             <canvas id="myChart"></canvas>
+                                            <input type="month" id="monthlyFilter" onchange="filterChart()" />
+                                            <select id="yearlyFilter" onchange="filterChart()">
+                                                <!-- Add options for yearly selection dynamically based on available years -->
+                                                <% Object.keys(months).forEach(function(year) { %>
+                                                    <option value="<%= year %>"><%= year %></option>
+                                                <% }); %>
+                                            </select>
+                                            <button onclick="reset()">reset</button>
                                         </div>
                                     </div>
                                     <hr class="my-4">
@@ -201,136 +227,91 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
-    <script>
+     
+        
 
+    <!-- <script>
 
-        const totalQuantity = <%= totalQuantity %>;
-        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        const data = {
+            labels: [],
+            datasets: [{
+                label: 'revenue',
+                data: [],
+                backgroundColor: [
+                    'rgba(255, 26, 104, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(0, 0, 0, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 26, 104, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(0, 0, 0, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
 
-        const ctx = document.getElementById('yChart').getContext('2d');
-        const label = monthNames.map(month => month);
-
-
-        const myChart = new Chart(ctx, {
+    
+        const config = {
             type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [{
-                    label: 'Statistics',
-                    data: [totalBill,],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                    ],
-                    borderWidth: 1,
-                }],
-            },
+            data,
             options: {
                 scales: {
+                    x: {
+                        min: '2023-01-01',
+                        max: '2023-12-31',
+                        type: "time",
+                        time: {
+                            unit: 'day'
+                        }
+                    },
                     y: {
-                        beginAtZero: true,
-                    },
-                },
-            },
-        });
-    </script>
-
-
-
-    <script>
-        const ctx1 = document.getElementById("myChart").getContext("2d");
-        const labels1 = [];
-        const data1 = [];
-        const totalBill = <%= totalBill %>;
-  <% Object.keys(months).forEach(function (month) { %>
-            labels1.push("<%= month %>");
-            data1.push(<%= months[month] %>);
-  <% }); %>
-
-  const myChart1 = new Chart(ctx1, {
-                type: "bar",
-                data: {
-                    labels: labels1,
-                    datasets: [{
-                        label: "Total Revenue",
-                        data: [totalBill,],
-                        backgroundColor: [
-                            "rgba(255, 99, 132, 0.2)",
-                            "rgba(54, 162, 235, 0.2)",
-                            "rgba(255, 206, 86, 0.2)",
-                            "rgba(75, 192, 192, 0.2)",
-                            "rgba(153, 102, 255, 0.2)",
-                            "rgba(255, 159, 64, 0.2)"
-                        ],
-                        borderColor: [
-                            "rgba(255, 99, 132, 1)",
-                            "rgba(54, 162, 235, 1)",
-                            "rgba(255, 206, 86, 1)",
-                            "rgba(75, 192, 192, 1)",
-                            "rgba(153, 102, 255, 1)",
-                            "rgba(255, 159, 64, 1)"
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    animation: {
-                        duration: 2000,
-                        easing: "easeInOutQuad"
-                    },
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
+                        beginAtZero: true
                     }
                 }
-            });
-    </script>
-
-
-
-
-
-    <script>
-        const data = JSON.parse(document.getElementById("fordata").value)
-        const ctx = document.getElementById('paymentModeChart').getContext('2d');
-        const myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Cod', 'Razorpay'],
-                datasets: [{
-                    label: 'Payment Modes',
-                    data: [data[0].count, data[1].count],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]
-                }
             }
-        });
-    </script>
+        };
+
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+        function filterChart(date) {
+
+            const year = date.value.substring(0, 4)
+            const month = date.value.substring(5, 7)
+            const lastDay = (y, m) => {
+                return new Date(y, m, 0).getDate()
+            }
+            lastDay(year, month)
+            const startDate = `${date.value}-01`
+            const endDate = `${date.value}-${lastDay(year, month)}`
+            myChart.config.options.scales.x.min = startDate
+            myChart.config.options.scales.x.max = endDate
+
+            myChart.update()
+        }
+        function reset() {
+            myChart.config.options.scales.x.min = '2023-01-01'
+            myChart.config.options.scales.x.max = '2023-12-30'
+            myChart.update()
+        }
+
+    </script> -->
+
+   
 
     <%- include("../partials/adminFooter.ejs") %>

@@ -1,14 +1,27 @@
 <%- include("../partials/userHeader.ejs")%>
-<style>     .empty {
-    display: flex;
+    <style>
+        .empty {
+            display: flex;
 
 
-    align-items: center;
-    justify-content: center;
- 
-    margin: 0;
-}
-</style>
+            align-items: center;
+            justify-content: center;
+
+            margin: 0;
+        }
+
+        .product-link {
+            color: black;
+            /* Default text color */
+            text-decoration: none;
+        }
+
+        .product-link:hover {
+            color: blue;
+            /* Text color on hover */
+            /* Additional styles if needed */
+        }
+    </style>
     <% if (wishlist && wishlist.products.length> 0) { %>
         <section class="bg-light my-5">
             <div class="container">
@@ -27,42 +40,67 @@
                                                         class="border rounded me-3"
                                                         style="width: 96px; height: 96px;" />
                                                     <div class="">
-                                                        <a href="#" class="nav-link">
+                                                        <a href="/products/view/<%= product.productId._id %>"
+                                                            class="product-link">
                                                             <%= product.productId.name %>
                                                         </a>
                                                         <!-- <p class="text-muted">Yellow, Jeans</p> -->
                                                     </div>
+
                                                 </div>
                                             </div>
                                         </div>
                                         <div
                                             class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
 
-                                            <div class="">
-                                                <text class="h6"></text>
-                                                <%= product.productId.price %> <br />
-                                                    <!-- <small class="text-muted text-nowrap"> $460.00 / per item </small> -->
+
+                                            <div>
+                                                <span class="card-text"> ₹<%= (product.productId.price -
+                                                        (product.productId.price * product.productId.discount /
+                                                        100)).toFixed(2) %>
+                                                </span>
+                                                <span style="text-decoration: line-through; color: darkgray;">
+                                                    <% if (product.productId.discount !==0) { %>
+                                                        ₹<%=product.productId.price%>
+                                                            <% } %>
+                                                </span>
+                                                <span>
+                                                    <% if (product.productId.discount !==0) { %>
+                                                        <%= product.productId.discount %>% off
+                                                            <% } %>
+                                                </span>
                                             </div>
                                         </div>
                                         <div
                                             class="col-lg col-sm-6 d-flex justify-content-sm-center justify-content-md-start justify-content-lg-center justify-content-xl-end mb-2">
                                             <div class="float-md-end">
-                                                <a href="#!" class="btn btn-light border px-2 icon-hover-primary" onclick="addCart(`<%= product.productId._id %>`)">
-                                                    Add to cart</a>
-                                                <a href="#" class="btn btn-light border text-danger icon-hover-danger"
-                                                    onclick="removeFromWishlist('<%= product.productId._id %>')">
-                                                    Remove</a>
+                                                <% if (product.productId.stock < 1) { %>
+                                                    <span aria-disabled="true">out of stock</span>
+                                                    <% } else if (product.productId.inCart) { %>
+                                                        <a href="/cart"
+                                                            class="btn btn-light border px-2 icon-hover-primary">
+                                                            Go to cart</a>
+                                                        <% } else { %>
+                                                            <a href="#!"
+                                                                class="btn btn-light border px-2 icon-hover-primary"
+                                                                onclick="addCart(`<%= product.productId._id %>`)">
+                                                                Add to cart</a>
+                                                            <% } %>
+                                                                <a href="#"
+                                                                    class="btn btn-light border text-danger icon-hover-danger"
+                                                                    onclick="removeFromWishlist('<%= product.productId._id %>')">
+                                                                    Remove</a>
                                             </div>
                                         </div>
                                     </div>
                                     <hr>
-                                    
+
                                     <% }); %>
 
 
 
                             </div>
-                            
+
 
 
                         </div>
@@ -89,8 +127,7 @@
         </section>
         <% } else { %>
             <div class=" empty " id="emp">
-                <img src="https://kozasko.com/images/no_item.jpg"
-                    alt="">
+                <img src="https://kozasko.com/images/no_item.jpg" alt="">
                 <% if(typeof message!=='undefined' ){ %>
                     <div class="text-container">
                         <p class="text-dark" style="font-size: 30px;">
@@ -144,14 +181,14 @@
                             })
                     }
                 </script>
-                  <script>function addCart(id) {
+                <script>function addCart(id) {
 
-                    fetch(`/addtocart/${id}`, {
-                      method: 'PATCH',
-                    }).then(() => {
-                      window.location.assign('/cart')
-                    }).catch((error) => {
-                      console.error('Error deleting product:', error);
-                      // Optionally handle error and show error message to the user
-                    });
-                  }</script>
+                        fetch(`/addtocart/${id}`, {
+                            method: 'PATCH',
+                        }).then(() => {
+                            window.location.assign('/cart')
+                        }).catch((error) => {
+                            console.error('Error deleting product:', error);
+                            // Optionally handle error and show error message to the user
+                        });
+                    }</script>

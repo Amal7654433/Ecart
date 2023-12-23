@@ -9,7 +9,34 @@ const fs = require('fs');
 const excelJs = require('exceljs');
 const order = require('../models/orderModel');
 const catego = require('../models/categoryModel')
+const Coupon = require('../models/couponModel')
+const Banner = require('../models/bannerModel');
+const moment = require('moment');
 
+
+const salesReport= async (req, res) => {
+  try {
+    // Aggregate total revenue per month
+    const revenueData = await order.aggregate([
+      {
+        $group: {
+          _id: { $month: '$orderDate' },
+          totalRevenue: { $sum: { $toDouble: '$orderBill' } },
+        },
+      },
+    ]);
+
+    // Extract month names and revenue values
+    const months = revenueData.map(entry => moment().month(entry._id - 1).format('MMMM')); // Format month names
+    const revenues = revenueData.map(entry => entry.totalRevenue);
+
+    // Render the sales page with chart data
+    res.render('admin/sales', { months, revenues });
+  } catch (error) {
+    console.error('Error fetching sales data:', error);
+    res.status(500).send('Internal Server Error');
+  }
+}
 const categoryEditLoad = async (req, res) => {
   try {
     // Find the brand by ID in the database
@@ -126,9 +153,7 @@ const brandActive = async (req, res) => {
     const brands = req.body.id
     const brandDetails = await brand.findById(brands);
     await brand.updateOne({ _id: brands }, { $set: { active: true } })
-    // const active=await prod.findOne({brand:brands.name})
-    // console.log(active)
-    // await prod.updateMany({ brand: brandDetails.name }, { $set: { active: true } })
+
 
     res.sendStatus(200)
   } catch (error) {
@@ -203,11 +228,11 @@ const brandEditPost = async (req, res) => {
 
 const categoryView = async (req, res) => {
   try {
-const count=await catego.find().estimatedDocumentCount()
-console.log(count)
+    const count = await catego.find().estimatedDocumentCount()
+    console.log(count)
     const cat = await catego.find()
     if (cat) {
-      res.render('admin/categoriesList', { cat,count });
+      res.render('admin/categoriesList', { cat, count });
     }
     else {
       throw new Error('error while fetching products from database');
@@ -468,19 +493,16 @@ const productUpdate = async (req, res) => {
     if (brandWithUpdatedName && brandWithUpdatedName._id.toString() !== req.params.id) {
       return res.status(400).render('admin/editProduct', { message: 'product name is already in use', products, categories, brands });
     }
-    console.log(req.body.category)
+  
     const selectedCategoryName = req.body.category;
     const selectedCategory = await catego.findOne({ name: selectedCategoryName });
     console.log(selectedCategoryName)
-    // if (!selectedCategory) {
-
-    //   return res.render('admin/addProduct', {
-    //     message: 'Selected category does not exist. Please choose a valid category.',
-    //     categories,
-    //     brands,
-    //   });
-    // }
-    const images = req.files.map((file) => file.filename);
+   
+    // const images =  req.files.map((file) => file.filename);
+    if (req.files && req.files.length > 0) {
+      const images = req.files.map((file) => file.filename);
+      products.image = images;
+    }
 
     products.name = req.body.name;
 
@@ -495,7 +517,7 @@ const productUpdate = async (req, res) => {
     products.discount = req.body.discount
     products.details = req.body.details
 
-    products.image = images
+  
 
 
 
@@ -553,7 +575,7 @@ const dashboardView = async (req, res) => {
     const months = {};
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-    
+
     const orders = await order.find({});
     orders.forEach((order) => {
       const month = monthNames[order.orderDate.getMonth()];
@@ -563,6 +585,8 @@ const dashboardView = async (req, res) => {
       months[month]++;
 
     });
+
+    console.log("hello monthes", months)
 
     const paymentModeStats = await order.aggregate([
       {
@@ -583,24 +607,25 @@ const dashboardView = async (req, res) => {
       { $match: { 'items.orderStatus': 'Delivered' } },
       { $group: { _id: null, totalProducts: { $sum: '$items.quantity' } } },
     ]);
- 
-  
+
+
 
     res.render('admin/dashboard', {
-    months,
+      months,
       data: JSON.stringify(paymentModeStats),
       totalBill: orderSum[0].totalBill,
       orderCount,
       userCount,
       totalQuantity: quantitySum[0].totalProducts,
+
     });
-  
-   
+
+
   } catch (error) {
     console.log(error.message);
   }
 };
-const orderReport= async (req, res) => {
+const orderReport = async (req, res) => {
   try {
     req.session.filterDate = false;
     const formatDate = function (date) {
@@ -615,7 +640,7 @@ const orderReport= async (req, res) => {
     console.log(error.message);
   }
 }
-const orderExcel= async (req, res) => {
+const orderExcel = async (req, res) => {
   try {
     let salesReport;
     if (req.session.filterDate) {
@@ -663,7 +688,7 @@ const orderExcel= async (req, res) => {
     console.log(error.message);
   }
 }
-const orderSearch= async (req, res) => {
+const orderSearch = async (req, res) => {
   try {
     req.session.orderSearchErr = '';
     const formatDate = function (date) {
@@ -678,7 +703,7 @@ const orderSearch= async (req, res) => {
     req.session.filterDate = true;
     req.session.from = from;
     req.session.to = to;
-    
+
 
     if (from > to) {
       req.session.orderSearchErr = "Invalid date range. 'From' date must be before or equal to 'To' date.";
@@ -751,7 +776,7 @@ const verifyLogin = async (req, res) => {
 // };
 const adminLogout = async (req, res) => {
   try {
-    req.session.admin=false
+    req.session.admin = false
     res.redirect('/admin')
   } catch (error) {
     console.log(error.message);
@@ -946,9 +971,9 @@ const imageEdit = async (req, res) => {
 
 const imageCrop = (req, res) => {
   const productId = req.params.productId;
- 
+
   const imageIndex = req.body.data;
-console.log('index=',imageIndex)
+  console.log('index=', imageIndex)
   // Load the original image path from your database or source
 
   const originalImagePath = `public/images/${imageIndex}`;
@@ -960,24 +985,24 @@ console.log('index=',imageIndex)
   // Create a sharp instance for the original image
   const image = sharp(originalImagePath);
   image
-  .resize(cropWidth, cropHeight)
-  .toBuffer((err, croppedBuffer) => {
-    if (err) {
-      console.error('Error cropping image', err);
-      return res.status(500).send('Error cropping image');
-    }
+    .resize(cropWidth, cropHeight)
+    .toBuffer((err, croppedBuffer) => {
+      if (err) {
+        console.error('Error cropping image', err);
+        return res.status(500).send('Error cropping image');
+      }
 
-  // image
-  //   .resize(cropWidth, cropHeight)
-  //   .toFile(`/path/to/cropped_images/${productId}/${imageIndex}_cropped.jpg`, (err) => {
-  //     if (err) {
-  //       console.error('Error cropping image', err);
-  //       return res.status(500).send('Error cropping image');
-  //     }
+      // image
+      //   .resize(cropWidth, cropHeight)
+      //   .toFile(`/path/to/cropped_images/${productId}/${imageIndex}_cropped.jpg`, (err) => {
+      //     if (err) {
+      //       console.error('Error cropping image', err);
+      //       return res.status(500).send('Error cropping image');
+      //     }
       // Send the cropped image to the client
       const croppedImagePath = `public/images/${imageIndex}`;
       fs.writeFileSync(croppedImagePath, croppedBuffer);
-res.redirect('/admin/products')
+      res.redirect('/admin/products')
       // res.render('cropImage', { imagePath: croppedImagePath });
     });
 }
@@ -1007,9 +1032,9 @@ const orderStatusLoad = async (req, res) => {
 const editOrderStatus = async (req, res) => {
   try {
     const id = req.query.orderId;
-    console.log("itemid--"+id)
+    console.log("itemid--" + id)
     const orders = await order.findOne({ _id: req.session.orderId })
-console.log("orders--"+orders)
+    console.log("orders--" + orders)
     const selectedItem = orders.items.find(item => item._id.toString() == id);
 
     if (selectedItem.orderStatus !== 'Cancelled') {
@@ -1066,23 +1091,278 @@ console.log("orders--"+orders)
         return res.redirect(`/admin/order/status?id=${order2Id}`);
       }
     }
-    else
-    {const order2Id = req.session.orderId;
+    else {
+      const order2Id = req.session.orderId;
       return res.redirect(`/admin/order/status?id=${order2Id}`);
     }
   } catch (error) {
     console.log(error.message);
   }
 }
-const loadBanner= async (req, res) => {
+// const loadBanner = async (req, res) => {
+//   try {
+//     res.render('admin/banner')
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// }
+
+const couponLoad = async (req, res) => {
   try {
-    res.render('admin/banner')
+    const formatDate = function (date) {
+      const day = ('0' + date.getDate()).slice(-2);
+      const month = ('0' + (date.getMonth() + 1)).slice(-2);
+      const year = date.getFullYear().toString();
+      return `${day}-${month}-${year}`;
+    };
+    const coupon = await Coupon.find().sort({ _id: -1 });
+    if (coupon) {
+      if (req.query.edit) {
+        const edit = await Coupon.findOne({ _id: req.query.edit });
+
+        return res.render('admin/coupon', { couponEdit: edit, coupon, formatDate });
+      } else {
+        req.query.edit = false;
+        const message = req.session.couponMessage;
+        const errorMessage = req.session.couponErrMessage;
+        res.render('admin/coupon', { coupon, message, errorMessage, formatDate });
+      }
+    } else {
+      return res.render('admin/coupon', { formatDate });
+    }
   } catch (error) {
     console.log(error.message);
   }
 }
+
+
+const couponAdd = async (req, res) => {
+  try {
+    req.session.couponErrMessage = '';
+    req.session.couponMessage = '';
+    const code = req.body.couponCode;
+    const value = req.body.couponValue;
+    const expiry = req.body.couponExpiry;
+    const bill = req.body.minBill;
+    const maxAmount = req.body.maxAmount;
+
+    if (
+      code.trim() != '' &&
+      value.trim() != '' &&
+      expiry.trim() != '' &&
+      bill.trim() != '' &&
+      maxAmount.trim() != ''
+    ) {
+      const find = await Coupon.findOne({ code });
+
+      if (find) {
+        req.session.couponMessage = '';
+        req.session.couponErrMessage = 'Coupon already exists';
+        return res.redirect('/admin/coupon');
+      } else {
+        if (value > 0 && value <= 100) {
+          const couponData = new Coupon({
+            code,
+            value,
+            minBill: bill,
+            maxAmount,
+            expiryDate: Date(),
+          });
+          await couponData.save();
+          req.session.couponErrMessage = '';
+          const message = 'New Coupon Added Successfully';
+          req.session.couponMessage = message;
+          res.redirect('/admin/coupon');
+        } else {
+          req.session.couponMessage = '';
+          req.session.couponErrMessage = 'Coupon Value must be between 0 and 100';
+          res.redirect('/admin/coupon');
+        }
+      }
+    } else {
+      req.session.couponMessage = '';
+      req.session.couponErrMessage = 'Fields cannot be null';
+      res.redirect('/admin/coupon');
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const couponDeactivate = async (req, res) => {
+  try {
+    const id = req.query.id;
+    await Coupon.findOneAndUpdate({ _id: id }, { $set: { Status: 'Inactive' } });
+    req.session.couponErrMessage = '';
+    const message = 'coupon Deactivated Successfully';
+    req.session.couponMessage = message;
+    res.redirect('/admin/coupon');
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const couponActivate = async (req, res) => {
+  try {
+    const id = req.query.id;
+    const expired = await Coupon.findOne({ _id: id, Status: 'Expired' });
+    if (expired) {
+      req.session.couponMessage = '';
+      req.session.couponErrMessage = 'Coupon expiry need to updated before activating';
+      return res.redirect('/admin/coupon');
+    } else {
+      await Coupon.findOneAndUpdate({ _id: id }, { $set: { Status: 'Active' } });
+      req.session.couponErrMessage = '';
+      const message = 'coupon Activated Successfully';
+      req.session.couponMessage = message;
+      return res.redirect('/admin/coupon');
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const couponEdit = async (req, res) => {
+  try {
+    const id = req.query.id;
+    res.redirect(`/admin/coupon?edit=${id}`);
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const couponUpdate = async (req, res) => {
+  try {
+    req.session.couponMessage = '';
+    req.session.couponErrMessage = '';
+    const id = req.query.id;
+    const code = req.body.couponCode;
+    const value = req.body.couponValue;
+    const expiry = new Date(req.body.couponExpiry);
+    const bill = req.body.minBill;
+    const maxAmount = req.body.maxAmount;
+    const currDate = new Date();
+    const Status = currDate.getTime() < expiry.getTime() ? 'Active' : 'Expired';
+    const updated = await Coupon.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          code,
+          value,
+          expiryDate: expiry,
+          minBill: bill,
+          maxAmount,
+          Status,
+        },
+      }
+    );
+    if (!updated) {
+      throw new Error('an error occured while updating the coupon');
+    }
+    req.session.couponMessage = 'coupon Updated Successfully';
+    return res.redirect('/admin/coupon');
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+const bannerLoad = async (req, res) => {
+  try {
+    const banner = await Banner.find({}).sort({ _id: 1 });
+  if(banner)
+  {
+    res.render('admin/banner',{banner})
+  }
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const bannerAdd = async (req, res) => {
+  try {
+    const { title, subtitle, description, redirect } = req.body;
+    const image = req.file.filename
+  
+    const newBanner = new Banner({
+      title,
+      subtitle,
+      description,
+      image,
+      redirect,
+    });
+
+    const savedBanner = await newBanner.save();
+
+
+    res.redirect('/admin/banner');
+  } catch (error) {
+    console.error('Error adding banner:', error);
+    
+    res.redirect('/error');
+  }
+}
+
+
+
+const bannerUpdate = async (req, res) => {
+  try {
+    const { title, subtitle, description, redirect } = req.body;
+    // If a new image is uploaded, handle it appropriately (e.g., with multer)
+    const image = req.file ? req.file.filename : undefined;
+
+    const updatedBanner = {
+      title,
+      subtitle,
+      description,
+      redirect,
+    };
+
+    if (image) {
+      updatedBanner.image = image;
+    }
+
+    const editedBanner = await Banner.findByIdAndUpdate(req.params.id, updatedBanner, { new: true });
+
+    if (!editedBanner) {
+    
+      return res.status(404).send('Banner not found');
+    }
+
+    res.redirect('/admin/banner'); 
+  } catch (error) {
+    console.error('Error editing banner:', error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+const bannerDisable =  async (req, res) => {
+  try {
+    const banner = req.body.id
+    const brandDetails = await Banner.findById(banner);
+    await Banner.updateOne({ _id: banner }, { $set: { active: false } })
+
+
+    res.sendStatus(200)
+  } catch (error) {
+    console.log(error.message);
+    res.render('error')
+  }
+}
+const bannerEnable =  async (req, res) => {
+  try {
+    const banner = req.body.id
+    const brandDetails = await Banner.findById(banner);
+    await Banner.updateOne({ _id: banner }, { $set: { active: true } })
+
+
+    res.sendStatus(200)
+  } catch (error) {
+    console.log(error.message);
+    res.render('error')
+  }
+}
 module.exports =
-{loadBanner,
+{
+salesReport,
   orderManagement, orderStatusLoad, editOrderStatus,
   adminLogin,
   productsView,
@@ -1113,7 +1393,7 @@ module.exports =
   adminLoginPost,
   userManagement,
   blockUser,
-  unblockUser, imageCrop, productDetails, imageEdit,orderReport,orderExcel,orderSearch
+  unblockUser, imageCrop, productDetails, imageEdit, orderReport, orderExcel, orderSearch, couponLoad, couponActivate, couponAdd, couponDeactivate, couponEdit, couponUpdate, bannerLoad, bannerAdd, bannerUpdate, bannerEnable, bannerDisable
 }
 
 

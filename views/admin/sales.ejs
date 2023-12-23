@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <p>hello</p>
+  <canvas id="revenueChart" style="height: 100px;width: 300px;"></canvas>
+
+  <script>
+    console.log('hello')
+    // Chart data from the server
+    const months = <%= JSON.stringify(months) %>;
+    const revenues = <%= JSON.stringify(revenues) %>;
+    
+    console.log('Months:', months);
+console.log('Revenues:', revenues);
+
+    // Create a bar chart
+    var ctx = document.getElementById('revenueChart').getContext('2d');
+    var revenueChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: months,
+        datasets: [{
+          label: 'Monthly Revenue',
+          data: revenues,
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
