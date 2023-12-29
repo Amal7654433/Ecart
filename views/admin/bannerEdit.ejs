@@ -1,0 +1,100 @@
+<%- include("../partials/adminSidebar.ejs")%>
+        <style>
+            .heading {
+                display: flex;
+                justify-content: center;
+                font-size: 30px;
+                height: 60px;
+                width: 100%;
+                margin-top: 40px;
+
+            }
+        </style>
+        <section>
+            <div class="container mt-5  " style="background-color: whitesmoke;  border-radius: 30px;">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="heading">Edit Banner</div>
+                        <form id="editBannerForm" method="post" action="/admin/banner/update/<%= banner._id %>"
+                            onsubmit="return validateBannForm()" enctype="multipart/form-data">
+                            <div class="form-group">
+                              <label for="editTitle">Title</label>
+                              <input type="text" class="form-control" id="titl" name="title" value="<%= banner.title %>">
+                              <span id="titleEr" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                              <label for="editSubtitle">Subtitle</label>
+                              <input type="text" class="form-control" id="subtitl" name="subtitle" value="<%= banner.subtitle %>">
+                              <span id="subtitleEr" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                              <label for="editDescription">Description</label>
+                              <textarea class="form-control" id="descriptio" name="description"
+                                rows="3"><%= banner.description %></textarea>
+                              <span id="descriptionEr" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                              <label for="editImage">
+                                <%=banner.image%>
+                              </label>
+                              <input type="file" class="form-control" id="editImage" name="image" accept="image/*">
+                            </div>
+                            <div class="form-group">
+                              <label for="editRedirect">Redirect URL:</label>
+                              <input type="text" id="redirec" name="redirect" value="<%= banner.redirect %>">
+                              <p id="redirectEr" class="text-danger"></p>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                          </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <script>
+            function printError(elemId, hintMsg) {
+                document.getElementById(elemId).innerText = hintMsg;
+            }
+
+            function validateBannForm() {
+      let isValid = true;
+      const title = document.getElementById('titl').value;
+
+      const subtitle = document.getElementById('subtitl').value;
+      const description = document.getElementById('descriptio').value;
+      const redirect = document.getElementById('redirec').value;
+
+
+      if (title.trim() === '') {
+        printError('titleEr', 'Please enter a banner title');
+        isValid = false;
+      } else {
+        printError('titleEr', '');
+      }
+
+      if (subtitle.trim() === '') {
+        printError('subtitleEr', 'Please enter banner subtitle');
+        isValid = false;
+      } else {
+        printError('subtitleEr', '');
+      }
+
+      if (description.trim() === '') {
+        printError('descriptionEr', 'Please enter banner description');
+        isValid = false;
+      } else {
+        printError('descriptionEr', '');
+      }
+
+      if (redirect.trim() === '') {
+        printError('redirectEr', 'Please enter banner redirect url');
+        isValid = false;
+      } else {
+        printError('redirectEr', '');
+      }
+
+
+
+      return isValid;
+    }
+        </script>
+        <%- include("../partials/adminFooter.ejs") %>

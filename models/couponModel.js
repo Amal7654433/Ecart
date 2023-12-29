@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const couponSchema = new Schema({
+  couponName: {
+    type: String,
+  },
   code: {
     type: String,
     trim: true,
@@ -12,6 +15,7 @@ const couponSchema = new Schema({
     type: Number,
     required: true,
   },
+
   minBill: {
     type: Number,
     required: true,
@@ -24,11 +28,10 @@ const couponSchema = new Schema({
     type: Date,
     required: true,
   },
-  Status: {
-    type: String,
-    required: true,
-    default: 'Active',
-  },
+  active: {
+    type: Boolean,
+    default: true
+},
   usedUsers: [
     {
       type: Schema.Types.ObjectId,

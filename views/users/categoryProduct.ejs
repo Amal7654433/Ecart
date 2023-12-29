@@ -74,7 +74,7 @@
                                     </div>
                                 </div>
                             </div> -->
-                            <div class="accordion-item">
+                            <!-- <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingTwo">
                                     <button class="accordion-button text-dark bg-light" type="button"
                                         data-mdb-toggle="collapse" data-mdb-target="#panelsStayOpen-collapseTwo"
@@ -89,7 +89,7 @@
                                     <% activeBrands.forEach(function(brand, index) { %>
                                         <div class="accordion-body">
                                             <div>
-                                                <!-- Checked checkbox -->
+                                                
                                                 <div class="form-check">
                                                     <input class="form-check-input brand-checkbox" type="checkbox"
                                                         value="<%= brand._id %>" id="<%= 'flexCheckChecked' + index %>"
@@ -98,9 +98,9 @@
                                                         for="<%= 'flexCheckChecked' + index %>">
                                                         <%= brand.name %>
                                                     </label>
-                                                    <!-- <span class="badge badge-secondary float-end">120</span> -->
+                                                    <span class="badge badge-secondary float-end">120</span>
                                                 </div>
-                                                <!-- Checked checkbox -->
+                                             
 
 
                                             </div>
@@ -108,7 +108,7 @@
                                         <% }); %>
                                 </div>
 
-                            </div>
+                            </div> -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingThree">
                                     <button class="accordion-button text-dark bg-light" type="button"
@@ -123,74 +123,44 @@
                                         <div>
                                             <!-- Checked checkbox -->
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckChecked1" checked />
+                                                <input class="form-check-input" type="checkbox" value="0-10000"
+                                                    id="priceRange1" />
                                                 <label class="form-check-label" for="flexCheckChecked1">
                                                     All</label>
                                             </div>
                                             <!-- Checked checkbox -->
                                         </div>
                                     </div>
-                                    <div class="accordion-body">
-                                        <div>
-                                            <!-- Checked checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckChecked1" checked />
-                                                <label class="form-check-label" for="flexCheckChecked1">Rs.0 -
-                                                    Rs.10000</label>
-
-                                            </div>
-                                            <!-- Checked checkbox -->
+                                    <!-- <form id="priceFilterForm">
+                                        <div class="accordion-body">
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="0-10000" id="priceRange1"  />
+                                            <label class="form-check-label" for="priceRange1">Rs.0 - Rs.10000</label>
+                                          </div>
                                         </div>
-                                    </div>
-                                    <div class="accordion-body">
-                                        <div>
-                                            <!-- Checked checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckChecked1" checked />
-                                                <label class="form-check-label" for="flexCheckChecked1">Rs.10000 -
-                                                    Rs.30000</label>
-                                            </div>
-                                            <!-- Checked checkbox -->
+                                        <div class="accordion-body">
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="10000-30000" id="priceRange2"  />
+                                            <label class="form-check-label" for="priceRange2">Rs.10000 - Rs.30000</label>
+                                          </div>
                                         </div>
-
-
-                                    </div>
-                                    <div class="accordion-body">
-                                        <div>
-                                            <!-- Checked checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckChecked1" checked />
-                                                <label class="form-check-label" for="flexCheckChecked1">Rs.30000 -
-                                                    Rs.50000</label>
-                                            </div>
-                                            <!-- Checked checkbox -->
+                                        <div class="accordion-body">
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="30000-50000" id="priceRange3"  />
+                                            <label class="form-check-label" for="priceRange3">Rs.30000 - Rs.50000</label>
+                                          </div>
                                         </div>
-
-
-                                    </div>
-
-                                    <div class="accordion-body">
-                                        <div>
-                                            <!-- Checked checkbox -->
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value=""
-                                                    id="flexCheckChecked1" checked />
-                                                <label class="form-check-label" for="flexCheckChecked1">Rs.50000 -
-                                                    Rs.70000</label>
-                                            </div>
-                                            <!-- Checked checkbox -->
+                                        <div class="accordion-body">
+                                          <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="50000-70000" id="priceRange4"  />
+                                            <label class="form-check-label" for="priceRange4">Rs.50000 - Rs.70000</label>
+                                          </div>
                                         </div>
-
-
-                                    </div>
-                                    <button type="button" class="btn btn-white w-100 border border-secondary"
-                                        id="filterButton">apply</button>
+                                        <button type="button" class="btn btn-white w-100 border border-secondary" onclick="applyPriceFilter()">Apply</button>
+                                      </form> -->
                                 </div>
-                                <!-- <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show"
+
+                                <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show"
                                     aria-labelledby="headingThree">
                                     <form>
                                         <div class="accordion-body">
@@ -203,7 +173,7 @@
                                                         Min
                                                     </p>
                                                     <div class="form-outline">
-                                                        <input type="number" id="minPrice" name="minPrice"
+                                                        <input type="number" id="minPrice" name="minPrice" min="1000"
                                                             class="form-control" />
                                                         <label class="form-label" for="typeNumber">$0</label>
                                                     </div>
@@ -213,17 +183,18 @@
                                                         Max
                                                     </p>
                                                     <div class="form-outline">
-                                                        <input type="number" id="maxPrice" name="max-price"
+                                                        <input type="number" id="maxPrice" name="max-price" min="1000"
                                                             class="form-control" />
                                                         <label class="form-label" for="typeNumber">$1,0000</label>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <button type="button" class="btn btn-white w-100 border border-secondary"
-                                            id="filterButton">apply</button>
+                                            <button type="button" onclick="applyFilter()"
+                                                class="btn btn-white w-100 border border-secondary"
+                                                id="filterButton">apply</button>
                                         </div>
                                     </form>
-                                </div> -->
+                                </div>
                             </div>
                             <!-- <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingThree">
@@ -377,7 +348,8 @@
                                                             <% } else if (product.inCart) { %>
                                                                 <a href="/cart" class="btn btn-primary">Go to Cart</a>
                                                                 <a href="#!"
-                                                                    class="btn btn-light border px-2 pt-2 icon-hover"  onclick="addToWishlist('<%= product._id %>')"><i
+                                                                    class="btn btn-light border px-2 pt-2 icon-hover"
+                                                                    onclick="addToWishlist('<%= product._id %>')"><i
                                                                         class="fas fa-heart fa-lg px-1"></i></a>
                                                                 <% } else { %>
                                                                     <button class="btn btn-primary shadow-0"
@@ -385,7 +357,8 @@
                                                                         type="button">Add to cart
                                                                     </button>
                                                                     <a href="#!"
-                                                                        class="btn btn-light border px-2 pt-2 icon-hover"  onclick="addToWishlist('<%= product._id %>')"><i
+                                                                        class="btn btn-light border px-2 pt-2 icon-hover"
+                                                                        onclick="addToWishlist('<%= product._id %>')"><i
                                                                             class="fas fa-heart fa-lg px-1"></i></a>
                                                                     <% } %>
                                                     </div>
@@ -426,7 +399,115 @@
                 </div>
             </div>
         </div>
+        <input type="hidden" name="categoryId" id="categoryId" value="<%= category._id %>">
     </section>
+
+
+    <script>
+        function applyFilter() {
+            // Get the input 
+         
+            var minPrice = document.getElementById('minPrice').value;
+            var maxPrice = document.getElementById('maxPrice').value;
+            var catgoryId = document.getElementById('categoryId').value;
+
+            fetch(`/products/filter?minPrice=${minPrice}&maxPrice=${maxPrice}&categoryId=${catgoryId}`, {
+                method: 'GET',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const filteredProducts = data.filteredProducts || [];
+                    console.log("filtered prod=",filteredProducts)
+        // Update the UI with the filtered products
+        displayFilteredProducts(filteredProducts);
+                
+
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayFilteredProducts(filteredProducts) {
+            const productContainer = document.getElementById('productContainer');
+            productContainer.innerHTML = ''; // Clear existing content
+            
+            // const prod = Object.values(filteredProducts);
+        
+            // Create a new product card
+            filteredProducts.forEach(product => {
+                const productHtml =
+
+                    `<div class="row justify-content-center mb-3">
+                <div class="col-md-12">
+                  
+                    <div class="card shadow-0 border rounded-3">
+                        <div class="card-body">
+                            <div class="row g-0">
+                                <div class="col-xl-3 col-md-4 d-flex justify-content-center">
+                                    <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
+                                        <img src="/images/${product.image[0]}" class="w-100" />
+                                        <a href="#!">
+                                            <div class="hover-overlay">
+                                                <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);"></div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-md-5 col-sm-7">
+                                    <a href="/products/view/${product._id}" class="product-link">
+                                        <h5 class="card-title product-title">${product.name}</h5>
+                                    </a>
+                                    <div class="d-flex flex-row">
+                                        <div class="text-warning mb-1 me-2">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                            <span class="ms-1">4.5</span>
+                                        </div>
+                                    </div>
+                                    <p class="text mb-4 mb-md-0" title="${product.details}">${product.details.slice(0, 200)}</p>
+                                </div>
+                                <div class="col-xl-3 col-md-3 col-sm-5">
+                                    <div class="d-flex flex-row align-items-center mb-1">
+                                        <h4 class="mb-1 me-1"> ₹${(product.price - (product.price * product.discount / 100)).toFixed(2)}</h4>
+                                        <span class="text-danger"><s>${product.discount !== 0 ? `₹${product.price}` : ''}</s></span>&nbsp;
+                                        <span><small>${product.discount !== 0 ? `${product.discount}% off` : ''}</small></span>
+                                    </div>
+                                    <h6 class="text-success">Free shipping</h6>
+                                    <div class="mt-4">
+                                        ${product.stock < 1 ? '<span aria-disabled="true">out of stock</span>' :
+                        product.inCart ? `
+                                                <a href="/cart" class="btn btn-primary">Go to Cart</a>
+                                                <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover" onclick="addToWishlist('${product._id}')">
+                                                    <i class="fas fa-heart fa-lg px-1"></i>
+                                                </a>` :
+                            `<button class="btn btn-primary shadow-0" onclick="addCart('${product._id}')" type="button">Add to cart</button>
+                                                <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover" onclick="addToWishlist('${product._id}')">
+                                                    <i class="fas fa-heart fa-lg px-1"></i>
+                                                </a>`}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input id="catId" type="hidden" value="${product.category._id}">
+            `;
+
+                // Append the new product card to the container
+                console.log(productHtml, 'product heml')
+                productContainer.innerHTML += productHtml;
+
+            });
+
+        }
+
+
+
+
+    </script>
+
     <script>function addCart(id) {
 
             fetch(`/addtocart/${id}`, {
@@ -435,65 +516,65 @@
                 window.location.assign('/cart')
             }).catch((error) => {
                 console.error('Error deleting product:', error);
-                // Optionally handle error and show error message to the user
+
             });
         }</script>
-<script>
-    $(document).ready(function () {
-      $('.brand-checkbox').change(function () {
-        const selectedBrands = $('.brand-checkbox:checked').map(function () {
-          return $(this).val();
-        }).get();
-  
-        // Make an AJAX request to the server with selected brand values
-        $.ajax({
-          url: '/products/category/filter',
-          type: 'GET',
-          data: { brands: selectedBrands },
-          success: function (data) {
-            // Handle the response, e.g., update the product list on the page
-            console.log('Filtered products:', data);
-            // Update the DOM with the filtered products
-          },
-          error: function (error) {
-            console.error('Error:', error);
-          }
-        });
-      });
-    });
-  </script>
-  <script>
-    function addToWishlist(id) {
-      console.log('amal');
-      fetch(`/add-wishlist/${id}`, {
-        method: 'PATCH',
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error('Failed to add product to wishlist');
-          }
-        })
-        .then((data) => {
-          if (data.exist) {
-            Swal.fire({
-              title: 'Product Already in Wishlist',
-              icon: 'info',
+    <script>
+        $(document).ready(function () {
+            $('.brand-checkbox').change(function () {
+                const selectedBrands = $('.brand-checkbox:checked').map(function () {
+                    return $(this).val();
+                }).get();
+
+                // Make an AJAX request to the server with selected brand values
+                $.ajax({
+                    url: '/products/categoy/filter',
+                    type: 'GET',
+                    data: { brands: selectedBrands },
+                    success: function (data) {
+                        // Handle the response, e.g., update the product list on the page
+                        console.log('Filtered products:', data);
+                        // Update the DOM with the filtered products
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                    }
+                });
             });
-          } else if (data.success) {
-            Swal.fire({
-              title: 'Product Added to Wishlist',
-              icon: 'success',
-            }).then(() => {
-              window.location.assign('/wishlist');
-            });
-          }
-        })
-        .catch((error) => {
-          console.error('Error adding product to wishlist:', error);
-          // Handle other errors or show a general error message
-          swal('Error', 'Failed to add product to wishlist', 'error');
         });
-    }
-  </script>
+    </script>
+    <script>
+        function addToWishlist(id) {
+            console.log('amal');
+            fetch(`/add-wishlist/${id}`, {
+                method: 'PATCH',
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Failed to add product to wishlist');
+                    }
+                })
+                .then((data) => {
+                    if (data.exist) {
+                        Swal.fire({
+                            title: 'Product Already in Wishlist',
+                            icon: 'info',
+                        });
+                    } else if (data.success) {
+                        Swal.fire({
+                            title: 'Product Added to Wishlist',
+                            icon: 'success',
+                        }).then(() => {
+                            window.location.assign('/wishlist');
+                        });
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error adding product to wishlist:', error);
+                    // Handle other errors or show a general error message
+                    swal('Error', 'Failed to add product to wishlist', 'error');
+                });
+        }
+    </script>

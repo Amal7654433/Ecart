@@ -33,7 +33,7 @@
                                     <% }); %>
                             </select> -->
                             <select class="form-select" id="category" name="category" required>
-                                <option value="<%= products.category %>">
+                                <option value="<%= products.category.name %>">
                                     <%= products.category.name %>
                                 </option>
                                 <% categories.forEach(function(category) { %>

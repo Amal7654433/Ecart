@@ -15,7 +15,7 @@
             <div class="container mt-5 d-flex justify-content-center " style="background-color: whitesmoke; height:400px; border-radius: 30px;">
                 <div class="col-md-6">
                     <div class="heading">Add Category</div>
-                    <form id="productForm" action="/admin/category/add" method="post" onsubmit="return validateProductForm()" >
+                    <form id="productForm" action="/admin/category/add" method="post" onsubmit="return validateCategoryForm()" >
                         <div class="mb-3">
                             <label class="form-label">category Name</label>
                             <input type="text" class="form-control" id="name" name="name" placeholder="enter the name"
@@ -50,13 +50,14 @@
                 document.getElementById(elemId).innerText = hintMsg;
             }
 
-            function validateProductForm() {
+            function validateCategoryForm() {
+                console.log("category")
                 let isValid = true;
                 const name = document.getElementById('name').value;
 
                 const details = document.getElementById('details').value;
 
-                const discount = document.getElementById('discount').value;
+              
                 if (name.trim() === '') {
                     printError('nameErr', 'Please enter a category name');
                     isValid = false;

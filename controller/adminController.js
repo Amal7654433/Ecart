@@ -495,8 +495,11 @@ const productUpdate = async (req, res) => {
     }
   
     const selectedCategoryName = req.body.category;
+   console.log(selectedCategoryName,"james")
+
     const selectedCategory = await catego.findOne({ name: selectedCategoryName });
-    console.log(selectedCategoryName)
+    console.log("hello",selectedCategory)
+    console.log(selectedCategory._id)
    
     // const images =  req.files.map((file) => file.filename);
     if (req.files && req.files.length > 0) {
@@ -507,7 +510,7 @@ const productUpdate = async (req, res) => {
     products.name = req.body.name;
 
 
-    products.category._id = selectedCategoryName._id
+    products.category = selectedCategory._id
 
     products.brand = req.body.brand
     products.stock = req.body.stock
@@ -1150,6 +1153,7 @@ const couponAdd = async (req, res) => {
       code.trim() != '' &&
       value.trim() != '' &&
       expiry.trim() != '' &&
+      
       bill.trim() != '' &&
       maxAmount.trim() != ''
     ) {
@@ -1301,7 +1305,19 @@ const bannerAdd = async (req, res) => {
   }
 }
 
-
+const bannerEditLoad=async (req, res) => {
+  try {
+    const banner = await Banner.findById(req.params.id);
+    if (!banner) {
+      // Handle case where the banner with the provided ID is not found
+      return res.status(404).send('Banner not found');
+    }
+    res.render('admin/bannerEdit', { banner });
+  } catch (error) {
+    console.error('Error fetching banner for editing:', error);
+    res.status(500).send('Internal Server Error');
+  }
+}
 
 const bannerUpdate = async (req, res) => {
   try {
@@ -1393,7 +1409,7 @@ salesReport,
   adminLoginPost,
   userManagement,
   blockUser,
-  unblockUser, imageCrop, productDetails, imageEdit, orderReport, orderExcel, orderSearch, couponLoad, couponActivate, couponAdd, couponDeactivate, couponEdit, couponUpdate, bannerLoad, bannerAdd, bannerUpdate, bannerEnable, bannerDisable
+  unblockUser, imageCrop, productDetails, imageEdit, orderReport, orderExcel, orderSearch, couponLoad, couponActivate, couponAdd, couponDeactivate, couponEdit, couponUpdate, bannerLoad, bannerAdd, bannerUpdate, bannerEnable,bannerEditLoad, bannerDisable
 }
 
 

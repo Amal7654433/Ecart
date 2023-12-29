@@ -19,6 +19,7 @@ const cartItemSchema = new Schema({
     type: Number,
     required: true,
   },
+  
   // You can add other fields specific to cart items if needed
 });
 const userSchema = new Schema({
@@ -49,12 +50,6 @@ const userSchema = new Schema({
     default: 0
   },
 
-
-  // deleteStatus: {
-  //   type: Boolean,
-  //   default: false, 
-  //   required: true,
-  // },
   token: {
     type: String,
     default: ''
@@ -72,6 +67,27 @@ const userSchema = new Schema({
     type: Number,
     default: 0,
   },
+  coupon: {
+    code: {
+        type: String,
+    },
+    discount: {
+        type: Number,
+        default: 0,
+    },
+},
+appliedCoupons: [
+  {
+      code: {
+          type: String,
+      },
+      discount: {
+          type: Number,
+          default: 0,
+      },
+  },
+],
+
   walletHistory: [
     {
       date: {
@@ -85,6 +101,10 @@ const userSchema = new Schema({
       },
     },
   ],
+  referralCode: {
+    type: String,
+    unique: true,
+  },
   cart: [cartItemSchema],
   address: {
     type: [{

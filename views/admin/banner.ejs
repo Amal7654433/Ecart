@@ -203,8 +203,10 @@
 
                 <td>
 
-                  <button class="btn btn-primary" data-toggle="modal"
-                    data-target="#editBannerModal_<%= ban._id %>">Edit</button>
+                  <a href="/admin/banner/edit/<%= ban._id %>" style="font-size: 20px;">
+                    <i class="fas fa-edit"></i> <!-- Assuming you are using Font Awesome -->
+                  </a>
+                  
                 </td>
 
                 <td>
@@ -272,55 +274,7 @@
       </div>
     </div>
     <!-- Edit Modal -->
-    <% banner.forEach(function(ban, index) { %>
-      <div class="modal fade" id="editBannerModal_<%= ban._id %>" tabindex="-1" role="dialog"
-        aria-labelledby="editBannerModalLabel_<%= ban._id %>" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="editBannerModalLabel_<%= ban._id %>">Edit Banner</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <!-- Form for editing the banner -->
-              <form id="editBannerForm_<%= ban._id %>" method="post" action="/admin/banner/update/<%= ban._id %>"
-                onsubmit="return validateBannForm()" enctype="multipart/form-data">
-                <div class="form-group">
-                  <label for="editTitle_<%= ban._id %>">Title</label>
-                  <input type="text" class="form-control" id="titl" name="title" value="<%= ban.title %>">
-                  <span id="titleEr" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                  <label for="editSubtitle_<%= ban._id %>">Subtitle</label>
-                  <input type="text" class="form-control" id="subtitl" name="subtitle" value="<%= ban.subtitle %>">
-                  <span id="subtitleEr" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                  <label for="editDescription_<%= ban._id %>">Description</label>
-                  <textarea class="form-control" id="descriptio" name="description"
-                    rows="3"><%= ban.description %></textarea>
-                  <span id="descriptionEr" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                  <label for="editImage_<%= ban._id %>">
-                    <%=ban.image%>
-                  </label>
-                  <input type="file" class="form-control" id="editImage_<%= ban._id %>" name="image" accept="image/*">
-                </div>
-                <div class="form-group">
-                  <label for="editRedirect_<%= ban._id %>">Redirect URL:</label>
-                  <input type="text" id="redirec" name="redirect" value="<%= ban.redirect %>">
-                  <p id="redirectEr" class="text-danger"></p>
-                </div>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      <% }); %>
+  
 
   </section>
 

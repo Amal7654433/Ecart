@@ -57,234 +57,114 @@
                                 </div>
                             </div>
                         </div>
-                        <% if (buynow) { %>
-                            <div class="col-md-5 mt-4">
-                                <div class="card border-0">
-                                    <div class="card-header card-2">
-                                        <p class="card-text text-muted mt-md-4 space">ORDER SUMMARY </p>
-                                        <hr class="my-2">
-                                    </div>
-                                    <div class="card-body mt-3">
-                                        <% filteredCart.forEach(function(item) { %>
-                                            <div class="row justify-content-between">
-                                                <div class="form-group row justify-content-between ">
-                                                    <div class="col-sm-3 col-xs-3">
-                                                        <img class="img-fluid"
-                                                            src="/images/<%= item.prod_id.image[0] %>" />
-                                                    </div>
-                                                    <div class="col-sm-6 col-xs-6">
-                                                        <div class="col-xs-12">
-                                                            <%= item.prod_id.name %>
-                                                        </div>
-                                                        <div class="col-xs-12"><small>Quantity:<span>
-                                                                    <%= item.qty %>
-                                                                </span></small></div>
-                                                        <div class="col-xs-12"><small>
-                                                                <%= item.prod_id.discount %>% off<span>
 
-                                                                    </span>
-                                                            </small></div>
-                                                    </div>
-                                                    <!-- <div class="col-sm-3 col-xs-3 text-right">
-                                                    <h6><span>$</span>25.00</h6>
-                                                </div> -->
-                                                    <div class=" flex-sm-col col-auto my-auto">
-                                                        <h6 class="mb-3"><b>₹<%= item.prod_id.price %></b></h6>
+
+
+                        <!-- Order Summary Section -->
+                        <div class="col-md-5 mt-4">
+                            <div class="card border-0">
+                                <div class="card-header card-2">
+
+                                    <hr class="my-2">
+                                </div>
+                                <div class="card-body mt-3">
+
+                                    <!-- Existing code for the coupon input form -->
+
+                                    <!-- Button to trigger the modal -->
+                                    
+
+                                    <!-- Existing code for the coupon input form continues... -->
+
+
+
+
+
+                                    <div class="row mb-5 mt-4">
+                                        <div class="col-md-7 col-lg-6"> <button id="my_button" type="submit"
+                                                disabled="disabled" value="submit" name="submit"
+                                                class="btn btn-block btn-lg border-dark"
+                                                style="width: 100%; border-radius:30px;">Proceed to
+                                                Payment</button>
+
+                                        </div>
+                                    </div>
+                                    </form>
+                                    <button type="button" class="btn btn-light border" data-toggle="modal"
+                                        data-target="#couponModal">
+                                        View Available Coupons
+                                    </button>
+
+                                    <!-- Modal for displaying available coupons -->
+                                    <div class="modal fade" id="couponModal" tabindex="-1" role="dialog"
+                                        aria-labelledby="couponModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="couponModalLabel">Available Coupons</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <!-- Place your coupon list content here -->
+                                                    <% coupons.forEach(function(item ,index) { %>
+                                                        <ul>
+
+                                                            <li>Coupon&nbsp;<%=index+1%>:<%=item.code%>
+                                                            </li>
+
+                                                            <!-- Add more coupons as needed -->
+                                                        </ul>
+                                                        <% }); %>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="couponBox">
+                                        <div class="card mb-3 border shadow-0">
+                                            <div class="card-body">
+
+                                                <div class="form-group">
+                                                    <label class="form-label">Have coupon?</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control border"
+                                                            id="form3Examplea2" name="couponCode"
+                                                            placeholder="Coupon code" />
+                                                        <button class="btn btn-light border bg-success text-white"
+                                                            onclick="applyCoupon()">Apply</button>
+                                                        <!-- Add this button/link where you want to allow the user to remove the coupon -->
+
+
                                                     </div>
 
                                                 </div>
-
 
                                             </div>
-                                            <hr>
-                                            <% }); %>
 
-                                                <% filteredCart.forEach(function(item) { %>
-                                                    <div class="row mt-5">
-                                                        <div class="col">
-                                                            <div class="row justify-content-between">
-                                                                <div class="col-4">
-                                                                    <h6 class="mb-3"><b>Subtotal</b></h6>
-                                                                </div>
-                                                                <div class="flex-sm-col col-auto mx-4">
-                                                                    <h6 class="mb-3"><b>₹<%= item.prod_id.price*item.qty
-                                                                                %></b></h6>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row justify-content-between">
-                                                                <div class="col">
-                                                                    <h6 class="mb-3"><b>discount</b></h6>
-                                                                </div>
-                                                                <div class="flex-sm-col col-auto mx-4">
-                                                                    <h6 class="mb-3" style="color: green"><b>-₹<%=
-                                                                                (item.prod_id.price*item.qty)*(item.prod_id.discount/100)
-                                                                                %></b></h6>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row justify-content-between">
-                                                                <div class="col">
-                                                                    <h6 class="mb-3"><b>Shipping</b></h6>
-                                                                </div>
-                                                                <div class="flex-sm-col col-auto mx-4">
-                                                                    <h6 class="mb-3" style="color: green"><b>Free</b>
-                                                                    </h6>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="row justify-content-between">
-                                                                <div class="col-4">
-                                                                    <h6><b>Total</b></h6>
-                                                                </div>
-                                                                <div class="flex-sm-col col-auto mx-4 ">
-                                                                    <h6 class="mb-3"><b>₹<%= item.total_price %>
-
-                                                                        </b></h6>
-                                                                </div>
-                                                            </div>
-                                                            <hr class="my-0">
-                                                        </div>
-
-                                                    </div>
-                                                    <% }); %>
-                                             
-                                                        <!-- Dummy content for the Proceed to Payment button -->
-                                                        <div class="row mb-5 mt-4">
-                                                            <div class="col-md-7 col-lg-6"> <button id="my_button"
-                                                                    type="submit" disabled="disabled" value="submit"
-                                                                    name="submit"
-                                                                    class="btn btn-block btn-lg border-dark"
-                                                                    style="width: 100%; border-radius:30px;">Proceed to
-                                                                    Payment</button>
-
-                                                            </div>
-                                                        </div>
+                                        </div>
+                                        <% if(userData.coupon.code) { %>
+                                            <div class=" mt-3" id="removeBox">
+                                                <i class="fas fa-tilde"></i>
+                                                <span id="appliedCouponText">Coupon you have applied: <%=
+                                                        userData.coupon ? userData.coupon.code : 'None' %></span>
+                                                <button class="btn btn-light border bg-warning"
+                                                    id="removeCouponButton">Remove
+                                                </button>
+                                            </div>
+                                            <% }; %>
                                     </div>
+
                                 </div>
                             </div>
-                            <% } else { %>
-                                <!-- Order Summary Section -->
-                                <div class="col-md-5 mt-4">
-                                    <div class="card border-0">
-                                        <div class="card-header card-2">
-                                            <p class="card-text text-muted mt-md-4 space">ORDER SUMMARY </p>
-                                            <hr class="my-2">
-                                        </div>
-                                        <div class="card-body mt-3">
-                                            <% userData.cart.forEach(function(item) { %>
-                                                <div class="row justify-content-between">
-                                                    <div class="form-group row justify-content-between ">
-                                                        <div class="col-sm-3 col-xs-3">
-                                                            <img class="img-fluid"
-                                                                src="/images/<%= item.prod_id.image[0] %>" />
-                                                        </div>
-                                                        <div class="col-sm-6 col-xs-6">
-                                                            <div class="col-xs-12">
-                                                                <%= item.prod_id.name %>
-                                                            </div>
-                                                            <div class="col-xs-12"><small>Quantity:<span>
-                                                                        <%= item.qty %>
-                                                                    </span></small></div>
-                                                        </div>
-                                                        <!-- <div class="col-sm-3 col-xs-3 text-right">
-                                                    <h6><span>$</span>25.00</h6>
-                                                </div> -->
-                                                        <div class=" flex-sm-col col-auto my-auto">
-                                                            <h6 class="mb-3"><b>₹<%= item.prod_id.price %></b></h6>
-                                                        </div>
 
-                                                    </div>
+                        </div>
 
-
-                                                </div>
-                                                <hr>
-                                                <% }); %>
-
-                                                    <!-- Dummy content for subtotal, shipping, and total -->
-                                                    <div class="row mt-5">
-                                                        <div class="col">
-                                                            <div class="row justify-content-between">
-                                                                <div class="col-4">
-                                                                    <h6 class="mb-3"><b>Subtotal</b></h6>
-                                                                </div>
-                                                                <div class="flex-sm-col col-auto mx-4">
-                                                                    <h6 class="mb-3"><b>₹
-                                                                            <%=userData.cart.reduce((total,item)=>
-                                                                                {
-
-                                                                                return total+(item.prod_id.price*item.qty)
-                                                                                },0) %>
-                                                                        </b></h6>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row justify-content-between">
-                                                                <div class="col">
-                                                                    <h6 class="mb-3"><b>Discount</b></h6>
-                                                                </div>
-                                                                <div class="flex-sm-col col-auto mx-4">
-                                                                    <h6 class="mb-3" style="color: green"><b>- ₹  <%=userData.cart.reduce((total,item)=>
-                                                                        {
-                                                                        return total+(item.prod_id.price*item.qty)
-                                                                        },0)-userData.cart.reduce((total,item)=>
-                                                                        {
-                                                                        return total+item.total_price
-                                                                        },0) %></b>
-                                                                    </h6>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row justify-content-between">
-                                                                <div class="col">
-                                                                    <h6 class="mb-3"><b>Shipping</b></h6>
-                                                                </div>
-                                                                <div class="flex-sm-col col-auto mx-4">
-                                                                    <h6 class="mb-3" style="color: green"><b>Free</b>
-                                                                    </h6>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row justify-content-between">
-                                                                <div class="col-4">
-                                                                    <h6><b>Total</b></h6>
-                                                                </div>
-                                                                <div class="flex-sm-col col-auto mx-4 ">
-                                                                    <h6 class="mb-3"><b>₹<%=totalBill%>
-
-                                                                        </b></h6>
-                                                                </div>
-                                                            </div>
-                                                            <hr class="my-0">
-                                                        </div>
-                                                    </div>
-                                                    <!-- <div class="card mb-3 border shadow-0">
-                                                        <div class="card-body">
-                                                          <form>
-                                                            <div class="form-group">
-                                                              <label class="form-label">Have coupon?</label>
-                                                              <div class="input-group">
-                                                                <input type="text" class="form-control border" id="form3Examplea2" name="couponCode"
-                                                                  placeholder="Coupon code" />
-                                                                <button class="btn btn-light border"
-                                                                  onclick="applyCo('<%=userData.cart._id%>','<%=totalBill%>')">Apply</button>
-                                            
-                                                              </div>
-                                                            </div>
-                                                          </form>
-                                                        </div>
-                                                      </div> -->
-                                                 
-                                                    <div class="row mb-5 mt-4">
-                                                        <div class="col-md-7 col-lg-6"> <button id="my_button"
-                                                                type="submit" disabled="disabled" value="submit"
-                                                                name="submit" class="btn btn-block btn-lg border-dark"
-                                                                style="width: 100%; border-radius:30px;">Proceed to
-                                                                Payment</button>
-
-                                                        </div>
-                                                    </div>
-                                                    </form>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <% } %>
                     </div>
                 </div>
             </div>
@@ -292,7 +172,7 @@
     </div>
 
     <!-- Dummy footer content -->
-    
+
 
     <script>
         // Dummy script as EJS syntax is removed
@@ -313,70 +193,113 @@
             });
         }
     </script>
-  <!-- Include SweetAlert library -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- Include SweetAlert library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
-<script>
-  $("#checkout-form").submit((e) => {
-    e.preventDefault();
-    $.ajax({
-      url: '/checkout',
-      method: 'post',
-      data: $('#checkout-form').serialize(),
-      success: (response) => {
-        if (response.flag) {
-          // Display SweetAlert
-          Swal.fire({
-            icon: 'warning',
-            title: 'Quantity Exceeds Stock',
-            text: 'The quantity you selected exceeds the available stock.',
-            confirmButtonText: 'OK',
-          }).then(() => {
-            // Redirect to another URL
-            window.location.href = '/home';
-          });
-        }
-        else if(response.success){location.replace('/checkout/payment')}
-      }
-    });
-  });
-</script>
-<script>
-    // Add this script in your EJS file or include it from an external file
-
-    function applyCo(cartId, totalBill) {
-      // Get the coupon code from the input field
-      const couponCode = document.getElementById('form3Examplea2').value;
-
-
-      fetch('/apply-coupon', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ cartId, totalBill, couponCode }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            // Update the total on the client side
-            const updatedTotal = totalBill - data.discount;
-
-            document.getElementById('couponDiscount').innerText = `₹${couponDiscount}`;
-            document.getElementById('discountedTotal').innerText = `₹${discountedTotal}`;
-
-            // Optionally, you can update the hidden input if needed
-            document.getElementById('totalBillInput').value = discountedTotal;
-          } else {
-            // Handle invalid coupon or other errors
-            alert('Invalid coupon code. Please try again.');
-          }
-        })
-        .catch(error => {
-          console.error('Error applying coupon:', error);
+    <script>
+        $("#checkout-form").submit((e) => {
+            e.preventDefault();
+            $.ajax({
+                url: '/checkout',
+                method: 'post',
+                data: $('#checkout-form').serialize(),
+                success: (response) => {
+                    if (response.flag) {
+                        // Display SweetAlert
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Quantity Exceeds Stock',
+                            text: 'The quantity you selected exceeds the available stock.',
+                            confirmButtonText: 'OK',
+                        }).then(() => {
+                            // Redirect to another URL
+                            window.location.href = '/home';
+                        });
+                    }
+                    else if(response.couponCodeFailure)
+                    {
+                        Swal.fire({
+                        icon: 'error',
+                        title: 'Coupon Missing or Invalid!',
+                        text: 'Please remove the current coupon enter a valid coupon code to proceed.',
+                    });    
+                    }
+                    else if (response.success) { location.replace('/checkout/payment') }
+                }
+            });
         });
-    }
+    </script>
 
-  </script>
+    <script>
+        function applyCoupon() {
 
-   
+            var couponCode = $("#form3Examplea2").val(); // Get the coupon code from the input field
+
+            // AJAX request to send user ID and coupon code to the server
+            $.ajax({
+                type: "PATCH", // Use "POST" or "GET" depending on your server-side handling
+                url: "/apply-coupon", // Replace with your server endpoint
+                data: {
+
+                    couponCode: couponCode
+                },
+                success: function (response) {
+                    // $('#couponBox').load(' #couponBox')
+               
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Coupon Applied!',
+                            text: `You have successfully applied the coupon.`,
+                        }).then(() => {
+                          location.reload()
+                          
+                        });
+                    }
+                    else if (!response.success) {
+                        Swal.fire({
+                        icon: 'error',
+                        title: 'Coupon Missing or Invalid!',
+                        text: 'Please enter a valid coupon code to proceed.',
+                    });
+                    }
+
+                  
+
+
+                },
+                error: function (error) {
+                    // Handle errors (if needed)
+                    console.error(error);
+                }
+            });
+        }
+    </script>
+    <!-- Add this script along with your existing code -->
+    <script>
+        $(document).ready(function () {
+            // When the "Remove Coupon" button is clicked
+            $("#removeCouponButton").click(function () {
+                // AJAX request to remove the coupon
+                $.ajax({
+                    type: "PATCH",
+                    url: "/remove-coupon", // Replace with your actual server endpoint
+                    success: function (response) {
+                        $('#couponBox').load(' #couponBox')
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Coupon Removed!',
+                            text: 'You have successfully removed the coupon.',
+                        });
+
+                    },
+                    error: function (error) {
+                        // Handle errors (if needed)
+                        console.error(error);
+                    }
+                });
+            });
+        });
+
+
+    </script>

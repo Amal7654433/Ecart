@@ -1,0 +1,129 @@
+<%- include("../partials/adminSidebar.ejs")%>
+    <style>
+        .heading {
+            display: flex;
+            justify-content: center;
+            font-size: 30px;
+            height: 60px;
+            width: 100%;
+
+           
+
+        }
+    </style>
+    <section>
+        <div class="container  " style="background-color: whitesmoke;  border-radius: 30px;">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="heading">Edit Coupon</div>
+                    <form id="editform" method="post" onsubmit=" return validateCouponEditForm()"
+                        action="/admin/coupons/update/<%= coupon._id %>">
+                        <div class="form-group">
+                            <label for="coupon Name">Coupon Name</label>
+                            <input type="text" class="form-control" id="CouponNam" name="couponName"
+                                value="<%=coupon.couponName%>">
+                            <span id="nameEr" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="coupon code">Coupon Code</label>
+                            <input type="text" class="form-control" id="CouponCod" name="code" value="<%=coupon.code%>">
+                            <span id="codeEr" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="couponValue">Coupon Value</label>
+                            <input name="value" placeholder="coupon value(%)" type="number" id="CouponValu"
+                                value="<%=coupon.value%>" class="form-control" min="1" max="99" />
+                            <span id="valueEr" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="couponValue">Min Amount</label>
+                            <input name="minBill" type="number" placeholder="min Bill" id="minBil"
+                                value="<%=coupon.minBill%>" class="form-control " min="500" />
+                            <span id="minEr" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="couponValue">Max Amount</label>
+                            <input name="maxAmount" type="number" placeholder="max Amount" id="maxBil"
+                                value="<%=coupon.maxAmount%>" class="form-control " min="500" />
+                            <span id="maxEr" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="couponValue">
+                                <%= formatDate(coupon.expiryDate) %>
+                            </label>
+                            <input name="expiryDate" type="date" placeholder="expiry date" id="expiryDat"
+                                class="form-control" />
+                            <span id="dateEr" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+          function printError(elemId, hintMsg) {
+                document.getElementById(elemId).innerText = hintMsg;
+            }
+        function validateCouponEditForm() {
+            console.log('hello world')
+            let isValid = true;
+            const name = document.getElementById('CouponNam').value;
+            const code = document.getElementById('CouponCod').value;
+
+            const value = document.getElementById('CouponValu').value;
+            const minBill = document.getElementById('minBil').value;
+            const maxBill = document.getElementById('maxBil').value;
+            const date = document.getElementById('expiryDat').value;
+
+
+            if (name.trim() === '') {
+                printError('nameEr', 'Please enter a coupon name');
+                isValid = false;
+            } else {
+                printError('nameEr', '');
+            }
+
+            if (code.trim() === '') {
+                printError('codeEr', 'Please enter coupon code');
+                isValid = false;
+            } else {
+                printError('codeEr', '');
+            }
+
+            if (value.trim() === '' || isNaN(value) || value < 0 || value > 100) {
+                printError('valueEr', 'Please enter coupon discount');
+                isValid = false;
+            } else {
+                printError('valueEr', '');
+            }
+            if (minBill.trim() === '' || isNaN(minBill) || minBill < 0) {
+                printError('minEr', 'Please select an minimum amount');
+                isValid = false;
+            } else {
+                printError('minEr', '');
+            }
+            if (maxBill.trim() === '' || isNaN(maxBill) || maxBill < 0) {
+                printError('maxEr', 'Please select an minimum amount');
+                isValid = false;
+            } else {
+                printError('maxEr', '');
+            }
+
+            if (date.trim() === '') {
+                printError('dateEr', 'Please enter expiry date');
+                isValid = false;
+            } else {
+                printError('dateEr', '');
+            }
+
+
+
+
+            return isValid;
+        }
+    </script>
+    <%- include("../partials/adminFooter.ejs") %>

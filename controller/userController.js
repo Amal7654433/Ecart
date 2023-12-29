@@ -231,7 +231,7 @@ const productsView = async (req, res) => {
   try {
 
     const productId = req.params.productId;
-    console.log(productId)
+ 
 
     const product = await prod.findById(productId);
 

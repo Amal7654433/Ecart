@@ -15,7 +15,7 @@
             style="background-color: whitesmoke;  border-radius: 30px;">
                 <div class="col-md-8">
                     <div class="heading">Add Product</div>
-                    <form id="productForm" onsubmit="return validateProductForm()" action="" method="post"
+                    <form id="productForm" onsubmit="return validateProductForm()" action="/admin/products/add" method="post"
                         enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="name" class="form-label">Product Name</label>
@@ -24,7 +24,7 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="category" class="form-label">Category</label>
-                            <select class="form-select" id="category" name="category" required>
+                            <select class="form-select" id="category" name="category" >
                                 <% categories.forEach(function(category) { %>
                                     <option value="<%= category.name %>">
                                         <%= category.name%>
@@ -52,12 +52,12 @@
                         </div>
                         <div class="mb-3">
                             <label for="stock" class="form-label">Stock</label>
-                            <input type="text" class="form-control" id="stock" name="stock">
+                            <input type="number" class="form-control" id="stock" name="stock">
                             <span id="stockErr" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
                             <label for="discount" class="form-label">Discount</label>
-                            <input type="text" class="form-control" id="discount" name="discount">
+                            <input type="number" class="form-control" id="discount" name="discount">
                             <span id="discountErr" class="text-danger"></span>
                         </div>
 

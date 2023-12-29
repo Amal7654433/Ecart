@@ -1,0 +1,398 @@
+<%- include("../partials/adminSidebar.ejs")%>
+    <style>
+        .table {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+
+        .table thead th {
+            background-color: #f2f2f2;
+            border-bottom: 2px solid #ddd;
+            color: #333;
+            font-weight: bold;
+            text-align: center;
+            vertical-align: middle;
+
+
+        }
+
+
+        .table tbody tr {
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .table tbody td {
+            border-top: none;
+            text-align: center;
+            vertical-align: middle;
+
+
+        }
+
+        /* Customize the edit and delete buttons */
+
+
+
+
+        /* Customize the modal */
+        .modal-content {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            background-color: #f2f2f2;
+            border-bottom: 2px solid #ddd;
+            color: #333;
+            font-weight: bold;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 18px;
+            padding: 20px;
+        }
+
+        .modal-body {
+            font-size: 16px;
+            padding: 20px;
+        }
+
+        .modal-footer {
+            border-top: none;
+        }
+
+
+
+
+
+        /* Customize the pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination.page-item {
+            margin: 0 5px;
+        }
+
+        .pagination.page-link {
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            color: #333;
+            font-size: 16px;
+            padding: 5px 10px;
+        }
+
+        .pagination.page-link:hover {
+            background-color: #ddd;
+        }
+
+        .pagination.page-item.active.page-link {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+        }
+
+
+
+
+
+        .heading {
+            display: flex;
+            justify-content: center;
+            font-size: 30px;
+            height: 60px;
+            width: 100%;
+            margin-top: 40px;
+
+        }
+
+        .status {
+            height: auto;
+
+        }
+
+        .btn-size {
+            width: 100px;
+            font-size: 12px;
+        }
+
+        #ellipse {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 50px;
+
+
+        }
+    </style>
+    <section id="res">
+        <div class="heading"> <i class="fas fa-images"
+                style="width:max-content; margin-top: 10px; color: #0069d9;">&nbsp;Coupons</i> </div>
+        <div class="container">
+            <div class="row">
+                <div> <a href="" class="btn btn-primary " data-toggle="modal" data-target="#addProductModal">Add
+                        Coupon</a>
+                </div>
+            </div>
+
+            <div class="table-responsive mt-3">
+
+                <table class="table  " id="myTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">No</th>
+                            <th scope="col">Coupon Name</th>
+                            <th scope="col">Coupon Code</th>
+                            <th scope="col">Coupon Value</th>
+                            <th scope="col">Min Bill</th>
+                            <th scope="col">Max Amount</th>
+                            <th scope="col">Coupon Expiry</th>
+                            <th scope="col">Edit</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% coupon.forEach(function(coupon, index) { %>
+                            <tr>
+                                <td>
+                                    <%= index+1 %>
+                                </td>
+                                <td>
+                                    <%= coupon.couponName %>
+                                </td>
+                                <td>
+                                    <%= coupon.code %>
+                                </td>
+                                <td>
+                                    <%= coupon.value %>
+                                </td>
+                                <td>
+                                    <%= coupon.minBill %>
+                                </td>
+                                <td>
+                                    <%= coupon.maxAmount %>
+                                </td>
+                                <td>
+                                    <%= formatDate(coupon.expiryDate) %>
+                                </td>
+
+                                <td>
+
+                                    <a href="/admin/coupons/edit/<%= coupon._id %>" style="font-size: 20px;"> <i class="fas fa-edit"></i></a>
+                                </td>
+
+                                <td>
+                                    <div>
+                                        <a onclick="active('<%= coupon._id %>')" id="activeBtn_<%= coupon._id %>"
+                                            class="btn btn-danger btn-size text-white" <% if (coupon.active) {
+                                            %>style="display: none;"<% } %>
+                                                >Deactive</a>
+                                        <a onclick="deactive('<%= coupon._id %>')" id="deactiveBtn_<%= coupon._id %>"
+                                            class="btn btn-success btn-size text-white" <% if (!coupon.active) {
+                                            %>style="display: none;"<% } %>
+                                                >Active</a>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      
+        <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addProductModalLabel">Add Coupon</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Form for adding a new product -->
+                        <form id="addProductForm" method="post"  onsubmit=" return validateCouponForm()" action="/admin/coupons/add">
+
+                            <div class="form-group">
+                                <label for="coupon Name">Coupon Name</label>
+                                <input type="text" class="form-control" id="CouponName" name="couponName" > 
+                                <span id="nameErr" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="coupon code">Coupon Code</label>
+                                <input type="text" class="form-control" id="CouponCode" name="code">
+                                <span id="codeErr" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="couponValue">Coupon Value</label>
+                                <input name="value" placeholder="coupon value(%)" type="number" id="couponValue"
+                                    class="form-control" min="1" max="99" />
+                                <span id="valueErr" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="couponValue">Min Amount</label>
+                                <input name="minBill" type="number" placeholder="min Bill" id="minBill"
+                                    class="form-control " min="500" />
+                                <span id="minErr" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="couponValue">Max Amount</label>
+                                <input name="maxAmount" type="number" placeholder="max Amount" id="maxBill"
+                                    class="form-control " min="500" />
+                                <span id="maxErr" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="couponValue">Expiry Date</label>
+                                <input name="expiryDate" type="date" placeholder="expiry date" id="expiryDate"
+                                    class="form-control" />
+                                <span id="dateErr" class="text-danger"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Coupon</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Edit Modal -->
+      
+            
+           
+
+    </section>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        function printError(elemId, hintMsg) {
+            document.getElementById(elemId).innerText = hintMsg;
+        }
+
+        function validateCouponForm() {
+            console.log('HELLO WORLD')
+            let isValid = true;
+            const name = document.getElementById('CouponName').value;
+            const code = document.getElementById('CouponCode').value;
+
+            const couponValue = document.getElementById('couponValue').value;
+            const minBill = document.getElementById('minBill').value;
+            const maxBill = document.getElementById('maxBill').value;
+            const date = document.getElementById('expiryDate').value;
+
+
+            if (name.trim() === '') {
+                printError('nameErr', 'Please enter a coupon name');
+                isValid = false;
+            } else {
+                printError('nameErr', '');
+            }
+
+            if (code.trim() === '') {
+                printError('codeErr', 'Please enter coupon code');
+                isValid = false;
+            } else {
+                printError('codeErr', '');
+            }
+
+            if (couponValue.trim() === '' || isNaN(couponValue) || couponValue < 0 || couponValue > 100) {
+                printError('valueErr', 'Please enter coupon discount');
+                isValid = false;
+            } else {
+                printError('valueErr', '');
+            }
+            if (minBill.trim() === '' || isNaN(minBill) || minBill < 0 ) {
+                printError('minErr', 'Please select an minimum amount');
+                isValid = false;
+            }
+             else {
+                printError('minErr', '');
+            }
+            if (maxBill.trim() === '' || isNaN(maxBill) || maxBill < 0 ) {
+                printError('maxErr', 'Please select an minimum amount');
+                isValid = false;
+            } else {
+                printError('maxErr', '');
+            }
+
+            if (date.trim() === '') {
+                printError('dateErr', 'Please enter expiry date');
+                isValid = false;
+            } else {
+                printError('dateErr', '');
+            }
+
+
+
+            return isValid;
+        }
+
+        
+        // document.getElementById('addProductForm').addEventListener('submit', function (event) {
+        //     event.preventDefault(); 
+        //     validateCouponForm(); 
+        // });
+        // document.getElementById('editform').addEventListener('submit', function (event) {
+        //     event.preventDefault(); 
+        //     validateCouponEditForm() 
+        // });
+    </script>
+
+    <script>
+        function active(id) {
+
+
+            $.ajax({
+                url: "/admin/coupons/activate",
+                type: "PATCH",
+                contentType: "application/json",
+                data: JSON.stringify({ id: id }),
+                success: function (data) {
+                    // Update the content dynamically if needed
+                    console.log("Request successful:", data);
+                    $(`#activeBtn_${id}`).hide();
+                    $(`#deactiveBtn_${id}`).show();
+                },
+                error: function (error) {
+                    console.log("Error:", error);
+                }
+            });
+        };
+
+
+        function deactive(id) {
+            console.log(id);
+
+            $.ajax({
+                url: "/admin/coupons/deactivate",
+                type: "PATCH",
+                contentType: "application/json",
+                data: JSON.stringify({ id: id }),
+                success: function (data) {
+                    console.log("Request successful:", data);
+                    $(`#activeBtn_${id}`).show();
+                    $(`#deactiveBtn_${id}`).hide();
+                },
+                error: function (error) {
+                    console.log("Error:", error);
+                }
+            });
+        };
+    </script>
+
+
+
+
+    <%- include("../partials/adminFooter.ejs") %>

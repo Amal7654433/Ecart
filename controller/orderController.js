@@ -27,7 +27,9 @@ const getTotalSum = async function (id) {
         if (users.cart) {
             const cart = users.cart;
             const sum = cart.reduce((sum, item) => sum + item.total_price, 0);
-            return sum;
+            let discount = (users.coupon.discount / 100) * sum;
+            const finaltotal = sum - discount
+            return finaltotal;
         } else return 0;
     } catch (error) {
         throw new Error('error while calculating net total price');
@@ -35,11 +37,6 @@ const getTotalSum = async function (id) {
 };
 const checkOutView = async (req, res) => {
     try {
-
-        let buynow
-
-        const productId = req.query.id
-
 
         const userData = await user.findById(req.session.user).populate({
             path: 'cart.prod_id',
@@ -49,26 +46,24 @@ const checkOutView = async (req, res) => {
                 model: 'Category',
             },
         });
+        const cart = userData.cart;
+        const totalBill = cart.reduce((sum, item) => sum + item.total_price, 0);
+        console.log('messi', totalBill)
         if (userData.cart.length === 0) {
             return res.redirect('/cart');
         }
         else {
 
+            // const coupons = await Coupon.find({}, { code: 1 })
+            const coupons = await Coupon.find({
+                $and: [
+                    { minBill: { $lte: totalBill } },
+                    { maxAmount: { $gte: totalBill } },
+                    { active: true }
+                ]
+            }, { code: 1 });
 
-            if (productId) {
-                buynow = true
-                const filteredCart = userData.cart.filter(item => item.prod_id._id.toString() === productId);
-                console.log(filteredCart)
-                res.render('users/checkout', { userData, filteredCart, buynow });
-            }
-            else {
-                buynow = false
-                const totalBill = await getTotalSum(userData._id);
-
-
-                res.render('users/checkout', { userData, totalBill, buynow, });
-            }
-
+            res.render('users/checkout', { userData, coupons });
         }
     } catch (error) {
         console.log(error.message);
@@ -80,10 +75,20 @@ const checkOutPost = async (req, res) => {
     try {
         const userData = await user.findById(req.session.user)
         const selectedAddressIndex = req.body.selectedAddressIndex;
-        console.log(selectedAddressIndex)
+
         const selectedAddress = userData.address[selectedAddressIndex];
         req.session.addr = selectedAddress;
         const cartItems = userData.cart;
+        const couponCode = userData.coupon.code
+        const sum = cartItems.reduce((sum, item) => sum + item.total_price, 0);
+        if (couponCode !== null) {
+            const coupon = await Coupon.findOne({ code: couponCode });
+            if (!coupon || !coupon.active || sum < coupon.minBill || sum > coupon.maxAmount || coupon.code !== couponCode) {
+                console.log('Invalid coupon code:', couponCode);
+                return res.json({ couponCodeFailure: true, message: 'Invalid coupon code' });
+            }
+        }
+
         const productIds = cartItems.map(item => item.prod_id);
         const productsData = await prod.find({ _id: { $in: productIds } });
 
@@ -130,15 +135,23 @@ const paymentView = async (req, res) => {
             },
         });
 
+        const sum = userData.cart.reduce((sum, item) => sum + item.total_price, 0);
+        const totalBill = await getTotalSum(userData._id);
+
+        const couponDiscount = (userData.coupon.discount / 100) * sum
+
+
         if (userData.cart.length !== 0 && req.session.addr) {
             const cart = userData.cart;
-            const totalBill = await getTotalSum(userData._id);
+
+
+
             const keyId = process.env.RAZORPAY_ID_KEY
 
 
 
 
-            res.render('users/payment', { totalBill, keyId, userData, cart });
+            res.render('users/payment', { totalBill, keyId, userData, cart, couponDiscount });
 
 
         }
@@ -162,7 +175,7 @@ const paymentPost = async (req, res) => {
         });
 
         const paymentModelSelect = req.body.radio
-        console.log('radio', paymentModelSelect)
+
 
 
         const selectedAddress = req.session.addr
@@ -203,17 +216,16 @@ const paymentPost = async (req, res) => {
         req.session.order = orderData;
 
         const productIds = carts.map(item => item.prod_id);
-        console.log('amal', productIds)
+
 
         const productsData = await prod.find({ _id: { $in: productIds } });
-        console.log('product david', productsData)
+
         let redirectFlag = false;
-        console.log("rono", carts)
+
         carts.forEach(cartItem => {
-            console.log("messi items", cartItem)
+
             const productData = productsData.find(p => p._id.equals(cartItem.prod_id._id));
-            console.log("under loop", productData)
-            console.log("under loop stock", productData.stock)
+
 
             if (cartItem.qty > productData.stock) {
                 redirectFlag = true;
@@ -240,7 +252,7 @@ const paymentPost = async (req, res) => {
                 };
                 instance.orders.create(options, (err, order) => {
                     if (err) {
-                        console.log("orderkkdjdkdk=", order)
+
                         console.log(err);
                     } else {
 
@@ -595,4 +607,4 @@ const orderSuccess = async (res, req) => {
         console.log(error.message);
     }
 };
-module.exports = { ordersView, orderSuccess, checkOutView, checkOutPost, paymentView, paymentPost, cancelOrder, orderSuccessRedirect, returnOrder, invoice, razorpayRedirect,  }
+module.exports = { ordersView, orderSuccess, checkOutView, checkOutPost, paymentView, paymentPost, cancelOrder, orderSuccessRedirect, returnOrder, invoice, razorpayRedirect, }

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const adminControl = require("../controller/adminController")
+const couponControl=require("../controller/couponController")
 const upload = require("../middlewares/multer")
 const auth = require('../middlewares/auth')
 
@@ -59,23 +60,30 @@ router.get('/admin/order/status',auth.adminLoggedIn,  adminControl.orderStatusLo
 router.post('/admin/order/status',auth.adminLoggedIn,  adminControl.editOrderStatus)
 
 
-router.get('/admin/coupon',auth.adminLoggedIn,  adminControl.couponLoad)
+// router.get('/admin/coupon',auth.adminLoggedIn,  adminControl.couponLoad)
 
 
-router.post('/admin/coupon/add', auth.adminLoggedIn,  adminControl.couponAdd)
-router.get('/admin/coupon/Deactivate', auth.adminLoggedIn, adminControl.couponDeactivate)
-router.get('/admin/coupon/Activate', auth.adminLoggedIn, adminControl.couponActivate)
-router.get('/admin/coupon/edit', auth.adminLoggedIn, adminControl.couponEdit)
-router.post('/admin/coupon/update', auth.adminLoggedIn,  adminControl.couponUpdate)
+// router.post('/admin/coupon/add', auth.adminLoggedIn,  adminControl.couponAdd)
+// router.get('/admin/coupon/Deactivate', auth.adminLoggedIn, adminControl.couponDeactivate)
+// router.get('/admin/coupon/Activate', auth.adminLoggedIn, adminControl.couponActivate)
+// router.get('/admin/coupon/edit', auth.adminLoggedIn, adminControl.couponEdit)
+// router.post('/admin/coupon/update', auth.adminLoggedIn,  adminControl.couponUpdate)
 
 
 
 router.get('/admin/banner', auth.adminLoggedIn, adminControl.bannerLoad)
 router.post('/admin/banner/add', auth.adminLoggedIn, upload.single('image'), adminControl.bannerAdd)
-// router.get('/admin/banner/edit', auth.adminLoggedIn, adminControl.bannerEdit)
+router.get('/admin/banner/edit/:id', auth.adminLoggedIn, adminControl.bannerEditLoad)
 router.post('/admin/banner/update/:id', auth.adminLoggedIn, upload.single('image'), adminControl.bannerUpdate)
 router.patch('/admin/banner/disable', auth.adminLoggedIn, adminControl.bannerDisable)
 router.patch('/admin/banner/enable', auth.adminLoggedIn, adminControl.bannerEnable)
 router.get('/sales', auth.adminLoggedIn, adminControl.salesReport)
+
+router.get('/admin/coupons',auth.adminLoggedIn,couponControl.couponLoad)
+router.post('/admin/coupons/add',auth.adminLoggedIn,couponControl.addCoupon)
+router.get('/admin/coupons/edit/:id',auth.adminLoggedIn,couponControl.couponEditLoad)
+router.post('/admin/coupons/update/:id',auth.adminLoggedIn,couponControl.updateCoupon)
+router.patch('/admin/coupons/activate',auth.adminLoggedIn,couponControl.enableCoupon)
+router.patch('/admin/coupons/deactivate',auth.adminLoggedIn,couponControl.disableCoupon)
 
 module.exports = router;
