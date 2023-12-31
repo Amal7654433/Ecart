@@ -46,23 +46,25 @@ const checkOutView = async (req, res) => {
                 model: 'Category',
             },
         });
+        const userId = req.session.user;
         const cart = userData.cart;
         const totalBill = cart.reduce((sum, item) => sum + item.total_price, 0);
-        console.log('messi', totalBill)
+        const currentDate = new Date();
         if (userData.cart.length === 0) {
             return res.redirect('/cart');
         }
         else {
 
-            // const coupons = await Coupon.find({}, { code: 1 })
             const coupons = await Coupon.find({
                 $and: [
                     { minBill: { $lte: totalBill } },
                     { maxAmount: { $gte: totalBill } },
-                    { active: true }
+                    { active: true },
+                    { usedUsers: { $not: { $in: [userId] } } } ,
+                    { expiryDate: { $gte: currentDate } } 
                 ]
-            }, { code: 1 });
-
+            });
+      
             res.render('users/checkout', { userData, coupons });
         }
     } catch (error) {
@@ -306,6 +308,7 @@ const orderSuccessRedirect = async (req, res) => {
     try {
         const userData = await user.findById(req.session.user)
         console.log(userData);
+
         const orders = req.session.order;
 
 
@@ -323,7 +326,9 @@ const orderSuccessRedirect = async (req, res) => {
             { $set: { cart: [] } },
             { new: true }
         );
-
+        console.log(userData.coupon)
+  userData.coupon = { code: null, discount: 0 };
+        await userData.save();
         // res.status(200).json({ success: true, message: 'Order placed successfully.' });
 
         return res.redirect('/orders');

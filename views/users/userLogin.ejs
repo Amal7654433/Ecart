@@ -1,74 +1,75 @@
 <%- include("../partials/userHeader.ejs")%>
-<style>
-    #foot
-    {
-        margin-top: 15rem;
-     
-    }
-     body {
-        background-color: #f4f4f4;
-        font-family: Arial, sans-serif;
-    }
-   
-    /* .container {
+    <style>
+        #foot {
+            margin-top: 15rem;
+
+        }
+
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+
+        /* .container {
         background-color: #fff;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         padding: 20px;
     } */
 
-    .card-header {
-        background-color: #007bff;
-        color: #fff;
-        text-align: center;
-        padding: 15px;
-        border-radius: 8px 8px 0 0;
-    }
+        .card-header {
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+        }
 
-    .card-body {
-        padding: 20px;
-    }
+        .card-body {
+            padding: 20px;
+        }
 
-  
 
-    label {
-        font-size: 18px;
-        font-weight: bold;
-    }
 
-    .form-con {
-        width: 100%;
-        padding: 10px;
-        margin: 5px 0;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 16px;
-    }
+        label {
+            font-size: 18px;
+            font-weight: bold;
+        }
 
-    .btn-primary {
-        background-color: #007bff;
-        border-radius: 30px;
-        color: #fff;
-        font-size: 18px;
-     
-       width: 9rem; 
-       height: 3rem;
-        border: none;
-        margin: 0 auto; /* Center the button horizontally */
-        display: block;
-        padding: 10px 20px;
-        cursor: pointer;
-      
-        position: relative;
-        margin-top: 0%;
-    }
-  
+        .form-con {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
 
-    .btn-primary:hover {
-        background-color: #0056b3;
-    }
+        .btn-primary {
+            background-color: #007bff;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 18px;
 
-    /* #eyeIcon {
+            width: 9rem;
+            height: 3rem;
+            border: none;
+            margin: 0 auto;
+            /* Center the button horizontally */
+            display: block;
+            padding: 10px 20px;
+            cursor: pointer;
+
+            position: relative;
+            margin-top: 0%;
+        }
+
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        /* #eyeIcon {
         position: relative;
         margin-left: 36rem;
     
@@ -77,26 +78,27 @@
         color: #555;
     } */
 
-    .inputbox {
-       
-        background-color: #f9f9f9;
-        position: relative;
-    }
+        .inputbox {
 
-    .form-group {
-        display: block;
-    }
-    
-    #eyeIcon {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 20px;
-        color: #333;
-        cursor: pointer;
-    }
-    /* #eyeIcon
+            background-color: #f9f9f9;
+            position: relative;
+        }
+
+        .form-group {
+            display: block;
+        }
+
+        #eyeIcon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        /* #eyeIcon
     {
 position: relative;
 top: 55%;
@@ -119,10 +121,10 @@ color: darkgray;
        display: block;
         
     } */
-</style>
+    </style>
 
-    <body >
-        <div class="container mt-5" >
+    <body>
+        <div class="container mt-5">
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="card">
@@ -131,11 +133,12 @@ color: darkgray;
                         </div>
                         <div class="card-body">
                             <form method="post" id="loginForm" onsubmit="return loginValidate()">
-                                <% if(typeof message!=='undefined' ){ %>
+                                <!-- <% if(typeof message!=='undefined' ){ %>
                                     <p class="text-center" style="color: red;">
                                         <%= message%>
                                     </p>
-                                    <% } %>
+                                    <% } %> -->
+                                <p id="generalError" class="text-danger text-center"></p>
                                 <div class="form-group">
                                     <label for="email">Email:</label>
                                     <input type="email" class="form-con" id="email" name="email"
@@ -143,43 +146,62 @@ color: darkgray;
                                     <!-- Add an element to display email error message -->
                                     <p id="lEmailErr" class="text-danger" style=" margin-left: 10px;"></p>
                                 </div>
-                                <div class="form-group " >
+                                <div class="form-group ">
                                     <label for="password">Password:</label>
-                                    <div class="inputbox   "  > <input type="password" class="form-con" id="password" name="password"
-                                        placeholder="Enter password">
-                                       
+                                    <div class="inputbox   "> <input type="password" class="form-con" id="password"
+                                            name="password" placeholder="Enter password">
+
                                         <i class="fas fa-eye" id="eyeIcon" onclick="togglePasswordVisibility()"></i>
-                                        
+
                                     </div>
-                            
+
                                     <span id="lPassErr" class="text-danger" style=" margin-left: 10px;"></span>
-                                   
+
                                     <!-- Add an element to display password error message -->
-                                    
-                                   
+
+
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-block">Login</button>
                             </form>
                         </div>
-                       
-                                <div class="card-footer d-flex justify-content-between align-items-center">
-                                    <a href="/signup" style="text-decoration: none;">Signup</a>
 
-                                    <a href="/forgetpassword" style="text-decoration: none;">Forgot Password?</a>
-                                </div>
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <a href="/signup" style="text-decoration: none;">Signup</a>
+
+                            <a href="/forgetpassword" style="text-decoration: none;">Forgot Password?</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="successModalLabel">Login Successful</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>You have successfully logged in!</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
     </body>
-  
+
 
     <script>
         function printError(elemId, hintMsg) {
             document.getElementById(elemId).innerText = hintMsg;
         }
-
+        function showGeneralError(message) {
+            document.getElementById('generalError').innerText = message;
+        }
         function loginValidate() {
+            showGeneralError('');
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
@@ -207,24 +229,58 @@ color: darkgray;
                 printError('lPassErr', '');
             }
 
-            return isValid;
+            // return isValid;
+            if (isValid) {
+                // If the form is valid, make an AJAX request
+                loginUser(email, password);
+            }
+
+            return false;
+        }
+
+        function loginUser(email, password) {
+            // Make an AJAX request to the server
+            $.ajax({
+                type: 'POST',
+                url: '/login',
+                data: { email: email, password: password },
+                success: function (response) {
+                    if (response.success) {
+                        window.location.replace('/products'); 
+                    $('#successModal').modal('show');
+                } else {
+                    // Handle other cases if needed
+                }
+                    
+                },
+                error: function (xhr) {
+                    // Handle the error response
+                    if (xhr.status === 401) {
+                        // Unauthorized - display error message to the user
+                        showGeneralError('Email and password are incorrect.');
+                    } else {
+                        // Other errors - display a generic error message
+                        showGeneralError('An error occurred during login.');
+                    }
+                }
+            });
         }
     </script>
     <script>
         function togglePasswordVisibility() {
-    const passwordInput = document.getElementById('password');
-    const eyeIcon = document.getElementById('eyeIcon');
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
 
-    if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        eyeIcon.classList.remove('fa-eye');
-        eyeIcon.classList.add('fa-eye-slash');
-    } else {
-        passwordInput.type = 'password';
-        eyeIcon.classList.remove('fa-eye-slash');
-        eyeIcon.classList.add('fa-eye');
-    }
-}
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
 
     </script>
-     <%- include("../partials/userFooter.ejs")%>
+    <%- include("../partials/userFooter.ejs")%>

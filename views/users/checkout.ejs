@@ -1,7 +1,12 @@
 <%- include("../partials/userHeader.ejs")%>
-    <div class="container-fluid my-5">
+
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+            integrity="sha384-ZzFk/AtbL7ud16iTC5YFDbiJZlFT8i8E4Jmd0OiQOhFOc4Caa8TXOgJT5ckfu7bR" crossorigin="anonymous">
+    </head>
+    <div class="container-fluid ">
         <div class="row justify-content-center">
-            <div class="col-xl-10">
+            <div class="col-xl-12">
                 <div class="card shadow-lg">
                     <div class="row p-2 mt-3 justify-content-between mx-sm-2">
                         <!-- Other content within this row -->
@@ -31,7 +36,8 @@
                                                 <p class="display-address">
                                                     <%= item.name %><span class="mx-3"><a
                                                                 href="/profile?edit=address1&checkout=true"
-                                                                style="text-decoration: none">Edit</a></span>
+                                                                style="text-decoration: none"> <i
+                                                                    class="fas fa-edit"></i> </a></span>
                                                 </p>
                                                 <p class="display-address">
                                                     <%= item.address %>,<%= item.locality %>
@@ -69,12 +75,7 @@
                                 </div>
                                 <div class="card-body mt-3">
 
-                                    <!-- Existing code for the coupon input form -->
 
-                                    <!-- Button to trigger the modal -->
-                                    
-
-                                    <!-- Existing code for the coupon input form continues... -->
 
 
 
@@ -92,7 +93,7 @@
                                     </form>
                                     <button type="button" class="btn btn-light border" data-toggle="modal"
                                         data-target="#couponModal">
-                                        View Available Coupons
+                                        View Available Coupons <span class="fas fa-tags "></span>
                                     </button>
 
                                     <!-- Modal for displaying available coupons -->
@@ -112,9 +113,24 @@
                                                     <% coupons.forEach(function(item ,index) { %>
                                                         <ul>
 
-                                                            <li>Coupon&nbsp;<%=index+1%>:<%=item.code%>
+                                                            <!-- <li>
+                                                                <div>
+                                                                    <%=index+1%>&nbsp;:&nbsp;<%=item.couponName%>
+                                                                </div>
+                                                                You can get this coupon on purchase amount between
+                                                                <%=item.minBill%> to <%=item.maxAmount%>
+                                                                        <div>Code&nbsp;:&nbsp;<%=item.code%>
+                                                                        </div>
+                                                            </li> -->
+                                                            <li class="font-weight-bold">
+                                                                <div>
+                                                                    <%=item.couponName%>
+                                                                </div>
+                                                                <div>You will get <%=item.value%>% discount on this
+                                                                        purchase</div>
+                                                                <p>Code&nbsp;:&nbsp;<%=item.code%>
+                                                                </p>
                                                             </li>
-
                                                             <!-- Add more coupons as needed -->
                                                         </ul>
                                                         <% }); %>
@@ -138,7 +154,7 @@
                                                             placeholder="Coupon code" />
                                                         <button class="btn btn-light border bg-success text-white"
                                                             onclick="applyCoupon()">Apply</button>
-                                                        <!-- Add this button/link where you want to allow the user to remove the coupon -->
+
 
 
                                                     </div>
@@ -149,13 +165,24 @@
 
                                         </div>
                                         <% if(userData.coupon.code) { %>
-                                            <div class=" mt-3" id="removeBox">
-                                                <i class="fas fa-tilde"></i>
-                                                <span id="appliedCouponText">Coupon you have applied: <%=
-                                                        userData.coupon ? userData.coupon.code : 'None' %></span>
-                                                <button class="btn btn-light border bg-warning"
-                                                    id="removeCouponButton">Remove
-                                                </button>
+                                            <div class="mt-3 p-3 border rounded" id="removeBox"
+                                                style="background-color: #ffeeba;">
+                                                <div class="d-flex justify-content-center">
+
+
+                                                    <span id="appliedCouponText" class="font-weight-bold">You have
+                                                        applied one coupon with <%= userData.coupon ?
+                                                            userData.coupon.discount : 'None' %>%&nbsp;discount</span>
+                                                </div>
+                                                <!-- <span> Coupon Code:<%= userData.coupon ? userData.coupon.code
+                                                                : 'None' %></span> -->
+                                                <div class="d-flex justify-content-center mt-2">
+                                                    <button class="btn btn-light border bg-warning"
+                                                        id="removeCouponButton">Remove
+                                                    </button>
+
+
+                                                </div>
                                             </div>
                                             <% }; %>
                                     </div>
@@ -216,13 +243,12 @@
                             window.location.href = '/home';
                         });
                     }
-                    else if(response.couponCodeFailure)
-                    {
+                    else if (response.couponCodeFailure) {
                         Swal.fire({
-                        icon: 'error',
-                        title: 'Coupon Missing or Invalid!',
-                        text: 'Please remove the current coupon enter a valid coupon code to proceed.',
-                    });    
+                            icon: 'error',
+                            title: 'Coupon Missing or Invalid!',
+                            text: 'Please remove the current coupon enter a valid coupon code to proceed.',
+                        });
                     }
                     else if (response.success) { location.replace('/checkout/payment') }
                 }
@@ -244,29 +270,27 @@
                     couponCode: couponCode
                 },
                 success: function (response) {
-                    // $('#couponBox').load(' #couponBox')
-               
                     if (response.success) {
                         Swal.fire({
                             icon: 'success',
                             title: 'Coupon Applied!',
                             text: `You have successfully applied the coupon.`,
                         }).then(() => {
-                          location.reload()
-                          
+                            location.reload();
+                        });
+                    } else if (response.used) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Coupon Already Used',
+                            text: 'You have already used this coupon. Please try another one.',
+                        });
+                    } else if (!response.success) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Coupon Missing or Invalid!',
+                            text: 'Please enter a valid coupon code to proceed.',
                         });
                     }
-                    else if (!response.success) {
-                        Swal.fire({
-                        icon: 'error',
-                        title: 'Coupon Missing or Invalid!',
-                        text: 'Please enter a valid coupon code to proceed.',
-                    });
-                    }
-
-                  
-
-
                 },
                 error: function (error) {
                     // Handle errors (if needed)

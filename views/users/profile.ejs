@@ -1,4 +1,5 @@
 <%- include("../partials/userHeader.ejs")%>
+
     <style>
         #foot {
             margin-top: 10rem;
@@ -131,7 +132,7 @@
                                 </p>
                             </div>
                             <div class="col-sm-3">
-                                <a href="/profile/name/edit"><button class="btn btn-primary">Edit</button></a>
+                                <a href="/profile/name/edit" style="font-size: 20px;"> <i class="fas fa-edit"></i></a>
 
                             </div>
                         </div>
@@ -162,7 +163,7 @@
                                 </p>
                             </div>
                             <div class="col-sm-3">
-                                <a href="/profile/phone/edit"><button class="btn btn-primary">Edit</button></a>
+                                <a href="/profile/phone/edit" style="font-size: 20px;"> <i class="fas fa-edit"></i></a>
 
                             </div>
 
@@ -200,14 +201,12 @@
                                                     </div>
                                                     <div class="d-flex ">
                                                         <div class="ms-2" style="font-size:10px;">
-                                                            <a href="/profile/address/edit/<%=address._id%>"> <button
-                                                                    class="btn btn-primary">Edit</button></a>
+                                                            <a href="/profile/address/edit/<%=address._id%>" style="font-size: 20px;">  <i class="fas fa-edit"></i></a>
 
                                                         </div>
                                                         <div class="ms-2">
-                                                            <button class="btn btn-primary"
-                                                                onclick="removeAddress('<%= address._id %>')"><i
-                                                                    class="fas fa-trash"></i></button>
+                                                            <a class="bg-warning" 
+                                                                onclick="removeAddress('<%= address._id %>')" style="font-size: 20px; " ><span class="glyphicon glyphicon-remove"></span></a>
                                                         </div>
                                                     </div>
 

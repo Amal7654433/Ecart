@@ -76,17 +76,17 @@ const userSchema = new Schema({
         default: 0,
     },
 },
-appliedCoupons: [
-  {
-      code: {
-          type: String,
-      },
-      discount: {
-          type: Number,
-          default: 0,
-      },
-  },
-],
+// appliedCoupons: [
+//   {
+//       code: {
+//           type: String,
+//       },
+//       discount: {
+//           type: Number,
+//           default: 0,
+//       },
+//   },
+// ],
 
   walletHistory: [
     {
@@ -101,10 +101,7 @@ appliedCoupons: [
       },
     },
   ],
-  referralCode: {
-    type: String,
-    unique: true,
-  },
+
   cart: [cartItemSchema],
   address: {
     type: [{

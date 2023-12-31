@@ -270,23 +270,7 @@ width: 100px;
                                             style="font-size: 20px;"> <i class="fas fa-edit"></i></a>
                                     </td>
 
-                                    <!-- <% if (product.active) { %>
-
-                                        <td id="dc">
-                                            <a onclick="deactive('<%= product._id %>')" id="hyy"
-                                                class="btn btn-primary">Deactive</a>
-
-
-                                        </td>
-
-                                        <% } else { %>
-
-
-                                            <td id="ac">
-                                                <a onclick="active('<%= product._id %>')" id="hyy"
-                                                    class="btn btn-dark">Active</a>
-                                            </td>
-                                            <% } %> -->
+                                  
                                                 <td >
                                                
                                     <div class="status">
@@ -313,7 +297,13 @@ width: 100px;
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
         <script>
-
+  $(document).ready(function () {
+        $('#myTable').DataTable({
+            paging: true,
+            searching: true,
+            // Add more options as needed
+        });
+    });
             // function active(id) {
 
             //     console.log(id)

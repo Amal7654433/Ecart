@@ -51,11 +51,11 @@ const verifyLogin = async (req, res) => {
         // req.session.user = userData._id
         if (userData.is_verified === 0) {
           // If the user is not verified, send a verification email
-          sendVerifyMail(userData.name, email, userData._id);
-          return res.render("users/userLogin", {
-            message: "Please verify your email. We've sent a new verification link to your email.",
-            cat,
-          });
+          req.session.signupEmail = req.body.email
+          const OTP = generateOTP();
+          await user.findOneAndUpdate({ email: req.body.email }, { $set: { token: OTP } });
+          sendResetPasswordEmail(req.body.email, OTP)
+          res.redirect('/signup/otp')
         } else {
           if (userData.blocked) {
 
@@ -66,20 +66,21 @@ const verifyLogin = async (req, res) => {
             });
           } else {
             req.session.user = userData._id;
-            return res.redirect("/products");
+            res.json({success:true})
+            // return res.redirect("/products");
           }
         }
-      } else {
-        return res.render("users/userLogin", {
-          message: "Email and password are incorrect.",
-          cat,
-        });
+      } else {   res.status(401).json({ success: false, message: 'Email and password are incorrect.' });
+        // return res.render("users/userLogin", {
+        //   message: "Email and password are incorrect.",
+        //   cat,
+        // });
       }
-    } else {
-      return res.render("users/userLogin", {
-        message: "Email and password are incorrect.",
-        cat,
-      });
+    } else {   res.status(401).json({ success: false, message: 'Email and password are incorrect.' });
+      // return res.render("users/userLogin", {
+      //   message: "Email and password are incorrect.",
+      //   cat,
+      // });
     }
   } catch (error) {
     console.log(error.message);
@@ -116,7 +117,7 @@ const productsByCategory = async (req, res) => {
             inCart: userCartProductIds.includes(product._id.toString())
           }));
 
-          res.render('users/categoryProduct', { products: productsWithCartFlag, category, cat,activeBrands });
+          res.render('users/categoryProduct', { products: productsWithCartFlag, category, cat, activeBrands });
         } else {
 
           res.render('users/categoryProduct', { products, category, cat, activeBrands });
@@ -140,7 +141,7 @@ const productsByCategory = async (req, res) => {
 
 const langingPage = async (req, res) => {
   try {
-    const banner=await Banner.find({active:true})
+    const banner = await Banner.find({ active: true })
     const activeCategories = await catego.find({ active: true });
     const activeBrands = await brand.find({ active: true });
     const products = await prod.find({
@@ -169,10 +170,10 @@ const langingPage = async (req, res) => {
         }));
 
 
-        res.render('users/landing', { products: productsWithCartFlag, cat,banner });
+        res.render('users/landing', { products: productsWithCartFlag, cat, banner });
       } else {
 
-        res.render('users/landing', { products, cat,banner });
+        res.render('users/landing', { products, cat, banner });
       }
     } else {
 
@@ -186,52 +187,12 @@ const langingPage = async (req, res) => {
   }
 };
 
-// const productsView = async (req, res) => {
-//   try {
-//     const id = req.query.id;
-//     // const name = req.query.name
-//     const productDetails = await prod.findById({ _id: id })
-//     if (productDetails) {
-//       if (req.session.userData) {
-//         res.render('users/products', {
-//           userData: req.session.userData,
-//           product: productDetails,
-//         });
-//       } else {
-//         res.send('User is loggedout');
-//       }
-//     } else {
-//       throw new Error('error while fetching the product');
-//     }
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
-// const productsView = async (req, res) => {
-//   try {
-//     const productId = req.params.productId;
 
-//     const product = await prod.findById(productId);
-//     const cat = await catego.find({ active: true })
-
-//     if (!product) {
-
-//       return res.status(404).render('error', { message: 'Product not found' });
-//     }
-
-
-//     res.render('users/productDetails', { product, cat });
-//   } catch (error) {
-//     console.error(error.message);
-
-//     res.status(500).render('error', { message: 'Internal server error' });
-//   }
-// }
 const productsView = async (req, res) => {
   try {
 
     const productId = req.params.productId;
- 
+
 
     const product = await prod.findById(productId);
 
@@ -277,37 +238,7 @@ const productsView = async (req, res) => {
   }
 };
 
-// const sendVerifyMail = async (name, email, user_id) => {
-//   try {
-//     const transporter = mail.createTransport({
-//       service: 'gmail',
-//       auth: {
-//         user: 'amal790257@gmail.com',
-//         pass: 'oazg dytp cbaw ovml'
 
-//       },
-
-//     })
-//     const mailOptions = {
-//       from: 'amal790257@gmail.com',
-//       to: email,
-//       subject: 'for verification mail',
-//       html: '<p>Hii ' + name + ',plaese click here to <a href="http://localhost:7000/verify?id=' + user_id + '"'
-//     }
-//     transporter.sendMail(mailOptions, function (error, info) {
-//       if (error) {
-//         console.log(error.message)
-//       }
-//       else {
-//         console.log("email has been send", info.response)
-//       }
-
-//     })
-
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
 const sendVerifyMail = async (name, email, user_id) => {
   try {
     const uniqueToken = uuidv4();
@@ -353,34 +284,34 @@ const sendVerifyMail = async (name, email, user_id) => {
 };
 
 
-const verifyMail = async (req, res) => {
-  try {
-    const cat = await catego.find({ active: true });
-    const expire = false
-    const currentTimestamp = new Date().getTime();
-    const expiryTimestamp = parseInt(req.query.expiry, 10); // Extract expiry timestamp from URL
+// const verifyMail = async (req, res) => {
+//   try {
+//     const cat = await catego.find({ active: true });
+//     const expire = false
+//     const currentTimestamp = new Date().getTime();
+//     const expiryTimestamp = parseInt(req.query.expiry, 10); 
 
-    if (currentTimestamp > expiryTimestamp) {
-      const expire = true
-      return res.render('users/emailVerificationExpired', { cat, expire });
-    }
+//     if (currentTimestamp > expiryTimestamp) {
+//       const expire = true
+//       return res.render('users/emailVerificationExpired', { cat, expire });
+//     }
 
-    // If the link is not expired, proceed with verification
-    const updateInfo = await user.updateOne({ _id: req.query.id }, { $set: { is_verified: 1 } });
-    const userData = await user.findOne({ _id: req.query.id });
-    if (updateInfo) {
-      req.session.user = userData._id
-    }
 
-    console.log(req.session.user)
+//     const updateInfo = await user.updateOne({ _id: req.query.id }, { $set: { is_verified: 1 } });
+//     const userData = await user.findOne({ _id: req.query.id });
+//     if (updateInfo) {
+//       req.session.user = userData._id
+//     }
 
-    console.log(updateInfo);
+//     console.log(req.session.user)
 
-    res.render('users/emailVerificationExpired', { cat, expire });
-  } catch (error) {
-    console.log(error.message);
-  }
-};
+//     console.log(updateInfo);
+
+//     res.render('users/emailVerificationExpired', { cat, expire });
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
 
 const loadSignup = async (req, res) => {
   try {
@@ -418,19 +349,52 @@ const subSignup = async (req, res) => {
 
     const result = await newUser.save();
 
-    console.log(req.body);
-    console.log(result);
+
 
     if (result) {
-      sendVerifyMail(req.body.name, req.body.email, result._id);
-
-      return res.render('users/signup', {
-        isSuccess: 'The verification link has been sent to your email.',
-        cat,
-      });
+      req.session.signupEmail = req.body.email
+      // sendVerifyMail(req.body.name, req.body.email, result._id);
+      const OTP = generateOTP();
+      await user.findOneAndUpdate({ email: req.body.email }, { $set: { token: OTP } });
+      sendResetPasswordEmail(req.body.email, OTP)
+      res.redirect('/signup/otp')
     }
   } catch (error) {
     res.send(error.message);
+  }
+};
+const signupOtpGet = async (req, res) => {
+  try {
+
+    res.render('users/signupOtp', { message: '' });
+
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+const signupOtpPost = async (req, res) => {
+  try {
+    enteredOTP = req.body.otp;
+    console.log('amal',enteredOTP)
+    const users = await user.findOne({ email: req.session.signupEmail });
+    const storedOTP = users.token;
+    
+    if (enteredOTP === storedOTP) {
+
+      const updateInfo = await user.updateOne({ email: req.session.signupEmail }, { $set: { is_verified: 1 } });
+      const userData = await user.findOne({ email: req.session.signupEmail });
+      if (updateInfo) {
+        req.session.user = userData._id
+      }
+
+      return res.redirect('/home');
+
+    } else {
+      // OTP is incorrect
+      return res.render('users/signupOtp', { message: 'Invalid OTP' });
+    }
+  } catch (error) {
+    console.log(error.message);
   }
 };
 
@@ -602,8 +566,7 @@ const verifyOtp = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
     const storedOTP = users.token;
-    console.log(users.token)
-    console.log(enteredOTP)
+
 
 
     // Check if the entered OTP matches the stored OTP
@@ -726,6 +689,7 @@ const deactivateAccount = async (req, res) => {
 
 
 module.exports = {
+  signupOtpGet, signupOtpPost,
   homeView,
   langingPage,
   productsView
@@ -735,7 +699,7 @@ module.exports = {
 
   loadSignup,
   subSignup,
-  verifyMail,
+  // verifyMail,
   forgetPasswordEmail,
   submitEmailForPasswordReset,
   userLogout,

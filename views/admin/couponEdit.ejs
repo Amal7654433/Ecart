@@ -7,7 +7,7 @@
             height: 60px;
             width: 100%;
 
-           
+
 
         }
     </style>
@@ -24,11 +24,11 @@
                                 value="<%=coupon.couponName%>">
                             <span id="nameEr" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="coupon code">Coupon Code</label>
                             <input type="text" class="form-control" id="CouponCod" name="code" value="<%=coupon.code%>">
                             <span id="codeEr" class="text-danger"></span>
-                        </div>
+                        </div> -->
                         <div class="form-group">
                             <label for="couponValue">Coupon Value</label>
                             <input name="value" placeholder="coupon value(%)" type="number" id="CouponValu"
@@ -65,14 +65,14 @@
         </div>
     </section>
     <script>
-          function printError(elemId, hintMsg) {
-                document.getElementById(elemId).innerText = hintMsg;
-            }
+        function printError(elemId, hintMsg) {
+            document.getElementById(elemId).innerText = hintMsg;
+        }
         function validateCouponEditForm() {
             console.log('hello world')
             let isValid = true;
             const name = document.getElementById('CouponNam').value;
-            const code = document.getElementById('CouponCod').value;
+            // const code = document.getElementById('CouponCod').value;
 
             const value = document.getElementById('CouponValu').value;
             const minBill = document.getElementById('minBil').value;
@@ -87,12 +87,12 @@
                 printError('nameEr', '');
             }
 
-            if (code.trim() === '') {
-                printError('codeEr', 'Please enter coupon code');
-                isValid = false;
-            } else {
-                printError('codeEr', '');
-            }
+            // if (code.trim() === '') {
+            //     printError('codeEr', 'Please enter coupon code');
+            //     isValid = false;
+            // } else {
+            //     printError('codeEr', '');
+            // }
 
             if (value.trim() === '' || isNaN(value) || value < 0 || value > 100) {
                 printError('valueEr', 'Please enter coupon discount');
@@ -107,19 +107,32 @@
                 printError('minEr', '');
             }
             if (maxBill.trim() === '' || isNaN(maxBill) || maxBill < 0) {
-                printError('maxEr', 'Please select an minimum amount');
+                printError('maxEr', 'Please enter a valid maximum amount');
                 isValid = false;
             } else {
-                printError('maxEr', '');
+                if (parseFloat(maxBill) <= parseFloat(minBill)) {
+                    printError('maxEr', 'Maximum amount must be greater than the minimum amount');
+                    isValid = false;
+                } else {
+                    printError('maxEr', '');
+                }
             }
+
 
             if (date.trim() === '') {
-                printError('dateEr', 'Please enter expiry date');
+                printError('dateEr', 'Please enter an expiry date');
                 isValid = false;
             } else {
-                printError('dateEr', '');
-            }
+                const currentDate = new Date();
+                const selectedDate = new Date(date);
 
+                if (selectedDate <= currentDate) {
+                    printError('dateEr', 'Expiry date must be greater than the current date');
+                    isValid = false;
+                } else {
+                    printError('dateEr', '');
+                }
+            }
 
 
 

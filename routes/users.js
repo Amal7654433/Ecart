@@ -18,6 +18,8 @@ router.get('/',auth.emailTempClear,userControl.langingPage)
 /* signup section */
 router.get('/signup',auth.emailTempClear,auth.userLogout,userControl.loadSignup)
 router.post('/signup',userControl.subSignup)
+router.get('/signup/otp',userControl.signupOtpGet)
+router.post('/signup/otp',userControl.signupOtpPost)
 
 
 
@@ -25,7 +27,7 @@ router.post('/signup',userControl.subSignup)
 /* login section */
 router.get('/login',auth.emailTempClear,auth.userLogout,userControl.loadLogin)
 router.post('/login',userControl.verifyLogin)
-router.get('/verify',auth.userLogout,userControl.verifyMail)
+// router.get('/verify',auth.userLogout,userControl.verifyMail)
 router.get('/logout',userControl.userLogout)
 // router.get('/blocked',userControl.userBlock)
 

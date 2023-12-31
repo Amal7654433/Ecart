@@ -188,7 +188,8 @@
 
                                 <td>
 
-                                    <a href="/admin/coupons/edit/<%= coupon._id %>" style="font-size: 20px;"> <i class="fas fa-edit"></i></a>
+                                    <a href="/admin/coupons/edit/<%= coupon._id %>" style="font-size: 20px;"> <i
+                                            class="fas fa-edit"></i></a>
                                 </td>
 
                                 <td>
@@ -210,7 +211,7 @@
                 </table>
             </div>
         </div>
-      
+
         <div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -223,18 +224,19 @@
                     </div>
                     <div class="modal-body">
                         <!-- Form for adding a new product -->
-                        <form id="addProductForm" method="post"  onsubmit=" return validateCouponForm()" action="/admin/coupons/add">
+                        <form id="addProductForm" method="post" onsubmit=" return validateCouponForm()"
+                            action="/admin/coupons/add">
 
                             <div class="form-group">
                                 <label for="coupon Name">Coupon Name</label>
-                                <input type="text" class="form-control" id="CouponName" name="couponName" > 
+                                <input type="text" class="form-control" id="CouponName" name="couponName">
                                 <span id="nameErr" class="text-danger"></span>
                             </div>
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="coupon code">Coupon Code</label>
                                 <input type="text" class="form-control" id="CouponCode" name="code">
                                 <span id="codeErr" class="text-danger"></span>
-                            </div>
+                            </div> -->
                             <div class="form-group">
                                 <label for="couponValue">Coupon Value</label>
                                 <input name="value" placeholder="coupon value(%)" type="number" id="couponValue"
@@ -268,9 +270,9 @@
             </div>
         </div>
         <!-- Edit Modal -->
-      
-            
-           
+
+
+
 
     </section>
 
@@ -285,7 +287,7 @@
             console.log('HELLO WORLD')
             let isValid = true;
             const name = document.getElementById('CouponName').value;
-            const code = document.getElementById('CouponCode').value;
+            // const code = document.getElementById('CouponCode').value;
 
             const couponValue = document.getElementById('couponValue').value;
             const minBill = document.getElementById('minBill').value;
@@ -300,12 +302,12 @@
                 printError('nameErr', '');
             }
 
-            if (code.trim() === '') {
-                printError('codeErr', 'Please enter coupon code');
-                isValid = false;
-            } else {
-                printError('codeErr', '');
-            }
+            // if (code.trim() === '') {
+            //     printError('codeErr', 'Please enter coupon code');
+            //     isValid = false;
+            // } else {
+            //     printError('codeErr', '');
+            // }
 
             if (couponValue.trim() === '' || isNaN(couponValue) || couponValue < 0 || couponValue > 100) {
                 printError('valueErr', 'Please enter coupon discount');
@@ -313,25 +315,44 @@
             } else {
                 printError('valueErr', '');
             }
-            if (minBill.trim() === '' || isNaN(minBill) || minBill < 0 ) {
+            if (minBill.trim() === '' || isNaN(minBill) || minBill < 0) {
                 printError('minErr', 'Please select an minimum amount');
                 isValid = false;
             }
-             else {
+            else {
                 printError('minErr', '');
             }
-            if (maxBill.trim() === '' || isNaN(maxBill) || maxBill < 0 ) {
-                printError('maxErr', 'Please select an minimum amount');
+          
+            if (maxBill.trim() === '' || isNaN(maxBill) || maxBill < 0) {
+                printError('maxErr', 'Please enter a valid maximum amount');
                 isValid = false;
             } else {
-                printError('maxErr', '');
+                if (parseFloat(maxBill) <= parseFloat(minBill)) {
+                    printError('maxErr', 'Maximum amount must be greater than the minimum amount');
+                    isValid = false;
+                } else {
+                    printError('maxErr', '');
+                }
             }
-
+            // if (date.trim() === '') {
+            //     printError('dateErr', 'Please enter expiry date');
+            //     isValid = false;
+            // } else {
+            //     printError('dateErr', '');
+            // }
             if (date.trim() === '') {
-                printError('dateErr', 'Please enter expiry date');
+                printError('dateErr', 'Please enter an expiry date');
                 isValid = false;
             } else {
-                printError('dateErr', '');
+                const currentDate = new Date();
+                const selectedDate = new Date(date);
+
+                if (selectedDate <= currentDate) {
+                    printError('dateErr', 'Expiry date must be greater than the current date');
+                    isValid = false;
+                } else {
+                    printError('dateErr', '');
+                }
             }
 
 
@@ -339,14 +360,14 @@
             return isValid;
         }
 
-        
+
         // document.getElementById('addProductForm').addEventListener('submit', function (event) {
-        //     event.preventDefault(); 
-        //     validateCouponForm(); 
+        //     event.preventDefault();
+        //     validateCouponForm();
         // });
         // document.getElementById('editform').addEventListener('submit', function (event) {
-        //     event.preventDefault(); 
-        //     validateCouponEditForm() 
+        //     event.preventDefault();
+        //     validateCouponEditForm()
         // });
     </script>
 
