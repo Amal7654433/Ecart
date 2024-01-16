@@ -1,4 +1,4 @@
-<%- include("../partials/userHeader.ejs")%>
+<%- include("../partials/userHead2.ejs")%>
     <style>
         .empty {
             display: flex;
@@ -20,6 +20,9 @@
             color: blue;
             /* Text color on hover */
             /* Additional styles if needed */
+        }
+        #searchForm {
+            visibility: hidden;
         }
     </style>
     <% if (wishlist && wishlist.products.length> 0) { %>

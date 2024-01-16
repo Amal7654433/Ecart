@@ -4,6 +4,16 @@ const adminControl = require("../controller/adminController")
 const couponControl=require("../controller/couponController")
 const upload = require("../middlewares/multer")
 const auth = require('../middlewares/auth')
+const dashboardControl=require('../controller/dashboardController')
+
+
+router.get('/sales', auth.adminLoggedIn, dashboardControl.salesReport)
+router.get('/admin/chart', auth.adminLoggedIn, dashboardControl.chart)
+router.get('/admin/dashboard', auth.adminLoggedIn,   dashboardControl.dashboardView)
+router.get('/admin/dashboard/report', auth.adminLoggedIn, dashboardControl.orderReport)
+router.get('/admin/exportExcel', auth.adminLoggedIn, dashboardControl.orderExcel)
+router.post('/admin/orderSearch', auth.adminLoggedIn, dashboardControl.orderSearch)
+
 
 // /* GET home page. */
 router.get('/admin',auth.adminLogout, adminControl.adminLogin)
@@ -38,10 +48,6 @@ router.post('/admin/products/update/:id',  upload.array('image'), adminControl.p
 router.get('/admin/products/details/:id', auth.adminLoggedIn, adminControl.productDetails);
 router.get('/admin/products/image/edit/:id',auth.adminLoggedIn,  adminControl.imageEdit);
 
-router.get('/admin/dashboard', auth.adminLoggedIn,   adminControl.dashboardView)
-router.get('/admin/dashboard/report', auth.adminLoggedIn, adminControl.orderReport)
-router.get('/admin/exportExcel', auth.adminLoggedIn, adminControl.orderExcel)
-router.post('/admin/orderSearch', auth.adminLoggedIn, adminControl.orderSearch)
 router.get('/admin/customer',auth.adminLoggedIn,  adminControl.userManagement)
 
 
@@ -60,14 +66,6 @@ router.get('/admin/order/status',auth.adminLoggedIn,  adminControl.orderStatusLo
 router.post('/admin/order/status',auth.adminLoggedIn,  adminControl.editOrderStatus)
 
 
-// router.get('/admin/coupon',auth.adminLoggedIn,  adminControl.couponLoad)
-
-
-// router.post('/admin/coupon/add', auth.adminLoggedIn,  adminControl.couponAdd)
-// router.get('/admin/coupon/Deactivate', auth.adminLoggedIn, adminControl.couponDeactivate)
-// router.get('/admin/coupon/Activate', auth.adminLoggedIn, adminControl.couponActivate)
-// router.get('/admin/coupon/edit', auth.adminLoggedIn, adminControl.couponEdit)
-// router.post('/admin/coupon/update', auth.adminLoggedIn,  adminControl.couponUpdate)
 
 
 
@@ -77,7 +75,7 @@ router.get('/admin/banner/edit/:id', auth.adminLoggedIn, adminControl.bannerEdit
 router.post('/admin/banner/update/:id', auth.adminLoggedIn, upload.single('image'), adminControl.bannerUpdate)
 router.patch('/admin/banner/disable', auth.adminLoggedIn, adminControl.bannerDisable)
 router.patch('/admin/banner/enable', auth.adminLoggedIn, adminControl.bannerEnable)
-router.get('/sales', auth.adminLoggedIn, adminControl.salesReport)
+
 
 router.get('/admin/coupons',auth.adminLoggedIn,couponControl.couponLoad)
 router.post('/admin/coupons/add',auth.adminLoggedIn,couponControl.addCoupon)

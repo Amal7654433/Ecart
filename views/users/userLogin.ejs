@@ -1,4 +1,4 @@
-<%- include("../partials/userHeader.ejs")%>
+<%- include("../partials/userHead2.ejs")%>
     <style>
         #foot {
             margin-top: 15rem;
@@ -43,6 +43,10 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 16px;
+        }
+
+        #searchForm {
+            visibility: hidden;
         }
 
         .btn-primary {
@@ -246,12 +250,43 @@ color: darkgray;
                 data: { email: email, password: password },
                 success: function (response) {
                     if (response.success) {
-                        window.location.replace('/products'); 
-                    $('#successModal').modal('show');
-                } else {
-                    // Handle other cases if needed
-                }
-                    
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Successful!',
+                            text: 'You have successfully logged in.',
+                            confirmButtonText: 'OK',
+                        }).then((result) => {
+
+                            if (result.isConfirmed || result.isDismissed) {
+
+                                window.location.replace('/products');
+                            }
+                        });
+
+                    } else if (response.otp) {
+                        // Handle OTP verification
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'OTP Verification',
+                            text: 'An OTP has been sent to your email for verification.',
+                            confirmButtonText: 'OK',
+                        }).then((result) => {
+                            if (result.isConfirmed || result.isDismissed) {
+                                // Redirect or perform any other action as needed
+                                window.location.replace('/signup/otp');
+                            }
+                        });
+                    }
+                    else if (response.blocked) {
+                        // Display a SweetAlert alert for blocked account
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Account Blocked',
+                            text: 'Your account is blocked. Please contact the admin.',
+                            confirmButtonText: 'OK',
+                        });
+                    }
                 },
                 error: function (xhr) {
                     // Handle the error response

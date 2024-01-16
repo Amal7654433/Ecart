@@ -16,6 +16,7 @@ const http = require('http'); // Or another HTTP library if you prefer
 const cookie = require('cookie');
 const catego = require('./models/categoryModel');
 const prod = require('./models/adminProducts');
+const { config } = require('dotenv');
 const app = express();
 
 
@@ -31,33 +32,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use((req, res, next) => {
-    res.locals.userIsAuthenticated = req.session.user ? true : false;
-    next();
-});
-
-app.use(async (req, res, next) => {
-    try {
-
-      const cat = await catego.find({ active: true });
-      res.locals.cat = cat;
-      next();
-    } catch (error) {
-      // Handle the error as needed
-      next(error);
-    }
-  });
-app.use(async (req, res, next) => {
-    try {
-      const products = await prod.find({ active: true });
-      res.locals.products = products;
-      next();
-    } catch (error) {
-      // Handle the error as needed
-      next(error);
-    }
-  });
-
 
 app.use(usersRouter)
 app.use(adminRouter);
@@ -91,7 +65,7 @@ app.use(function (err, req, res, next) {
     res.render('error', { errStatus, errMessage });
 });
 app.listen(process.env.PORT, () => {
-    console.log("server running on", 7000);
+    console.log("server running on", process.env.PORT);
 })
 
 module.exports = app;

@@ -60,11 +60,11 @@ const checkOutView = async (req, res) => {
                     { minBill: { $lte: totalBill } },
                     { maxAmount: { $gte: totalBill } },
                     { active: true },
-                    { usedUsers: { $not: { $in: [userId] } } } ,
-                    { expiryDate: { $gte: currentDate } } 
+                    { usedUsers: { $not: { $in: [userId] } } },
+                    { expiryDate: { $gte: currentDate } }
                 ]
             });
-      
+
             res.render('users/checkout', { userData, coupons });
         }
     } catch (error) {
@@ -77,7 +77,7 @@ const checkOutPost = async (req, res) => {
     try {
         const userData = await user.findById(req.session.user)
         const selectedAddressIndex = req.body.selectedAddressIndex;
-
+        console.log(selectedAddressIndex, 'index')
         const selectedAddress = userData.address[selectedAddressIndex];
         req.session.addr = selectedAddress;
         const cartItems = userData.cart;
@@ -193,7 +193,9 @@ const paymentPost = async (req, res) => {
         };
         const carts = userData.cart;
         const cartItems = [];
+    
         carts.forEach((item) => {
+            let discount = (userData.coupon.discount / 100) * item.total_price;
             cartItems.push({
                 productId: item.prod_id._id,
                 productName: item.prod_id.name,
@@ -201,7 +203,7 @@ const paymentPost = async (req, res) => {
                 category: item.prod_id.category.name,
                 image: item.prod_id.image[0],
 
-                bill: item.total_price,
+                bill: item.total_price-discount,
 
                 quantity: item.qty,
             });
@@ -327,7 +329,7 @@ const orderSuccessRedirect = async (req, res) => {
             { new: true }
         );
         console.log(userData.coupon)
-  userData.coupon = { code: null, discount: 0 };
+        userData.coupon = { code: null, discount: 0 };
         await userData.save();
         // res.status(200).json({ success: true, message: 'Order placed successfully.' });
 
@@ -387,6 +389,7 @@ const ordersView = async (req, res) => {
 };
 const cancelOrder = async (req, res) => {
     try {
+
         const userData = req.session.user;
         const users = await user.findById(userData)
 
@@ -449,7 +452,7 @@ const returnOrder = async (req, res) => {
         const users = await user.findById(userData)
         // const id = req.query.id;
         const id = req.body.id;
-
+        const refund = req.body.refund
         const result = await order.findOneAndUpdate(
             {
                 user_id: users._id,
@@ -470,6 +473,15 @@ const returnOrder = async (req, res) => {
             { _id: selectedItem.productId },
             { $inc: { stock: selectedItem.quantity } }
         );
+        await user.findByIdAndUpdate({ _id: users._id }, {
+            $inc: { wallet: refund }, $push: {
+                walletHistory: {
+                    date: new Date(),
+                    amount: refund,
+                    status: "Credit",
+                },
+            },
+        });
         res.redirect('/orders?user=true');
     } catch (error) {
         console.log(error.message);

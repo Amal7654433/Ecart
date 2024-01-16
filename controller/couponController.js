@@ -20,18 +20,18 @@ exports.couponLoad = async (req, res) => {
 exports.addCoupon = async (req, res) => {
     try {
 
-        const { couponName,  value, minBill, maxAmount, expiryDate } = req.body;
+        const { couponName, value, minBill, maxAmount, expiryDate } = req.body;
 
-       
-      
+
+
         let isUnique = false;
         let randomString;
 
-      
+
         while (!isUnique) {
             randomString = crypto.randomBytes(3).toString('hex');
-            
-            
+
+
             const existingCoupon = await Coupon.findOne({ code: randomString });
 
             if (!existingCoupon) {
@@ -41,7 +41,7 @@ exports.addCoupon = async (req, res) => {
         // Create a new coupon instance
         const newCoupon = new Coupon({
             couponName,
-            code:  randomString,
+            code: randomString,
             value,
             minBill,
             maxAmount,
@@ -139,18 +139,19 @@ exports.applyCoupon = async (req, res) => {
         const couponCode = req.body.couponCode
         const coupon = await Coupon.findOne({ code: couponCode });
         const userData = await user.findById(req.session.user)
-     
-        if (coupon.usedUsers.includes(userData._id)) {
-            console.log('Coupon already applied by this user');
-            return res.json({ used: true, message: 'Coupon already applied by this user' });
-        }
+
+
         const cart = userData.cart;
         const sum = cart.reduce((sum, item) => sum + item.total_price, 0);
         const currentDate = new Date();
-      
-        if (!coupon || !coupon.active || sum < coupon.minBill || sum > coupon.maxAmount || coupon.code !== couponCode ||coupon.expiryDate < currentDate) {
+
+        if (!coupon || !coupon.active || sum < coupon.minBill || sum > coupon.maxAmount || coupon.code !== couponCode || coupon.expiryDate < currentDate) {
             console.log('Invalid coupon code:', couponCode);
             return res.json({ success: false, message: 'Invalid coupon code' });
+        }
+        else if (coupon.usedUsers.includes(userData._id)) {
+            console.log('Coupon already applied by this user');
+            return res.json({ used: true, message: 'Coupon already applied by this user' });
         }
         else {
             await Coupon.findByIdAndUpdate(coupon._id, { $addToSet: { usedUsers: userData._id } });

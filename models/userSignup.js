@@ -19,7 +19,7 @@ const cartItemSchema = new Schema({
     type: Number,
     required: true,
   },
-  
+
   // You can add other fields specific to cart items if needed
 });
 const userSchema = new Schema({
@@ -69,24 +69,24 @@ const userSchema = new Schema({
   },
   coupon: {
     code: {
-        type: String,
+      type: String,
     },
     discount: {
-        type: Number,
-        default: 0,
+      type: Number,
+      default: 0,
     },
-},
-// appliedCoupons: [
-//   {
-//       code: {
-//           type: String,
-//       },
-//       discount: {
-//           type: Number,
-//           default: 0,
-//       },
-//   },
-// ],
+  },
+  // appliedCoupons: [
+  //   {
+  //       code: {
+  //           type: String,
+  //       },
+  //       discount: {
+  //           type: Number,
+  //           default: 0,
+  //       },
+  //   },
+  // ],
 
   walletHistory: [
     {
@@ -101,7 +101,10 @@ const userSchema = new Schema({
       },
     },
   ],
-
+  referralCode: {
+    type: String,
+    unique: true,
+  },
   cart: [cartItemSchema],
   address: {
     type: [{

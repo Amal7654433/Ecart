@@ -1,4 +1,4 @@
-<%- include("../partials/userHeader.ejs")%>
+<%- include("../partials/userHead2.ejs")%>
     <style>
         .icon-hover:hover {
             border-color: #3b71ca !important;
@@ -97,10 +97,13 @@
 
     <!-- content -->
     <section class="py-5">
+        
         <div class="container">
             <div class="row gx-5">
                 <aside class="col-lg-6">
+                    
                     <div id="img-zoomer-box" class="border rounded-4 mb-3 d-flex justify-content-baseline">
+                        
                         <img id="mainImage" style="max-width: 100%; max-height: 100vh; margin: auto;"
                             class="rounded-4 fit" src="/images/<%= product.image[0] %>" />
                         <div id="img-2"></div>
@@ -129,10 +132,14 @@
                 </script>
 
                 <main class="col-lg-6">
+                    <a href="#"   onclick="addToWishlist('<%= product._id %>')"
+                        class=" py-2 icon-hover  float-end"> <i
+                            class="me-1 fa fa-heart fa-lg " style="color: red;"></i>  </a>
                     <div class="ps-lg-3">
                         <h4 class="title text-dark">
                             <%=product.name%>
                         </h4>
+                        
                         <div class="d-flex flex-row my-3">
                             <div class="text-warning mb-1 me-2">
                                 <i class="fa fa-star"></i>
@@ -208,25 +215,24 @@
                         <% if (product.stock < 1) { %>
                             <span aria-disabled="true">out of stock</span>
                             <% } else { %>
-                                <a href="/checkout?buynow=true" class=" shadow-0"><button class=" btn btn-primary"
-                                        onclick="buynow(`<%= product._id %>`)"> Buy now</button> </a>
+                                <a href="/checkout?buynow=true"  onclick="buynow(`<%= product._id %>`)" class="text-white btn btn-warning  " style="width: 200px; height: 50px;" >
+                                       <h5 class="mt-1"> Buy Now</h5> </a>
                                 <% if (product.inCart) { %>
-                                    <a href="/cart" class="btn btn-primary">Go to Cart</a>
+                                    <a href="/cart" class="btn btn-primary text-center " style="height: 50px; width: 200px;"><h5 class="mt-1">Go To Cart</h5></a>
                                     <% } else { %>
                                         <!-- <button class="add-to-cart-btn" productId="<%= product._id %>">Add to Cart</button> -->
-                                        <button class="btn btn-primary" onclick="addCart(`<%= product._id %>`)">Add to
-                                            Cart</button>
+                                        <button class="btn btn-primary text-center" style="height: 50px; width: 200px;" onclick="addCart(`<%= product._id %>`)"> 
+                                            <h5 class="mt-1">Add To Cart</h5></button>
 
                                         <% } %>
-                                            <a href="#"   onclick="addToWishlist('<%= product._id %>')"
-                                                class="btn btn-light border border-secondary py-2 icon-hover px-3"> <i
-                                                    class="me-1 fa fa-heart fa-lg"></i> Save </a>
+                                            
                                             <% } %>
                     </div>
                 </main>
             </div>
         </div>
     </section>
+  
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
 

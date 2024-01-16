@@ -47,7 +47,7 @@
         .card .card-statistic-3 .card-icon-large .far,
         .card .card-statistic-3 .card-icon-large .fab,
         .card .card-statistic-3 .card-icon-large .fal {
-            font-size: 110px;
+            font-size: 80px;
         }
 
         .card2 .card-statistic-3 .card-icon {
@@ -56,8 +56,8 @@
             margin-left: 15px;
             color: #000;
             position: absolute;
-            right: -5px;
-            top: 20px;
+            right: 10px;
+            top: 40px;
             opacity: 0.1;
         }
 
@@ -79,7 +79,7 @@
         }
 
         .chartBox {
-            width: 700px;
+            width: fit-content;
             padding: 20px;
             border-radius: 20px;
             border: solid 3px rgba(54, 162, 235, 1);
@@ -89,47 +89,122 @@
 
 
     <div class="container ">
-        <div class="row d-flex justify-content-center align-items-center h-100">
+        <h3 class="fw-bold  pt-1">Hai Admin Welcome <span class="text-danger">Back</span></h3>
+        <div class="d-flex justify-content-between align-items-center mb-5 ">
+            <h1 class="fw-bold mb-0 text-black">Sales overview</h1>
+            <a href="/admin/dashboard/report" style="text-decoration: none " class=" badge badge-primary float-end">
+                <h6 class="mt-1">
+                    <i class="fa fa-download"></i>
+                    Download Report
+                </h6>
+            </a>
+        </div>
+        <div class="row d-flex justify-content-center align-items-center h-100 mt-3">
             <div class="col-12 border-0">
-                <div class="card card-registration card-registration-2 border-0">
-                    <div class="card-body p-0" style="background-color: #FEFFE0;">
-                        <h3 class="fw-bold mt-2 pt-1">Hai Admin Welcome <span class="text-danger">Back</span></h3>
-                       
-                        <div class="row g-0">
-                            <div class="col-lg-8">
-                                <div class="">
-                                    <div class="d-flex justify-content-between align-items-center mb-5">
-                                        <h1 class="fw-bold mb-0 text-black">Sales overview</h1>
-                                        <a href="/admin/dashboard/report" style="text-decoration: none">
-                                            <h6 class="mb-0 text-muted">
-                                                <i class="fa fa-download" aria-hidden="true"></i>
-                                                Download Report
-                                            </h6>
-                                        </a>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-6">
+                            <div class="card2 l-bg-cherry">
+                                <div class="card-statistic-3 p-3">
+                                    <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i>
                                     </div>
-                                    <label for="timePeriod">Select Time Period:</label>
-                                    <select id="timePeriod" onchange="updateChart()">
-                                        <option value="monthly">Monthly</option>
-                                        <option value="yearly">Yearly</option>
-                                    </select>
-                                    <hr class="my-4">
-                                    <div class="chartCard mb-4 d-flex justify-content-between align-items-center">
-                                        <div class="chartBox">
-                                            <canvas id="myChart"></canvas>
-                                            <input type="month" id="monthlyFilter" onchange="filterChart()" />
-                                            <select id="yearlyFilter" onchange="filterChart()">
-                                                <!-- Add options for yearly selection dynamically based on available years -->
-                                                <% Object.keys(months).forEach(function(year) { %>
-                                                    <option value="<%= year %>"><%= year %></option>
-                                                <% }); %>
-                                            </select>
-                                            <button onclick="reset()">reset</button>
+                                    <div class="mb-4">
+                                        <h5 class="card-title mb-0">Orders</h5>
+                                    </div>
+                                    <div class="row align-items-center mb-2 d-flex">
+                                        <div class="col-8">
+                                            <h2 class="d-flex align-items-center mb-0">
+                                                <%= orderCount %>
+                                            </h2>
                                         </div>
                                     </div>
-                                    <hr class="my-4">
                                 </div>
                             </div>
-                            <!-- <div class="col-lg-4 bg-grey">
+                        </div>
+                        <div class="col-xl-3 col-lg-6">
+                            <div class="card2 l-bg-blue-dark">
+                                <div class="card-statistic-3 p-3">
+                                    <div class="card-icon card-icon-large"><i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="mb-4">
+                                        <h5 class="card-title mb-0">Customers</h5>
+                                    </div>
+                                    <div class="row align-items-center mb-2 d-flex">
+                                        <div class="col-8">
+                                            <h2 class="d-flex align-items-center mb-0">
+                                                <%= userCount %>
+                                            </h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6">
+                            <div class="card2 l-bg-green-dark">
+                                <div class="card-statistic-3 p-3">
+                                    <div class="card-icon card-icon-large"><i class="fas fa-ticket-alt"></i>
+                                    </div>
+                                    <div class="mb-4">
+                                        <h5 class="card-title mb-0">Sold Products</h5>
+                                    </div>
+                                    <div class="row align-items-center mb-2 d-flex">
+                                        <div class="col-8">
+                                            <h2 class="d-flex align-items-center mb-0">
+                                                <%= totalQuantity %>
+                                            </h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6">
+                            <div class="card2 l-bg-orange-dark">
+                                <div class="card-statistic-3 p-3 ">
+                                    <div class="card-icon card-icon-large  "><i class="fas fa-dollar-sign"></i>
+                                    </div>
+                                    <div class="mb-4">
+                                        <h5 class="card-title mb-0">Total Revenue</h5>
+                                    </div>
+                                    <div class="row align-items-center mb-2 d-flex" id="ellipse">
+                                        <div class="col-8 " id="">
+                                            <h2 class="d-flex align-items-center mb-0" title="₹<%= totalBill %>">₹
+                                                <%= totalBill %>
+                                            </h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+
+
+                    <div class="row g-0">
+                        <div class="col-lg-8">
+                            <div class="">
+
+
+                                <label for="timePeriod">Select Time Period:</label>
+                                <select class="light-bg" id="timeFilter" onchange="updateChart()">
+                                    <option value="monthly">Monthly</option>
+                                    <option value="weekly">weekly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                          
+                                <div class="chartCard mb-4 d-flex justify-content-between align-items-center">
+                                    
+                                    <div class="chartBox">
+
+                                        <input type="hidden" id="monthlySalesData"
+                                            value='<%= JSON.stringify(monthlySalesData) %>'>
+                                        <canvas id="salesChart" height="300" width="650"></canvas>
+                                    </div>
+                                </div>
+                                <hr class="my-4">
+                            </div>
+                        </div>
+                        <!-- <div class="col-lg-4 bg-grey">
                                 <div class="p-5">
                                     <h3 class="fw-bold mb-5 mt-2 pt-1">Other Reports</h3>
                                     <hr class="my-4 mb-5">
@@ -143,96 +218,178 @@
                                     <input type="hidden" id="fordata" value="<%=data%>">
                                 </div>
                             </div> -->
-                        </div>
-                        <div class="col-md-10">
-                            <div class="row">
-                                <div class="col-xl-3 col-lg-6">
-                                    <div class="card2 l-bg-cherry">
-                                        <div class="card-statistic-3 p-4">
-                                            <div class="card-icon card-icon-large"><i class="fas fa-shopping-cart"></i>
-                                            </div>
-                                            <div class="mb-4">
-                                                <h5 class="card-title mb-0">Orders</h5>
-                                            </div>
-                                            <div class="row align-items-center mb-2 d-flex">
-                                                <div class="col-8">
-                                                    <h2 class="d-flex align-items-center mb-0">
-                                                        <%= orderCount %>
-                                                    </h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-3 col-lg-6">
-                                    <div class="card2 l-bg-blue-dark">
-                                        <div class="card-statistic-3 p-4">
-                                            <div class="card-icon card-icon-large"><i class="fas fa-users"></i>
-                                            </div>
-                                            <div class="mb-4">
-                                                <h5 class="card-title mb-0">Customers</h5>
-                                            </div>
-                                            <div class="row align-items-center mb-2 d-flex">
-                                                <div class="col-8">
-                                                    <h2 class="d-flex align-items-center mb-0">
-                                                        <%= userCount %>
-                                                    </h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-3 col-lg-6">
-                                    <div class="card2 l-bg-green-dark">
-                                        <div class="card-statistic-3 p-4">
-                                            <div class="card-icon card-icon-large"><i class="fas fa-ticket-alt"></i>
-                                            </div>
-                                            <div class="mb-4">
-                                                <h5 class="card-title mb-0">Sold Products</h5>
-                                            </div>
-                                            <div class="row align-items-center mb-2 d-flex">
-                                                <div class="col-8">
-                                                    <h2 class="d-flex align-items-center mb-0">
-                                                        <%= totalQuantity %>
-                                                    </h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-3 col-lg-6">
-                                    <div class="card2 l-bg-orange-dark">
-                                        <div class="card-statistic-3 p-4">
-                                            <div class="card-icon card-icon-large "><i class="fas fa-dollar-sign"></i>
-                                            </div>
-                                            <div class="mb-4">
-                                                <h5 class="card-title mb-0">Total Revenue</h5>
-                                            </div>
-                                            <div class="row align-items-center mb-2 d-flex" id="ellipse">
-                                                <div class="col-8 " id="">
-                                                    <h2 class="d-flex align-items-center mb-0"
-                                                        title="₹<%= totalBill %>">₹<%= totalBill %>
-                                                    </h2>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
+
+
                 </div>
+
             </div>
         </div>
     </div>
 
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.min.js"></script>
     <script
         src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
-     
-        
+    <script>
+        const monthlySalesDataInput = document.getElementById('monthlySalesData');
+        const monthlySalesData = JSON.parse(monthlySalesDataInput.value);
+        const months = monthlySalesData.map(item => item.month);
+        const salesData = monthlySalesData.map(item => item.totalSales);
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const monthlySalesDataInput = document.getElementById('monthlySalesData');
+            const monthlySalesData = JSON.parse(monthlySalesDataInput.value);
+            const months = monthlySalesData.map(item => item.month);
+            const salesData = monthlySalesData.map(item => item.totalSales);
+
+            const monthNames = months.map(month => {
+                const date = new Date(month);
+                return date.toLocaleString('default', { month: 'long' });
+            });
+
+            const ctx = document.getElementById('salesChart').getContext('2d');
+
+            // Initialize the salesChart inside the DOMContentLoaded event
+            const salesChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: monthNames,
+                    datasets: [{
+                        label: 'Sales',
+                        data: salesData,
+                        // backgroundColor: 'rgba(75, 192, 192, 0.8)',
+                        // borderColor: 'rgba(75, 192, 192, 1)',
+                        // borderWidth: 3,
+                        backgroundColor: [
+                            'rgba(255, 26, 104, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)',
+                            'rgba(0, 0, 0, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 26, 104, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(0, 0, 0, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                        },
+                        y: {
+                            beginAtZero: true,
+                        }
+                    }
+                }
+            });
+
+            // Add event listener for dropdown menu change
+            const timeFilterSelect = document.getElementById('timeFilter');
+            timeFilterSelect.addEventListener('change', updateChart());
+
+            // Store salesChart as a property of the window object
+            window.salesChart = salesChart;
+
+            // Initial call to updateChart function
+            updateChart();
+        });
+    </script>
+    <script>
+        console.log('hello up')
+        async function updateChart() {
+            try {
+                console.log('update chart');
+                const timeFilterSelect = document.getElementById('timeFilter');
+                const selectedFilter = timeFilterSelect.value;
+
+                // Fetch data based on the selected filter
+                const newData = await fetchDataBasedOnFilter(selectedFilter);
+
+                if (!window.salesChart || !window.salesChart.options || !window.salesChart.options.scales || !window.salesChart.options.scales.x) {
+                    console.error('Chart or its options are not properly initialized:', window.salesChart);
+                    return;
+                }
+
+                // Update the chart with the new data
+                if (selectedFilter === 'monthly') {
+                    window.salesChart.data.labels = newData.monthNames.map(month => new Date(month).toLocaleString('default', { month: 'long', year: 'numeric' }));
+                    window.salesChart.data.datasets[0].label = "Monthly Sales";
+                    window.salesChart.options.scales.x.data = newData.monthNames;
+                } else if (selectedFilter === 'weekly') {
+                    window.salesChart.data.labels = newData.weeks.map(week => {
+                        const [year, weekNumber] = week.split('-');
+                        const startDate = getStartDateOfWeek(year, weekNumber);
+                        return `${startDate.toLocaleString('default', { month: 'short', day: 'numeric' })} `;
+                    });
+                    window.salesChart.data.datasets[0].label = "Weekly Sales";
+                    window.salesChart.options.scales.x.data = newData.weeks;
+                } else if (selectedFilter === 'yearly') {
+                    window.salesChart.data.labels = newData.years.map(year => new Date(year + '-01-01').toLocaleString('default', { year: 'numeric' }));
+                    window.salesChart.data.datasets[0].label = "Yearly Sales";
+                    window.salesChart.options.scales.x.data = newData.years;
+                }
+
+                window.salesChart.data.datasets[0].data = newData.salesData;
+                window.salesChart.update();
+            } catch (error) {
+                console.error('Error updating chart:', error);
+            }
+        }
+
+    </script>
+    <script>
+        async function fetchDataBasedOnFilter(filter) {
+            try {
+                const response = await fetch(`/admin/chart?filter=${filter}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log(data);
+                return {
+                    monthNames: data.monthNames,
+                    weeks: data.weeks,
+                    years: data.years,
+                    salesData: data.salesData,
+                };
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                return {
+                    monthNames: [],
+                    weeks: [],
+                    years: [],
+                    salesData: [],
+                };
+            }
+        }
+    </script>
+
+
+    <script>
+
+        function getStartDateOfWeek(year, weekNumber) {
+            const date = new Date(year, 0, 1); // January 1st of the year
+            const daysToAdd = (weekNumber - 1) * 7;
+            date.setDate(date.getDate() + daysToAdd - date.getDay()); // Set to the first day of the week
+            return date;
+        }</script>
 
     <!-- <script>
 
@@ -312,6 +469,6 @@
 
     </script> -->
 
-   
+
 
     <%- include("../partials/adminFooter.ejs") %>

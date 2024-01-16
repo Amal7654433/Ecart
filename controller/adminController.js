@@ -14,29 +14,8 @@ const Banner = require('../models/bannerModel');
 const moment = require('moment');
 
 
-const salesReport= async (req, res) => {
-  try {
-    // Aggregate total revenue per month
-    const revenueData = await order.aggregate([
-      {
-        $group: {
-          _id: { $month: '$orderDate' },
-          totalRevenue: { $sum: { $toDouble: '$orderBill' } },
-        },
-      },
-    ]);
 
-    // Extract month names and revenue values
-    const months = revenueData.map(entry => moment().month(entry._id - 1).format('MMMM')); // Format month names
-    const revenues = revenueData.map(entry => entry.totalRevenue);
 
-    // Render the sales page with chart data
-    res.render('admin/sales', { months, revenues });
-  } catch (error) {
-    console.error('Error fetching sales data:', error);
-    res.status(500).send('Internal Server Error');
-  }
-}
 const categoryEditLoad = async (req, res) => {
   try {
     // Find the brand by ID in the database
@@ -493,14 +472,14 @@ const productUpdate = async (req, res) => {
     if (brandWithUpdatedName && brandWithUpdatedName._id.toString() !== req.params.id) {
       return res.status(400).render('admin/editProduct', { message: 'product name is already in use', products, categories, brands });
     }
-  
+
     const selectedCategoryName = req.body.category;
-   console.log(selectedCategoryName,"james")
+    console.log(selectedCategoryName, "james")
 
     const selectedCategory = await catego.findOne({ name: selectedCategoryName });
-    console.log("hello",selectedCategory)
+    console.log("hello", selectedCategory)
     console.log(selectedCategory._id)
-   
+
     // const images =  req.files.map((file) => file.filename);
     if (req.files && req.files.length > 0) {
       const images = req.files.map((file) => file.filename);
@@ -520,7 +499,7 @@ const productUpdate = async (req, res) => {
     products.discount = req.body.discount
     products.details = req.body.details
 
-  
+
 
 
 
@@ -547,25 +526,7 @@ const securePassword = async (password) => {
   const spassword = await bcrypt.hash(password, 10)
   return spassword
 }
-// const loginPost=async (req, res) => {
-//   try {
-//     // const {name,email,password}=req.body
-//     const cpassword = await securePassword(req.body.password)
-//     const b = new login({
 
-//       email: req.body.email,
-//       password: cpassword
-
-//     })
-//     const result = await b.save()
-//    console.log(req.body)
-//     res.render('admin/adminLogin', { message: 'success' })
-
-//   } catch (error) {
-//     res.send(error.message)
-//   }
-
-// }
 const customerView = async (req, res) => {
   try {
     res.render('admin/customer');
@@ -573,162 +534,9 @@ const customerView = async (req, res) => {
     console.log(error.message);
   }
 };
-const dashboardView = async (req, res) => {
-  try {
-    const months = {};
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-
-    const orders = await order.find({});
-    orders.forEach((order) => {
-      const month = monthNames[order.orderDate.getMonth()];
-      if (!months[month]) {
-        months[month] = 0;
-      }
-      months[month]++;
-
-    });
-
-    console.log("hello monthes", months)
-
-    const paymentModeStats = await order.aggregate([
-      {
-        $group: { _id: '$paymentMode', count: { $sum: 1 } },
-      },
-    ]);
-
-    const orderCount = await order.find({ __v: 0 }).count();
-    const userCount = await user.find().count();
-
-    const orderSum = await order.aggregate([
-      { $unwind: '$items' },
-      { $match: { 'items.orderStatus': 'Delivered' } },
-      { $group: { _id: null, totalBill: { $sum: '$items.bill' } } },
-    ]);
-    const quantitySum = await order.aggregate([
-      { $unwind: '$items' },
-      { $match: { 'items.orderStatus': 'Delivered' } },
-      { $group: { _id: null, totalProducts: { $sum: '$items.quantity' } } },
-    ]);
 
 
 
-    res.render('admin/dashboard', {
-      months,
-      data: JSON.stringify(paymentModeStats),
-      totalBill: orderSum[0].totalBill,
-      orderCount,
-      userCount,
-      totalQuantity: quantitySum[0].totalProducts,
-
-    });
-
-
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-const orderReport = async (req, res) => {
-  try {
-    req.session.filterDate = false;
-    const formatDate = function (date) {
-      const day = ('0' + date.getDate()).slice(-2);
-      const month = ('0' + (date.getMonth() + 1)).slice(-2);
-      const year = date.getFullYear().toString();
-      return `${day}-${month}-${year}`;
-    };
-    const orders = await order.find({ 'items.orderStatus': 'Delivered' });
-    res.render('admin/reports', { orders, formatDate });
-  } catch (error) {
-    console.log(error.message);
-  }
-}
-const orderExcel = async (req, res) => {
-  try {
-    let salesReport;
-    if (req.session.filterDate) {
-      const from = req.session.from;
-      const to = req.session.to;
-      salesReport = await order.find({
-        'items.orderStatus': 'Delivered',
-        orderDate: { $gte: from, $lte: to },
-      });
-    } else {
-      salesReport = await order.find({ 'items.orderStatus': 'Delivered' });
-    }
-    const workbook = new excelJs.Workbook();
-    const worksheet = workbook.addWorksheet('sales Report');
-    worksheet.columns = [
-      {
-        header: 'S no.',
-        key: 's_no',
-        width: 10,
-      },
-      { header: 'OrderID', key: '_id', width: 30 },
-      { header: 'Date', key: 'orderDate', width: 20 },
-      { header: 'Products', key: 'ProductName', width: 30 },
-      { header: 'Method', key: 'paymentMode', width: 10 },
-      { header: 'Amount', key: 'orderBill' },
-    ];
-    let counter = 1;
-    salesReport.forEach((report) => {
-      report.s_no = counter;
-      report.ProductName = '';
-      report.items.forEach((eachProduct) => {
-        report.ProductName += eachProduct.productName + ',';
-      });
-      worksheet.addRow(report);
-      counter++;
-    });
-    worksheet.getRow(1).eachCell((cell) => {
-      cell.font = { bold: true };
-    });
-    res.header('Content-Type', 'application/vnd.oppenxmlformats-officedocument.spreadsheatml.sheet');
-    res.header('Content-Disposition', 'attachment; filename=report.xlsx');
-
-    workbook.xlsx.write(res);
-  } catch (error) {
-    console.log(error.message);
-  }
-}
-const orderSearch = async (req, res) => {
-  try {
-    req.session.orderSearchErr = '';
-    const formatDate = function (date) {
-      const day = ('0' + date.getDate()).slice(-2);
-      const month = ('0' + (date.getMonth() + 1)).slice(-2);
-      const year = date.getFullYear().toString();
-      return `${day}-${month}-${year}`;
-    };
-
-    const from = new Date(req.body.fromdate);
-    const to = new Date(req.body.todate);
-    req.session.filterDate = true;
-    req.session.from = from;
-    req.session.to = to;
-
-
-    if (from > to) {
-      req.session.orderSearchErr = "Invalid date range. 'From' date must be before or equal to 'To' date.";
-      return res.render('admin/reports', { orders: [], formatDate, message: req.session.orderSearchErr });
-    }
-
-    const orders = await order.find({
-      'items.orderStatus': 'Delivered',
-      orderDate: { $gte: from, $lte: to },
-    });
-
-    if (orders.length === 0) {
-      req.session.orderSearchErr = 'No orders found';
-      return res.render('admin/reports', { orders: [], formatDate, message: req.session.orderSearchErr });
-    }
-
-    res.render('admin/reports', { orders, formatDate, message: req.session.orderSearchErr });
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).send('Internal Server Error');
-  }
-}
 
 const verifyLogin = async (req, res) => {
   const { email, password } = req.body;
@@ -747,36 +555,7 @@ const verifyLogin = async (req, res) => {
     console.log(error.message);
   }
 }
-// const verifyLogin = async (req, res) => {
-//   try {
-//     const email = req.body.email
-//     const password = req.body.password
-//     const userData = await user.findOne({ email: email })
-//     if (userData) {
-//       passwordMatch = await bcrypt.compare(password, userData.password)
-//       if (passwordMatch) {
-//         if (userData.is_admin === 0) {
-//           res.render("admin/adminLogin", { message: "please verify your email" })
-//         }
-//         else {
-//           req.session.user_id=userData._id
-//           res.redirect('/admin/dashboard')
-//         }
-//       }
 
-//     else {
-//       res.render("admin/adminLogin", { message: "email and password is incorrect" })
-//     }
-//   }
-//     else
-// {
-//   res.render('admin/adminLogin', { message: "email and password is incorrect" })
-// }
-
-//   } catch (error) {
-//   console.log(error.message);
-// }
-// };
 const adminLogout = async (req, res) => {
   try {
     req.session.admin = false
@@ -788,85 +567,7 @@ const adminLogout = async (req, res) => {
 
 
 
-// const productEdit= async (req, res) => {
-//   try {
-//     const id = req.query.id;
-//     req.session.productQuery = id;
-//     const product = await prod.findById({ _id: id });
-//     if (product) {
 
-//       return res.render('admin/editProduct', { product });
-//     }
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// }
-
-
-//   console.log(req.query.id)
-//   const id = req.session.productQuery;
-//   console.log(id)
-//   const productUpdate = await prod.findByIdAndUpdate({ _id: id }, {
-//     $set: {
-//       name: req.body.name,
-//       category: req.body.category,
-
-//       brand: req.body.brand,
-//       stock: req.body.stock,
-
-//       price: req.body.price,
-
-//       discount: req.body.discount,
-//       details: req.body.details,
-//       image: req.file.filename,
-
-//     }
-//   })
-//   if (productUpdate) {
-//     res.redirect('admin/products')
-//   }
-// }
-// catch (error) {
-//   console.log(error.message);
-// }
-
-
-// const productUpdate = async (req, res) => {
-//   try {
-//     console.log(req.body);
-
-//     const newStatus = req.body.new == undefined ? 0 : 1;
-//     const id = req.session.productQuery;
-//     const updateObj = {
-//       $set: {
-//         name: req.body.name,
-//         category: req.body.category,
-
-//         brand: req.body.brand,
-//         stock: req.body.stock,
-//         price: req.body.price,
-
-//         discount: req.body.discount,
-//         details: req.body.details,
-//         image: req.file.filename,
-
-//       },
-//     };
-
-//     if (req.files[0] && req.files[0].filename) {
-//       updateObj.$set.image = req.files[0].filename;
-//     }
-
-
-//     const result = await prod.findByIdAndUpdate({ _id: id }, updateObj);
-//     if (result) {
-//       req.session.productMessage = 'Product Updated Successfully';
-//       return res.redirect('/admin/products');
-//     }
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// }
 const userManagement = async (req, res) => {
   try {
     const users = await user.find({});
@@ -982,13 +683,19 @@ const imageCrop = (req, res) => {
   const originalImagePath = `public/images/${imageIndex}`;
 
   // Define the cropping dimensions
-  const cropWidth = 200;
-  const cropHeight = 200;
 
-  // Create a sharp instance for the original image
+  const cropHeight =200
+
+
   const image = sharp(originalImagePath);
   image
-    .resize(cropWidth, cropHeight)
+    .resize( cropHeight, { fit: sharp.fit.cover, withoutEnlargement: true }).extend({
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      background: { r: 255, g: 255, b: 255, alpha: 1 }
+    })
     .toBuffer((err, croppedBuffer) => {
       if (err) {
         console.error('Error cropping image', err);
@@ -1102,180 +809,19 @@ const editOrderStatus = async (req, res) => {
     console.log(error.message);
   }
 }
-// const loadBanner = async (req, res) => {
-//   try {
-//     res.render('admin/banner')
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// }
-
-const couponLoad = async (req, res) => {
-  try {
-    const formatDate = function (date) {
-      const day = ('0' + date.getDate()).slice(-2);
-      const month = ('0' + (date.getMonth() + 1)).slice(-2);
-      const year = date.getFullYear().toString();
-      return `${day}-${month}-${year}`;
-    };
-    const coupon = await Coupon.find().sort({ _id: -1 });
-    if (coupon) {
-      if (req.query.edit) {
-        const edit = await Coupon.findOne({ _id: req.query.edit });
-
-        return res.render('admin/coupon', { couponEdit: edit, coupon, formatDate });
-      } else {
-        req.query.edit = false;
-        const message = req.session.couponMessage;
-        const errorMessage = req.session.couponErrMessage;
-        res.render('admin/coupon', { coupon, message, errorMessage, formatDate });
-      }
-    } else {
-      return res.render('admin/coupon', { formatDate });
-    }
-  } catch (error) {
-    console.log(error.message);
-  }
-}
 
 
-const couponAdd = async (req, res) => {
-  try {
-    req.session.couponErrMessage = '';
-    req.session.couponMessage = '';
-    const code = req.body.couponCode;
-    const value = req.body.couponValue;
-    const expiry = req.body.couponExpiry;
-    const bill = req.body.minBill;
-    const maxAmount = req.body.maxAmount;
 
-    if (
-      code.trim() != '' &&
-      value.trim() != '' &&
-      expiry.trim() != '' &&
-      
-      bill.trim() != '' &&
-      maxAmount.trim() != ''
-    ) {
-      const find = await Coupon.findOne({ code });
 
-      if (find) {
-        req.session.couponMessage = '';
-        req.session.couponErrMessage = 'Coupon already exists';
-        return res.redirect('/admin/coupon');
-      } else {
-        if (value > 0 && value <= 100) {
-          const couponData = new Coupon({
-            code,
-            value,
-            minBill: bill,
-            maxAmount,
-            expiryDate: Date(),
-          });
-          await couponData.save();
-          req.session.couponErrMessage = '';
-          const message = 'New Coupon Added Successfully';
-          req.session.couponMessage = message;
-          res.redirect('/admin/coupon');
-        } else {
-          req.session.couponMessage = '';
-          req.session.couponErrMessage = 'Coupon Value must be between 0 and 100';
-          res.redirect('/admin/coupon');
-        }
-      }
-    } else {
-      req.session.couponMessage = '';
-      req.session.couponErrMessage = 'Fields cannot be null';
-      res.redirect('/admin/coupon');
-    }
-  } catch (error) {
-    console.log(error.message);
-  }
-}
 
-const couponDeactivate = async (req, res) => {
-  try {
-    const id = req.query.id;
-    await Coupon.findOneAndUpdate({ _id: id }, { $set: { Status: 'Inactive' } });
-    req.session.couponErrMessage = '';
-    const message = 'coupon Deactivated Successfully';
-    req.session.couponMessage = message;
-    res.redirect('/admin/coupon');
-  } catch (error) {
-    console.log(error.message);
-  }
-}
 
-const couponActivate = async (req, res) => {
-  try {
-    const id = req.query.id;
-    const expired = await Coupon.findOne({ _id: id, Status: 'Expired' });
-    if (expired) {
-      req.session.couponMessage = '';
-      req.session.couponErrMessage = 'Coupon expiry need to updated before activating';
-      return res.redirect('/admin/coupon');
-    } else {
-      await Coupon.findOneAndUpdate({ _id: id }, { $set: { Status: 'Active' } });
-      req.session.couponErrMessage = '';
-      const message = 'coupon Activated Successfully';
-      req.session.couponMessage = message;
-      return res.redirect('/admin/coupon');
-    }
-  } catch (error) {
-    console.log(error.message);
-  }
-}
 
-const couponEdit = async (req, res) => {
-  try {
-    const id = req.query.id;
-    res.redirect(`/admin/coupon?edit=${id}`);
-  } catch (error) {
-    console.log(error.message);
-  }
-}
-
-const couponUpdate = async (req, res) => {
-  try {
-    req.session.couponMessage = '';
-    req.session.couponErrMessage = '';
-    const id = req.query.id;
-    const code = req.body.couponCode;
-    const value = req.body.couponValue;
-    const expiry = new Date(req.body.couponExpiry);
-    const bill = req.body.minBill;
-    const maxAmount = req.body.maxAmount;
-    const currDate = new Date();
-    const Status = currDate.getTime() < expiry.getTime() ? 'Active' : 'Expired';
-    const updated = await Coupon.findByIdAndUpdate(
-      { _id: id },
-      {
-        $set: {
-          code,
-          value,
-          expiryDate: expiry,
-          minBill: bill,
-          maxAmount,
-          Status,
-        },
-      }
-    );
-    if (!updated) {
-      throw new Error('an error occured while updating the coupon');
-    }
-    req.session.couponMessage = 'coupon Updated Successfully';
-    return res.redirect('/admin/coupon');
-  } catch (error) {
-    console.log(error.message);
-  }
-}
 const bannerLoad = async (req, res) => {
   try {
     const banner = await Banner.find({}).sort({ _id: 1 });
-  if(banner)
-  {
-    res.render('admin/banner',{banner})
-  }
+    if (banner) {
+      res.render('admin/banner', { banner })
+    }
   } catch (error) {
     console.log(error.message);
   }
@@ -1285,7 +831,7 @@ const bannerAdd = async (req, res) => {
   try {
     const { title, subtitle, description, redirect } = req.body;
     const image = req.file.filename
-  
+
     const newBanner = new Banner({
       title,
       subtitle,
@@ -1300,12 +846,12 @@ const bannerAdd = async (req, res) => {
     res.redirect('/admin/banner');
   } catch (error) {
     console.error('Error adding banner:', error);
-    
+
     res.redirect('/error');
   }
 }
 
-const bannerEditLoad=async (req, res) => {
+const bannerEditLoad = async (req, res) => {
   try {
     const banner = await Banner.findById(req.params.id);
     if (!banner) {
@@ -1339,18 +885,18 @@ const bannerUpdate = async (req, res) => {
     const editedBanner = await Banner.findByIdAndUpdate(req.params.id, updatedBanner, { new: true });
 
     if (!editedBanner) {
-    
+
       return res.status(404).send('Banner not found');
     }
 
-    res.redirect('/admin/banner'); 
+    res.redirect('/admin/banner');
   } catch (error) {
     console.error('Error editing banner:', error);
     res.status(500).send('Internal Server Error');
   }
 }
 
-const bannerDisable =  async (req, res) => {
+const bannerDisable = async (req, res) => {
   try {
     const banner = req.body.id
     const brandDetails = await Banner.findById(banner);
@@ -1363,7 +909,7 @@ const bannerDisable =  async (req, res) => {
     res.render('error')
   }
 }
-const bannerEnable =  async (req, res) => {
+const bannerEnable = async (req, res) => {
   try {
     const banner = req.body.id
     const brandDetails = await Banner.findById(banner);
@@ -1378,12 +924,12 @@ const bannerEnable =  async (req, res) => {
 }
 module.exports =
 {
-salesReport,
+  
   orderManagement, orderStatusLoad, editOrderStatus,
   adminLogin,
   productsView,
   customerView,
-  dashboardView,
+
   categoryView,
   categoryAdd,
   categoryActive,
@@ -1409,7 +955,7 @@ salesReport,
   adminLoginPost,
   userManagement,
   blockUser,
-  unblockUser, imageCrop, productDetails, imageEdit, orderReport, orderExcel, orderSearch, couponLoad, couponActivate, couponAdd, couponDeactivate, couponEdit, couponUpdate, bannerLoad, bannerAdd, bannerUpdate, bannerEnable,bannerEditLoad, bannerDisable
+  unblockUser, imageCrop, productDetails, imageEdit,  bannerLoad, bannerAdd, bannerUpdate, bannerEnable, bannerEditLoad, bannerDisable
 }
 
 

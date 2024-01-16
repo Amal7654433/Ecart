@@ -1,4 +1,4 @@
-<%- include("../partials/userHeader.ejs")%>
+<%- include("../partials/userHead2.ejs")%>
     <style>
         .empty {
             display: flex;
@@ -15,6 +15,9 @@
             text-align: center;
             margin-top: 20rem;
             /* Adjust as needed for spacing */
+        }
+        #searchForm {
+            visibility: hidden;
         }
     </style>
     <% if (empty) { %>

@@ -39,68 +39,6 @@
 
         /* Customize the edit and delete buttons */
 
-
-
-
-        /* Customize the modal */
-        .modal-content {
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-header {
-            background-color: #f2f2f2;
-            border-bottom: 2px solid #ddd;
-            color: #333;
-            font-weight: bold;
-            text-align: center;
-            vertical-align: middle;
-            font-size: 18px;
-            padding: 20px;
-        }
-
-        .modal-body {
-            font-size: 16px;
-            padding: 20px;
-        }
-
-        .modal-footer {
-            border-top: none;
-        }
-
-
-
-
-        /* Customize the pagination */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .pagination.page-item {
-            margin: 0 5px;
-        }
-
-        .pagination.page-link {
-            background-color: #f2f2f2;
-            border-radius: 5px;
-            color: #333;
-            font-size: 16px;
-            padding: 5px 10px;
-        }
-
-        .pagination.page-link:hover {
-            background-color: #ddd;
-        }
-
-        .pagination.page-item.active.page-link {
-            background-color: #007bff;
-            border-color: #007bff;
-            color: #fff;
-        }
-
         .heading {
             display: flex;
             justify-content: center;
@@ -196,18 +134,24 @@
         </div>
     </section>
     <!-- Include jQuery -->
-
+    <%- include("../partials/adminFooter.ejs") %>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 
-    <script>     $(document).ready(function () {
-        $('#myTable').DataTable({
-            paging: true,
+
+    <script>       let table = new DataTable('#myTable', {
+            responsive: true,
             searching: true,
-            // Add more options as needed
+            paging: false,
+            info: false,
+            columnDefs: [
+                {
+                    targets: [0, 1, 2, 3, 4, 5],
+                    className: 'text-center'
+                }
+            ]
         });
-    });
-     
+
+
         function active(id) {
             console.log(id);
 
@@ -259,51 +203,5 @@
         };
     </script>
 
-    <!-- <script>
-            function active(id) {
-
-                console.log(id)
-                fetch("/admin/category/active", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        id: id
-                    })
-                })
-
-
-                    .then(data => {
-                        location.reload()
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            };
-
-
-            function deactive(id) {
-
-                console.log(id)
-                fetch("/admin/category/deactive", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        id: id
-                    })
-                })
-
-
-                    .then(data => {
-                        location.reload()
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            };
-
-        </script> -->
-    <%- include("../partials/adminFooter.ejs") %>
+   
+   

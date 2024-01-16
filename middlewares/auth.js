@@ -6,6 +6,7 @@
 //   }
 // };
 const user = require('../models/userSignup');
+
 const
   userLoggedIn = async (req, res, next) => {
 
@@ -112,5 +113,9 @@ const resetpAccess= (req, res, next) => {
   }
 }
 
+const isAuth=(req, res, next) => {
+  res.locals.userIsAuthenticated = req.session.user ? true : false;
+  next();
+};
 
-module.exports = { adminLogout, adminLoggedIn, userLoggedIn, userLogout, OtpAccess,emailTempClear,resetpAccess }
+module.exports = { adminLogout, adminLoggedIn, userLoggedIn, userLogout, OtpAccess,emailTempClear,resetpAccess,isAuth }

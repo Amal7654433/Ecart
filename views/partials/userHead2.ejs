@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        integrity="sha512-+J+gkzv6+5zvJz5zgZn7wvzvJZ5+JZz5zvJz5zgZn7wvzvJZ5+JZz5zvJz5zvJZ5+JZz5zvJZ5+JZz5zvJZ5+JZw=="
+        crossorigin="anonymous">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ecart</title>
+    <!-- Option 1: Include in HTML -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .main-navbar {
+            border-bottom: 1px solid #ccc;
+        }
+
+        .main-navbar .top-navbar {
+            background-color: #2874f0;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .main-navbar .top-navbar .brand-name {
+            color: #fff;
+        }
+
+        .main-navbar .top-navbar .nav-link {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .main-navbar .top-navbar .dropdown-menu {
+            padding: 0px 0px;
+            border-radius: 0px;
+        }
+
+        .main-navbar .top-navbar .dropdown-menu .dropdown-item {
+            padding: 8px 16px;
+            border-bottom: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .main-navbar .top-navbar .dropdown-menu .dropdown-item i {
+            width: 20px;
+            text-align: center;
+            color: #2874f0;
+            font-size: 14px;
+        }
+
+        .secondLine .dropdown-menu .dropdown-item {
+            padding: 8px 16px;
+            border-bottom: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        .secondLine .dropdown-menu {
+            padding: 0px 0px;
+            border-radius: 0px;
+        }
+
+
+        .main-navbar .navbar {
+            padding: 0px;
+            background-color: #ddd;
+        }
+
+        .main-navbar .navbar .nav-item .nav-link {
+            padding: 8px 20px;
+            color: #000;
+            font-size: 15px;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .main-navbar .top-navbar .nav-link {
+                font-size: 12px;
+                padding: 8px 10px;
+            }
+        }
+          /* Initially hide the dropdown menu */
+  
+    </style>
+</head>
+
+<body>
+
+    <div class="main-navbar shadow-sm sticky-top">
+        <div class="top-navbar">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2 my-auto d-none d-sm-none d-md-block d-lg-block">
+                        <h2 class="brand-name">Ecart </h2>
+                    </div>
+                    <div class="col-md-5 my-auto">
+                        <form role="search">
+                            <div class="input-group">
+                                <input type="search" id="searchInput" placeholder="Search your product"
+                                    class="form-control" />
+                                <button class="btn bg-white" type="submit" id="searchButton">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-5 my-auto">
+                        <ul class="nav justify-content-end">
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="/cart">
+                                    <i class="fa fa-shopping-cart"></i> Cart (0)
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/wishlist">
+                                    <i class="fa fa-heart"></i> Wishlist (0)
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-user"></i>
+                                    <% if (userIsAuthenticated) { %>
+                                        Account
+                                        <% } else { %>
+                                            sign in
+                                            <% } %>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <% if (userIsAuthenticated) { %>
+                                        <li><a class="dropdown-item" href="/profile"><i class="fa fa-user"></i>
+                                                Profile</a></li>
+
+                                        <li><a class="dropdown-item" href="/orders"><i class="fa fa-list"></i> My
+                                                Orders</a></li>
+                                        <li><a class="dropdown-item" href="/wishlist"><i class="fa fa-heart"></i> My
+                                                Wishlist</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="/cart"><i class="fa fa-shopping-cart"></i> My
+                                                Cart</a></li>
+                                        <li><a class="dropdown-item" href="/referral"><i class="fa fa-gift"></i>
+                                                Referral
+                                            </a></li>
+                                        <li><a class="dropdown-item" href="/logout"><i class="fa fa-sign-out-alt"></i>
+                                                Logout</a></li>
+                                        <% } else { %>
+                                            <li><a class="dropdown-item" href="/login"><i
+                                                        class="fa fa-login-alt"></i>Login</a></li>
+                                            <% } %>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand d-block d-sm-block d-md-none d-lg-none" href="#">
+                    Ecart Ecom
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="secondLine  collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/home">Home</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle " type="button" id="customDropdownButton"
+                                data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+                                aria-expanded="false">All Categories</a>
+
+                            <ul class="dropdown-menu" aria-labelledby="customDropdownButton">
+                                <% cat.forEach(function(c, index) { %>
+                                    <li><a class="dropdown-item" href="/products/category/<%= c._id %>"
+                                            title=" <%= c.name %>">
+                                            <%= c.name.length> 10 ? c.name.substring(0, 10) + '...' : c.name %>
+                                        </a></li>
+
+                                    <% }); %>
+                            </ul>
+
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <script>
+        const searchInput = document.querySelector('#searchInput');
+        const searchButton = document.querySelector('#searchButton');
+        console.log('david beckam')
+        searchButton.addEventListener('click', () => {
+            const searchTerm = searchInput.value;
+
+            fetch(`/search?q=${searchTerm}`, {
+                method: 'GET',
+            }).then(() => {
+                window.location.assign(`/search?q=${searchTerm}`)
+            })
+
+                .catch(error => {
+                    console.error(error);
+                });
+        });
+
+
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Add this before the closing </body> tag -->
+    <script>
+        // Wait for the document to be ready
+        document.addEventListener("DOMContentLoaded", function () {
+            // Select the logout button by its id
+            var logoutButton = document.getElementById('logoutButton');
+
+            // Add a click event listener to the logout button
+            logoutButton.addEventListener('click', function (event) {
+                // Prevent the default behavior of the link
+                event.preventDefault();
+
+                // Show SweetAlert confirmation
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You will be logged out!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, log me out!',
+                    cancelButtonText: 'No, cancel!',
+                    reverseButtons: true
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        window.location.href = logoutButton.getAttribute('href');
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

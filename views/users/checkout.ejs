@@ -1,9 +1,27 @@
-<%- include("../partials/userHeader.ejs")%>
+<%- include("../partials/userHead2.ejs")%>
 
     <head>
+
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
             integrity="sha384-ZzFk/AtbL7ud16iTC5YFDbiJZlFT8i8E4Jmd0OiQOhFOc4Caa8TXOgJT5ckfu7bR" crossorigin="anonymous">
     </head>
+    <style>
+        .checkout-heading {
+            /* font-family: 'YourChosenFont', sans-serif; */
+
+
+        }
+    </style>
+    <div class="bg-primary mb-2">
+        <div class="container py-3">
+            <h3 class="checkout-heading text-white mt-2">
+                Checkout
+            </h3>
+            <!-- Breadcrumb -->
+
+            <!-- Breadcrumb -->
+        </div>
+    </div>
     <div class="container-fluid ">
         <div class="row justify-content-center">
             <div class="col-xl-12">
@@ -16,50 +34,57 @@
                     <div class="row justify-content-around">
                         <div class="col-md-5">
                             <div class="card border-0">
-                                <div class="card-header pb-0">
-                                    <h2 class="card-title space">Checkout</h2>
-                                    <p class="card-text text-muted mt-4 space">SHIPPING DETAILS</p>
-                                    <hr class="my-0">
+                                <div class="card-header border-dark">
+                                    <div class="card-header pb-0  text-white" style="background-color: #2874f0;">
+                                        <p class="card-text  mt-4 space text-white">SHIPPING DETAILS</p>
+                                        <hr class="my-2 bg-white  border border-4 ">
+                                    </div>
+
                                     <div>
                                         <p class="card-text text-muted mt-4 mb-2 space">SELECT DELIVERY ADDRESS</p>
                                     </div>
-                                    <form action="/checkout" method="post" id="checkout-form">
+                                    <div class="bg-light  ">
+                                        <form action="/checkout" method="post" id="checkout-form">
 
-                                        <!-- Dummy content for addresses -->
-                                        <% userData.address.forEach(function(item ,index) { %>
+                                            <!-- Dummy content for addresses -->
+                                            <% userData.address.forEach(function(item ,index) { %>
 
-                                            <div class="form-check mt-3">
-                                                <input type="radio" class="form-check-input js-radioInput"
-                                                    id="radio<%= index %>" name="selectedAddressIndex"
-                                                    value="<%= index %>" required>
+                                                <div class="form-check mt-3">
+                                                    <input type="radio"
+                                                        class="form-check-input js-radioInput bg-secondary"
+                                                        id="radio<%= index %>" name="selectedAddressIndex"
+                                                        value="<%= index %>" required>
 
-                                                <p class="display-address">
-                                                    <%= item.name %><span class="mx-3"><a
-                                                                href="/profile?edit=address1&checkout=true"
-                                                                style="text-decoration: none"> <i
-                                                                    class="fas fa-edit"></i> </a></span>
-                                                </p>
-                                                <p class="display-address">
-                                                    <%= item.address %>,<%= item.locality %>
-                                                </p>
-                                                <p class="display-address">
-                                                    <%= item.district %>,<%= item.state %>
-                                                </p>
-                                                <p class="display-address">
-                                                    <%= item.phone %>
-                                                </p>
-                                                <p class="display-address">
-                                                    <%= item.state %>-<%= item.pincode %>
-                                                </p>
-                                                <label class="form-check-label" for="radio1"></label>
-                                            </div>
-                                            <% }); %>
-                                                <!-- Dummy content for adding a new address -->
-                                                <a href="/profile?add=true&checkout=true"
-                                                    style="text-decoration: none; color: green;">
-                                                    <p>Add a new address</p>
-                                                </a>
+                                                    <p class="display-address">
+                                                        <%= item.name %><span class="mx-3"><a
+                                                                    href="/profile?edit=address1&checkout=true"
+                                                                    style="text-decoration: none"> <i
+                                                                        class="fas fa-edit"></i> </a></span>
+                                                    </p>
+                                                    <p class="display-address">
+                                                        <%= item.address %>,<%= item.locality %>
+                                                    </p>
+                                                    <p class="display-address">
+                                                        <%= item.district %>,<%= item.state %>
+                                                    </p>
+                                                    <p class="display-address">
+                                                        <%= item.phone %>
+                                                    </p>
+                                                    <p class="display-address">
+                                                        <%= item.state %>-<%= item.pincode %>
+                                                    </p>
+                                                    <label class="form-check-label" for="radio1"></label>
+                                                </div>
+                                                <% }); %>
+                                                    <!-- Dummy content for adding a new address -->
 
+
+                                        </form>
+                                    </div>
+                                    <a href="/profile?add=true&checkout=true" class="btn btn-secondary mx-3">
+                                        Add a new address <span class="bi bi-plus-circle-dotted "></span>
+
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -77,30 +102,16 @@
 
 
 
-
-
-
-
-                                    <div class="row mb-5 mt-4">
-                                        <div class="col-md-7 col-lg-6"> <button id="my_button" type="submit"
-                                                disabled="disabled" value="submit" name="submit"
-                                                class="btn btn-block btn-lg border-dark"
-                                                style="width: 100%; border-radius:30px;">Proceed to
-                                                Payment</button>
-
-                                        </div>
-                                    </div>
-                                    </form>
-                                    <button type="button" class="btn btn-light border" data-toggle="modal"
+                                    <button type="button" class="btn btn-light border bg-light" data-toggle="modal"
                                         data-target="#couponModal">
                                         View Available Coupons <span class="fas fa-tags "></span>
                                     </button>
 
                                     <!-- Modal for displaying available coupons -->
                                     <div class="modal fade" id="couponModal" tabindex="-1" role="dialog"
-                                        aria-labelledby="couponModalLabel" aria-hidden="true">
+                                        aria-labelledby="couponModalLabel" aria-hidden="true" class="">
                                         <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
+                                            <div class="modal-content ">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="couponModalLabel">Available Coupons</h5>
                                                     <button type="button" class="close" data-dismiss="modal"
@@ -108,7 +119,7 @@
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
                                                 </div>
-                                                <div class="modal-body">
+                                                <div class="modal-body ">
                                                     <!-- Place your coupon list content here -->
                                                     <% coupons.forEach(function(item ,index) { %>
                                                         <ul>
@@ -186,7 +197,14 @@
                                             </div>
                                             <% }; %>
                                     </div>
+                                    <div class="row mb-5 mt-4 justify-content-center">
+                                        <div class=" col-lg-6"> <button id="my_button" type="submit" disabled="disabled"
+                                                value="submit" name="submit" class="btn  bg-primary text-white  "
+                                                style="width: 100%; border-radius:30px; ">Proceed to
+                                                Payment&nbsp;&nbsp;<i class="bi bi-arrow-right "></i></button>
 
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -222,8 +240,49 @@
     </script>
     <!-- Include SweetAlert library -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-
     <script>
+        $(document).ready(function () {
+            // Listen for click on the "Proceed to Payment" button
+            $("#my_button").click(function () {
+                // Prevent the default button click behavior
+                event.preventDefault();
+
+                // Perform form submission using AJAX
+                $.ajax({
+                    url: '/checkout',
+                    method: 'post',
+                    data: $('#checkout-form').serialize(),
+                    success: function (response) {
+                        if (response.flag) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Quantity Exceeds Stock',
+                                text: 'The quantity you selected exceeds the available stock.',
+                                confirmButtonText: 'OK',
+                            }).then(() => {
+                                window.location.href = '/home';
+                            });
+                        } else if (response.couponCodeFailure) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Coupon Missing or Invalid!',
+                                text: 'Please remove the current coupon and enter a valid coupon code to proceed.',
+                            });
+                        } else if (response.success) {
+                            location.replace('/checkout/payment');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', status, error);
+                        // Handle AJAX errors here
+                    }
+                });
+            });
+        });
+    </script>
+
+
+    <!-- <script>
         $("#checkout-form").submit((e) => {
             e.preventDefault();
             $.ajax({
@@ -232,14 +291,14 @@
                 data: $('#checkout-form').serialize(),
                 success: (response) => {
                     if (response.flag) {
-                        // Display SweetAlert
+                    
                         Swal.fire({
                             icon: 'warning',
                             title: 'Quantity Exceeds Stock',
                             text: 'The quantity you selected exceeds the available stock.',
                             confirmButtonText: 'OK',
                         }).then(() => {
-                            // Redirect to another URL
+                       
                             window.location.href = '/home';
                         });
                     }
@@ -254,7 +313,7 @@
                 }
             });
         });
-    </script>
+    </script> -->
 
     <script>
         function applyCoupon() {

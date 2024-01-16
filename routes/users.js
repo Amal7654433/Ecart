@@ -8,17 +8,22 @@ const orderControl=require("../controller/orderController")
 const couponControl=require("../controller/couponController")
 const wishlistControl=require("../controller/wishlistController")
 const productControl=require("../controller/productController")
-
+const products=require("../middlewares/products")
+router.use(products.category,products.proudct)
+router.use(auth.isAuth)
 /* GET users listing. */
-router.get('/home',auth.emailTempClear,userControl.langingPage)
-router.get('/',auth.emailTempClear,userControl.langingPage)
-// router.get('/category',userControl.categoryView)
+router.get('/home',auth.emailTempClear,productControl.langingPage)
+router.get('/',auth.emailTempClear,productControl.langingPage)
 
-
+router.get('/products',auth.emailTempClear,productControl.langingPage)
+router.get('/products/view/:productId',auth.emailTempClear,auth.userLoggedIn, productControl.productsView)
+router.get('/products/category/:categoryId',auth.emailTempClear,productControl.productsByCategory)
+router.get('/products/filter',productControl.filterProduct)
+router.get('/search',productControl.productSearch)
 /* signup section */
 router.get('/signup',auth.emailTempClear,auth.userLogout,userControl.loadSignup)
 router.post('/signup',userControl.subSignup)
-router.get('/signup/otp',userControl.signupOtpGet)
+router.get('/signup/otp',auth.emailTempClear,auth.userLogout,userControl.signupOtpGet)
 router.post('/signup/otp',userControl.signupOtpPost)
 
 
@@ -31,11 +36,8 @@ router.post('/login',userControl.verifyLogin)
 router.get('/logout',userControl.userLogout)
 // router.get('/blocked',userControl.userBlock)
 
-router.get('/products',auth.emailTempClear,userControl.langingPage)
-router.get('/products/view/:productId',auth.emailTempClear,auth.userLoggedIn, userControl.productsView)
-router.get('/products/category/:categoryId',auth.emailTempClear,userControl.productsByCategory)
-router.get('/products/filter',productControl.filterProduct)
-// router.get('/products/view',userControl.productsView)
+
+
 
 router.get('/forgetpassword',auth.userLogout,auth.emailTempClear,userControl.forgetPasswordEmail)
 router.post('/forgetpassword',userControl.submitEmailForPasswordReset)
@@ -95,6 +97,7 @@ router.get('/profile',auth.userLoggedIn,profileControl.profileView)
  router.get('/wishlist',auth.userLoggedIn,wishlistControl.wishlistLoad)
  router.patch('/add-wishlist/:productId',auth.userLoggedIn,wishlistControl.wishlistAdd)
  router.patch('/remove-wishlist/:productId',auth.userLoggedIn,wishlistControl.removeWishlistItem)
+ router.get('/referral',auth.userLoggedIn,productControl.referral)
 
 
 

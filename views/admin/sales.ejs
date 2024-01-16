@@ -1,46 +1,177 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sales Chart</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <p>hello</p>
-  <canvas id="revenueChart" style="height: 100px;width: 300px;"></canvas>
+<%- include("../partials/adminSidebar.ejs")%>
 
-  <script>
-    console.log('hello')
-    // Chart data from the server
-    const months = <%= JSON.stringify(months) %>;
-    const revenues = <%= JSON.stringify(revenues) %>;
-    
-    console.log('Months:', months);
-console.log('Revenues:', revenues);
+  <body>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="icon-card mb-30">
+          <div class="card-body  mt-2 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="left">
+                <h6 class="text-bold mb-10">Sales</h6>
+              </div>
+              <div class="right col-lg-4">
+                <div class="select-style-1">
+                  <div class="select-position select-sm">
+                    <select class="light-bg" id="timeFilter" onchange="updateChart()">
+                      <option value="monthly">Monthly</option>
+                      <option value="weekly">weekly</option>
+                      <option value="yearly">Yearly</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-    // Create a bar chart
-    var ctx = document.getElementById('revenueChart').getContext('2d');
-    var revenueChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: months,
-        datasets: [{
-          label: 'Monthly Revenue',
-          data: revenues,
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
+            <!-- Move canvas outside of the d-flex container to position it below -->
+            <div class="d-flex justify-content-">
+              <input type="hidden" id="monthlySalesData" value='<%= JSON.stringify(monthlySalesData) %>'>
+              <canvas id="salesChart" height="300"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <script>
+      const monthlySalesDataInput = document.getElementById('monthlySalesData');
+      const monthlySalesData = JSON.parse(monthlySalesDataInput.value);
+      const months = monthlySalesData.map(item => item.month);
+      const salesData = monthlySalesData.map(item => item.totalSales);
+     </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+      
+        const monthlySalesDataInput = document.getElementById('monthlySalesData');
+        const monthlySalesData = JSON.parse(monthlySalesDataInput.value);
+        const months = monthlySalesData.map(item => item.month);
+        const salesData = monthlySalesData.map(item => item.totalSales);
+
+        const monthNames = months.map(month => {
+          const date = new Date(month);
+          return date.toLocaleString('default', { month: 'long' });
+        });
+
+        const ctx = document.getElementById('salesChart').getContext('2d');
+
+        // Initialize the salesChart inside the DOMContentLoaded event
+        const salesChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: monthNames,
+            datasets: [{
+              label: 'Sales',
+              data: salesData,
+              backgroundColor: 'rgba(75, 192, 192, 0.8)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 3,
+            }]
+          },
+          options: {
+            responsive: false,
+            scales: {
+              x: {
+                beginAtZero: true,
+              },
+              y: {
+                beginAtZero: true,
+              }
+            }
           }
-        }
+        });
+
+        // Add event listener for dropdown menu change
+        const timeFilterSelect = document.getElementById('timeFilter');
+        timeFilterSelect.addEventListener('change', updateChart());
+
+        // Store salesChart as a property of the window object
+        window.salesChart = salesChart;
+
+        // Initial call to updateChart function
+        updateChart();
+      });
+    </script>
+    <script>
+      console.log('hello up')
+    async function updateChart() {
+  try {
+    console.log('update chart');
+    const timeFilterSelect = document.getElementById('timeFilter');
+    const selectedFilter = timeFilterSelect.value;
+
+    // Fetch data based on the selected filter
+    const newData = await fetchDataBasedOnFilter(selectedFilter);
+
+    if (!window.salesChart || !window.salesChart.options || !window.salesChart.options.scales || !window.salesChart.options.scales.x) {
+      console.error('Chart or its options are not properly initialized:', window.salesChart);
+      return;
+    }
+
+    // Update the chart with the new data
+    if (selectedFilter === 'monthly') {
+      window.salesChart.data.labels = newData.monthNames.map(month => new Date(month).toLocaleString('default', { month: 'long', year: 'numeric' }));
+      window.salesChart.data.datasets[0].label = "Monthly Sales";
+      window.salesChart.options.scales.x.data = newData.monthNames;
+    } else if (selectedFilter === 'weekly') {
+      window.salesChart.data.labels = newData.weeks.map(week => {
+        const [year, weekNumber] = week.split('-');
+        const startDate = getStartDateOfWeek(year, weekNumber);
+        return `${startDate.toLocaleString('default', { month: 'short', day: 'numeric' })} `;
+      });
+      window.salesChart.data.datasets[0].label = "Weekly Sales";
+      window.salesChart.options.scales.x.data = newData.weeks;
+    } else if (selectedFilter === 'yearly') {
+      window.salesChart.data.labels = newData.years.map(year => new Date(year + '-01-01').toLocaleString('default', { year: 'numeric' }));
+      window.salesChart.data.datasets[0].label = "Yearly Sales";
+      window.salesChart.options.scales.x.data = newData.years;
+    }
+
+    window.salesChart.data.datasets[0].data = newData.salesData;
+    window.salesChart.update();
+  } catch (error) {
+    console.error('Error updating chart:', error);
+  }
+}
+
+    </script>
+<script>
+  async function fetchDataBasedOnFilter(filter) {
+    try {
+      const response = await fetch(`/admin/chart?filter=${filter}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    });
-  </script>
-</body>
-</html>
+      const data = await response.json();
+      console.log(data);
+      return {
+        monthNames: data.monthNames,
+        weeks: data.weeks,
+        years: data.years,
+        salesData: data.salesData,
+      };
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      return {
+        monthNames: [],
+        weeks: [],
+        years: [],
+        salesData: [],
+      };
+    }
+  }
+</script>
+
+
+    <script>
+
+      function getStartDateOfWeek(year, weekNumber) {
+        const date = new Date(year, 0, 1); // January 1st of the year
+        const daysToAdd = (weekNumber - 1) * 7;
+        date.setDate(date.getDate() + daysToAdd - date.getDay()); // Set to the first day of the week
+        return date;
+      }</script>
