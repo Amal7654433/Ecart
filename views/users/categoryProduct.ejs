@@ -236,11 +236,10 @@
                     <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3">
                         <strong class="d-block py-2"><%=productCount%> Items found </strong>
                         <div class="ms-auto">
-                            <select class="form-select d-inline-block w-auto border pt-1">
-                                <option value="0">Best match</option>
-                                <option value="1">Recommended</option>
-                                <option value="2">High rated</option>
-                                <option value="3">Randomly</option>
+                            <select id="sortSelect" class="form-select d-inline-block w-auto border pt-1">
+                                <option value="0">Price High to Low</option>
+                                <option value="1">Price Low To High</option>
+                              
                             </select>
                             <!-- <div class="btn-group shadow-0 border">
                                 <a href="#" class="btn btn-light" title="List view">
@@ -374,12 +373,13 @@
         </div>
         <input type="hidden" name="categoryId" id="categoryId" value="<%= category._id %>">
     </section>
+    <p>hello</p>
 
 
     <script>
         function applyFilter() {
             // Get the input 
-
+            var sortOrder = document.getElementById('sortSelect').value;
             var minPrice = document.getElementById('minPrice').value;
             var maxPrice = document.getElementById('maxPrice').value;
             var catgoryId = document.getElementById('categoryId').value;
@@ -389,7 +389,7 @@
             // Convert the brand names to a comma-separated string
             // var brandsQueryParam = selectedBrands.join(',');
 
-            fetch(`/products/filter?minPrice=${minPrice}&maxPrice=${maxPrice}&categoryId=${catgoryId}&brand=${selectedBrands}`, {
+            fetch(`/products/filter?minPrice=${minPrice}&maxPrice=${maxPrice}&categoryId=${catgoryId}&brand=${selectedBrands}&sortOrder=${sortOrder}`, {
                 method: 'GET',
             })
                 .then(response => response.json())
@@ -507,30 +507,7 @@
 
             });
         }</script>
-    <script>
-        $(document).ready(function () {
-            $('.brand-checkbox').change(function () {
-                const selectedBrands = $('.brand-checkbox:checked').map(function () {
-                    return $(this).val();
-                }).get();
-
-                // Make an AJAX request to the server with selected brand values
-                $.ajax({
-                    url: '/products/categoy/filter',
-                    type: 'GET',
-                    data: { brands: selectedBrands },
-                    success: function (data) {
-                        // Handle the response, e.g., update the product list on the page
-                        console.log('Filtered products:', data);
-                        // Update the DOM with the filtered products
-                    },
-                    error: function (error) {
-                        console.error('Error:', error);
-                    }
-                });
-            });
-        });
-    </script>
+ 
     <script>
         function addToWishlist(id) {
             console.log('amal');

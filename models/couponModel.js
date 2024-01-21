@@ -31,7 +31,7 @@ const couponSchema = new Schema({
   active: {
     type: Boolean,
     default: true
-},
+  },
   usedUsers: [
     {
       type: Schema.Types.ObjectId,

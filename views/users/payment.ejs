@@ -5,24 +5,25 @@
 
 
     }
+
     #searchForm {
-            visibility: hidden;
-        }
+      visibility: hidden;
+    }
   </style>
-       <div class="bg-primary mb-2">
-        <div class="container py-3">
-            <h3 class="checkout-heading text-white mt-2">
-              Payment
-            </h3>
-            <!-- Breadcrumb -->
-           
-            <!-- Breadcrumb -->
-        </div>
+  <div class="bg-primary mb-2">
+    <div class="container py-3">
+      <h3 class="checkout-heading text-white mt-2">
+        Payment
+      </h3>
+      <!-- Breadcrumb -->
+
+      <!-- Breadcrumb -->
     </div>
-  <div class="container-fluid ">
+  </div>
+  <div class="container-fluid mt-4 ">
     <div class="row justify-content-center ">
-    
-      <div class="col-lg-6 mx-auto">
+
+      <div class="col-lg-4 mx-auto">
         <div class="card border-secondary mb-5">
           <div class="card-header bg-secondary border-0">
             <h4 class="font-weight-semi-bold m-0 text-white">Order Total</h4>
@@ -62,17 +63,17 @@
               <h6 class="font-weight-medium">coupon discount <b>
 
                 </b></h6>
-                <h6 class="font-weight-medium text-danger">
-                  <% if (userData.coupon && userData.coupon.discount) { %>
-                      - ₹<%= couponDiscount.toFixed() %>
-                  <% } else { %>
+              <h6 class="font-weight-medium text-danger">
+                <% if (userData.coupon && userData.coupon.discount) { %>
+                  - ₹<%= couponDiscount.toFixed() %>
+                    <% } else { %>
                       <!-- Handle case when there is no coupon or discount -->
                       No Coupon Applied
-                  <% } %>
+                      <% } %>
               </h6>
-              
 
-                
+
+
 
               </h6>
             </div>
@@ -92,7 +93,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-6 mx-auto">
+      <div class="col-lg-4 mx-auto">
         <div class="card border-secondary mb-5">
           <div class="card-header bg-secondary border-0">
             <h4 class="font-weight-semi-bold m-0 text-white">Payment Options</h4>
@@ -106,6 +107,11 @@
                   <input type="radio" class="custom-control-input" value="cod" name="radio" id="Cash-on-delivery"
                     value="Cash on delivery" checked>
                   <label class="custom-control-label" for="Cash-on-delivery">Cash on delivery</label>
+                </div>
+                <div>
+                  <img src="data:image/svg+xml;base64,<%= Buffer.from(captchaSvg).toString('base64') %>"
+                    alt="CAPTCHA Image">
+                  <input type="text" name="captcha" placeholder="Enter CAPTCHA">
                 </div>
               </div>
               <div class="form-group">
@@ -136,9 +142,9 @@
       </div>
     </div>
   </div>
+  <%- include("../partials/userFooter.ejs")%>
 
-
-  <script>console.log("amal")</script>
+ 
 
   <script>
 
@@ -176,21 +182,60 @@
           if (response.flag) {
             Swal.fire({
               icon: 'warning',
-              title: 'Quantity Exceeds Stock',
-              text: 'The quantity you selected exceeds the available stock.',
+              title: response.title,
+              text: response.messages,
               confirmButtonText: 'OK',
             }).then(() => {
               // Redirect to another URL
               window.location.href = '/home';
             });
           }
-
+          else if (response.captchaError) {
+            console.log('hello captcha')
+            Swal.fire({
+              icon: 'error',
+              title: 'CAPTCHA Verification Failed',
+              text: 'Please enter the correct CAPTCHA code.',
+              confirmButtonText: 'OK'
+            
+            });
+          }
           else if (response.cod) {
-            console.log("COD working")
-            location.replace('/orders-redirect')
+            Swal.fire({
+              icon: 'success',
+              title: 'Order Placed!',
+              text: 'Your order has been successfully placed.',
+              confirmButtonText: 'OK',
+              customClass: {
+                title: 'my-swal-title', // Add your custom class for title styling
+                content: 'my-swal-content', // Add your custom class for content styling
+              },
+            }).then((result) => {
+
+              if (result.isConfirmed || result.isDismissed) {
+
+                location.replace('/orders-redirect')
+              }
+            });
+
+
           } else if (response.walletSuccess) {
-            console.log("wallet payment working")
-            location.replace('/orders-redirect')
+            Swal.fire({
+              icon: 'success',
+              title: 'Order Placed!',
+              text: 'Your order has been successfully placed.',
+              confirmButtonText: 'OK',
+              customClass: {
+                title: 'my-swal-title', // Add your custom class for title styling
+                content: 'my-swal-content', // Add your custom class for content styling
+              },
+            }).then((result) => {
+
+              if (result.isConfirmed || result.isDismissed) {
+
+                location.replace('/orders-redirect')
+              }
+            });
           }
           else if (response.balance) {
             Swal.fire({
@@ -288,4 +333,4 @@
     // };
 
   </script>
-  <!-- Checkout End -->
+  <!-- Checkout End --> 

@@ -2,6 +2,7 @@ const user = require('../models/userSignup');
 const order = require('../models/orderModel');
 const bcrypt = require('bcrypt')
 const mail = require('nodemailer')
+const brand = require('../models/brandsModel');
 const auth = require('../middlewares/auth')
 const prod = require('../models/adminProducts');
 const randomString = require('randomstring')
@@ -14,6 +15,7 @@ const helper = require('../helpers/helperDate');
 const config = require('../config/connection')
 const Coupon = require('../models/couponModel')
 const Razorpay = require('razorpay');
+const svgCaptcha = require('svg-captcha');
 
 
 var instance = new Razorpay({ key_id: process.env.RAZORPAY_ID_KEY, key_secret: process.env.RAZORPAY_SECRET_KEY })
@@ -90,9 +92,15 @@ const checkOutPost = async (req, res) => {
                 return res.json({ couponCodeFailure: true, message: 'Invalid coupon code' });
             }
         }
+        const brands = await brand.find({ active: true });
 
+        // Function to check if the brand is active
+        function isBrandActive(brand) {
+            // Check if the provided brand is in the list of active brands
+            return brands.some(activeBrand => activeBrand.name === brand);
+        }
         const productIds = cartItems.map(item => item.prod_id);
-        const productsData = await prod.find({ _id: { $in: productIds } });
+        const productsData = await prod.find({ _id: { $in: productIds } }).populate('category');
 
 
         let redirectFlag = false;
@@ -103,13 +111,25 @@ const checkOutPost = async (req, res) => {
             if (cartItem.qty > productData.stock) {
 
                 redirectFlag = true;
-                res.json({ flag: true })
-                // const errorMessage = `Sorry, the quantity for ${productData.name} exceeds the available stock.`;
-                // return res.send(`<script>alert('${errorMessage}'); window.location.href='/home';</script>`);
-
-
+                res.json({ flag: true, message: 'The quantity you selected exceeds the available stock.', title: 'Quantity Exceeds Stock' })
 
             }
+            if (!productData.active) {
+                redirectFlag = true;
+                res.json({ flag: true, message: productData.name + ' are not currently active.', title: 'Product Not Available' });
+            }
+
+            if (!productData.category.active) {
+                redirectFlag = true;
+                res.json({ flag: true, message: productData.name + ' is from inactive category.', title: 'Product Not Available' });
+            }
+
+
+            if (!isBrandActive(productData.brand)) {
+                redirectFlag = true;
+                res.json({ flag: true, message: productData.name + ' is from inactive brand.', title: 'Product Not Available' });
+            }
+
         });
 
 
@@ -127,6 +147,9 @@ const checkOutPost = async (req, res) => {
 };
 const paymentView = async (req, res) => {
     try {
+        const captcha = svgCaptcha.create();
+        req.session.captcha = captcha.text;
+        res.locals.captchaSvg = captcha.data;
 
         const userData = await user.findById(req.session.user).populate({
             path: 'cart.prod_id',
@@ -193,7 +216,7 @@ const paymentPost = async (req, res) => {
         };
         const carts = userData.cart;
         const cartItems = [];
-    
+
         carts.forEach((item) => {
             let discount = (userData.coupon.discount / 100) * item.total_price;
             cartItems.push({
@@ -203,7 +226,7 @@ const paymentPost = async (req, res) => {
                 category: item.prod_id.category.name,
                 image: item.prod_id.image[0],
 
-                bill: item.total_price-discount,
+                bill: item.total_price - discount,
 
                 quantity: item.qty,
             });
@@ -222,10 +245,17 @@ const paymentPost = async (req, res) => {
         const productIds = carts.map(item => item.prod_id);
 
 
-        const productsData = await prod.find({ _id: { $in: productIds } });
+        const productsData = await prod.find({ _id: { $in: productIds } }).populate('category');
+        const brands = await brand.find({ active: true });
 
+        // Function to check if the brand is active
+        function isBrandActive(brand) {
+            // Check if the provided brand is in the list of active brands
+            return brands.some(activeBrand => activeBrand.name === brand);
+        }
         let redirectFlag = false;
-
+        let message = '';
+        let title = ''
         carts.forEach(cartItem => {
 
             const productData = productsData.find(p => p._id.equals(cartItem.prod_id._id));
@@ -233,17 +263,50 @@ const paymentPost = async (req, res) => {
 
             if (cartItem.qty > productData.stock) {
                 redirectFlag = true;
+                title = 'Quantity Exceeds Stock'
+                message = 'The quantity you selected exceeds the available stock.'
+            }
+            if (!productData.active) {
+                redirectFlag = true;
+                message = productData.name + ' are not currently active.'
+                title = 'Product Not Available'
 
             }
+
+            if (!productData.category.active) {
+                redirectFlag = true;
+                message = productData.name + ' is from inactive category.',
+                    title = 'Product Not Available'
+
+            }
+            if (!isBrandActive(productData.brand)) {
+                redirectFlag = true;
+                message = productData.name + ' is from inactive brand.',
+                    title = 'Product Not Available'
+            }
+
+
         });
         if (redirectFlag == true) {
-            res.json({ flag: true })
+
+            res.json({ flag: true, messages: message, title })
         }
         else {
 
 
             if (paymentModelSelect === "cod") {
-                res.json({ cod: true })
+                const userCaptcha = req.body.captcha; // Assuming the input field has the name "captcha"
+                const storedCaptcha = req.session.captcha;
+
+                if (userCaptcha !== storedCaptcha) {
+                    console.log('invalid captch')
+                    res.json({ captchaError: true });
+                }
+                else {
+                    res.json({ cod: true })
+                }
+
+
             }
             else if (paymentModelSelect === "online") {
 
@@ -309,7 +372,7 @@ const paymentPost = async (req, res) => {
 const orderSuccessRedirect = async (req, res) => {
     try {
         const userData = await user.findById(req.session.user)
-        console.log(userData);
+
 
         const orders = req.session.order;
 
@@ -328,7 +391,7 @@ const orderSuccessRedirect = async (req, res) => {
             { $set: { cart: [] } },
             { new: true }
         );
-        console.log(userData.coupon)
+
         userData.coupon = { code: null, discount: 0 };
         await userData.save();
         // res.status(200).json({ success: true, message: 'Order placed successfully.' });

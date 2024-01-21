@@ -70,6 +70,7 @@ const userSchema = new Schema({
   coupon: {
     code: {
       type: String,
+      default: null, 
     },
     discount: {
       type: Number,

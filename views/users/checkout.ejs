@@ -34,7 +34,7 @@
                     <div class="row justify-content-around">
                         <div class="col-md-5">
                             <div class="card border-0">
-                                <div class="card-header border-dark">
+                                <div class="card-header ">
                                     <div class="card-header pb-0  text-white" style="background-color: #2874f0;">
                                         <p class="card-text  mt-4 space text-white">SHIPPING DETAILS</p>
                                         <hr class="my-2 bg-white  border border-4 ">
@@ -256,8 +256,8 @@
                         if (response.flag) {
                             Swal.fire({
                                 icon: 'warning',
-                                title: 'Quantity Exceeds Stock',
-                                text: 'The quantity you selected exceeds the available stock.',
+                                title: response.title,
+                                text: response.message,
                                 confirmButtonText: 'OK',
                             }).then(() => {
                                 window.location.href = '/home';
@@ -386,3 +386,4 @@
 
 
     </script>
+     <%- include("../partials/userFooter.ejs")%>

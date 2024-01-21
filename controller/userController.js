@@ -55,30 +55,21 @@ const verifyLogin = async (req, res) => {
 
             res.json({ blocked: true })
 
-            // return res.render("users/userLogin", {
-            //   message: "Your account is blocked. Please contact the admin.",
-            //   cat,
-            // });
+           
           } else {
             req.session.user = userData._id;
             console.log("login success")
             res.json({ success: true })
-            // return res.redirect("/products");
+           
           }
         }
       } else {
         res.status(401).json({ success: false, message: 'Email and password are incorrect.' });
-        // return res.render("users/userLogin", {
-        //   message: "Email and password are incorrect.",
-        //   cat,
-        // });
+      
       }
     } else {
       res.status(401).json({ success: false, message: 'Email and password are incorrect.' });
-      // return res.render("users/userLogin", {
-      //   message: "Email and password are incorrect.",
-      //   cat,
-      // });
+     
     }
   } catch (error) {
     console.log(error.message);
@@ -529,7 +520,8 @@ const verifyPassword = async (req, res) => {
 const userLogout = async (req, res) => {
   try {
 
-    req.session.user = false
+    req.session.user = null
+   
     res.redirect('/home')
   } catch (error) {
     console.log(error.message);

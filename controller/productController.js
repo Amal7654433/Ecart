@@ -53,6 +53,8 @@ exports.filterProduct = async (req, res) => {
     try {
 
         const categoryId = req.query.categoryId
+        const sortOrder = req.query.sortOrder
+        console.log(sortOrder, 'sortoreder')
 
         const minPrice = parseFloat(req.query.minPrice) || 0;
         const maxPrice = parseFloat(req.query.maxPrice) || Number.MAX_VALUE;
@@ -63,7 +65,6 @@ exports.filterProduct = async (req, res) => {
         if (typeof brands === 'string' && brands.trim() !== '') {
             brands = brands.split(',');
         }
-
 
         const filter = {
             active: true
@@ -78,8 +79,6 @@ exports.filterProduct = async (req, res) => {
             filter.brand = { $in: brands };
         }
 
-
-
         if (!isNaN(minPrice) && !isNaN(maxPrice) && minPrice <= maxPrice) {
             filter.price = { $gte: minPrice, $lte: maxPrice };
         }
@@ -89,14 +88,11 @@ exports.filterProduct = async (req, res) => {
             console.log('invalid quantity ')
         }
 
-
         else {
-            const filteredProducts = await prod.find(filter);
+            const sortOption = sortOrder === '1' ? { price: 1 } : { price: -1 };
+            const filteredProducts = await prod.find(filter).sort(sortOption);
             if (filteredProducts) { res.json({ filteredProducts }); }
         }
-
-
-
 
     } catch (error) {
         console.error(error);
