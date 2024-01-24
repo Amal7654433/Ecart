@@ -10,9 +10,11 @@ banner mangement
 
 
 
-catefory,brand ,active check payment post method
 
+order search report
+filter on small screen collpase
 change buynow to addcart
 
-captcha not added
+
 categroy offwe not added and 
+

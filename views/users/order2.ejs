@@ -34,10 +34,10 @@
             width: 100px;
 
         }
+
         #searchForm {
             visibility: hidden;
         }
-        
     </style>
 
     <div class="container-fluid">
@@ -51,7 +51,7 @@
 
                 <!-- Main content -->
                 <div class="row">
-                    <div class="col-lg-8">
+                    <div class="col-lg-12">
                         <!-- Details -->
                         <div class="card mb-4">
                             <div class="card-body">
@@ -68,8 +68,7 @@
                                     </div>
 
                                     <div class="d-flex ">
-                                        <button
-                                            class=" generatePDF btn  p-0 me-3 d-none d-lg-block btn-icon-text "
+                                        <button class=" generatePDF btn  p-0 me-3 d-none d-lg-block btn-icon-text "
                                             data-order-id="<%= order._id %>"><i class="bi bi-download"></i> <span
                                                 class="text">Invoice</span></button>
                                         <!-- <div class="dropdown">
@@ -114,7 +113,7 @@
                                                     </td>
                                                     <td class="text-end">₹&nbsp;<%= item.price*item.quantity %>
                                                     </td>
-                                                    <td class="text-end" > <span
+                                                    <td class="text-end"> <span
                                                             class="badge rounded-pill bg-info text-end">
                                                             <%= item.orderStatus %>
                                                         </span></td>
@@ -133,27 +132,44 @@
                                                                     class="btn btn-warning border-dark btn-sm ">Cancel</button>
 
                                                                 <% } else if(item.orderStatus==='Delivered' ) { %>
-                                                                    <!-- <form action="/return-order?id=<%= item._id %>"
-                                                                    method="post" id="returnForm">
-                                                                    <h6>
-                                                                        <button type="submit"
-                                                                            class="btn btn-danger border-dark" >Return</button>
-                                                                    </h6>
-                                                                </form> -->
+                                                                    <% const orderDate=new Date(order.orderDate); %>
+                                                                        <% const currentDate=new Date(); %>
+                                                                            <% const twoDaysLater=new Date(orderDate);
+                                                                                %>
+                                                                                <% twoDaysLater.setDate(orderDate.getDate()
+                                                                                    + 2); %>
 
-                                                                    <button type="submit"
+                                                                                    <% if (currentDate> twoDaysLater) {
+                                                                                        %>
+                                                                                        <!-- Disabled button code -->
+                                                                                        <button type="button"
+                                                                                            class="btn btn-success border-dark btn-sm"
+                                                                                            disabled>Delivered
+                                                                                            (Disabled)</button>
+                                                                                        <% } else { %>
+                                                                                            <!-- Enabled button code -->
+                                                                                            <button type="submit"
+                                                                                                class="btn btn-success border-dark btn-sm"
+                                                                                                onclick="Return('<%= item._id %>','<%= item.bill %>')">Return</button>
+                                                                                            <% } %>
+
+
+                                                                                                <!-- <button type="submit"
                                                                         class="btn btn-success border-dark btn-sm "
-                                                                        onclick="Return('<%= item._id %>','<%= item.bill%>')">Return</button>
+                                                                        onclick="Return('<%= item._id %>','<%= item.bill%>')">Return</button> -->
 
 
-                                                                    <% } %>
-                                                                        <% if (item.orderStatus==='Return initiated' ) {
-                                                                            %>
+                                                                                                <% } %>
+                                                                                                    <% if
+                                                                                                        (item.orderStatus==='Return initiated'
+                                                                                                        ) { %>
 
-                                                                            <button type="submit" disabled
-                                                                                class="btn btn-secondary border-dark btn-sm ">Returned</button>
+                                                                                                        <button
+                                                                                                            type="submit"
+                                                                                                            disabled
+                                                                                                            class="btn btn-secondary border-dark btn-sm ">Returned</button>
 
-                                                                            <% } %>
+                                                                                                        <% } %>
                                                     </td>
                                                 </tr>
 
@@ -192,45 +208,46 @@
                             </div>
                         </div>
                         <!-- Payment -->
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <h3 class="h6">Payment Method</h3>
-                                        <p>
-                                            <%= order.paymentMode %> <br>
-                                                Total:&nbsp;₹<%= order.orderBill %> <span
-                                                        class="badge bg-success rounded-pill">PAID</span>
-                                        </p>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <h3 class="h6">Billing address</h3>
-                                        <address>
-                                            <strong>
-                                                <%= order.address.name %>
-                                            </strong><br>
-                                            <%= order.address.address %> , <%= order.address.locality%><br>
-                                                    <%= order.address.district %>, <%= order.address.state %>-<%=
-                                                                order.address.pincode %><br>
-                                                                <abbr title="Phone">Ph:</abbr>
-                                                                <%= order.address.phone%>
-                                        </address>
-                                    </div>
+
+                    </div>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <h3 class="h6">Payment Method</h3>
+                                    <p>
+                                        <%= order.paymentMode %> <br>
+                                            Total:&nbsp;₹<%= order.orderBill %> <span
+                                                    class="badge bg-success rounded-pill">PAID</span>
+                                    </p>
+                                </div>
+                                <div class="col-lg-6">
+                                    <h3 class="h6">Billing address</h3>
+                                    <address>
+                                        <strong>
+                                            <%= order.address.name %>
+                                        </strong><br>
+                                        <%= order.address.address %> , <%= order.address.locality%><br>
+                                                <%= order.address.district %>, <%= order.address.state %>-<%=
+                                                            order.address.pincode %><br>
+                                                            <abbr title="Phone">Ph:</abbr>
+                                                            <%= order.address.phone%>
+                                    </address>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4">
-                        <!-- Customer Notes -->
-                        <!-- <div class="card mb-4">
+                    <!-- <div class="col-lg-4"> -->
+                    <!-- Customer Notes -->
+                    <!-- <div class="card mb-4">
                         <div class="card-body">
                             <h3 class="h6">Customer Notes</h3>
                             <p>Sed enim, faucibus litora velit vestibulum habitasse. Cras lobortis cum sem aliquet
                                 mauris rutrum. Sollicitudin. Morbi, sem tellus vestibulum porttitor.</p>
                         </div>
                     </div> -->
-                        <div class="card mb-4">
-                            <!-- Shipping information -->
+                    <!-- <div class="card mb-4">
+                            
                             <div class="card-body">
                                 <h3 class="h6">Shipping Information</h3>
                                 <strong></strong>
@@ -250,7 +267,7 @@
                                 </address>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <hr>
@@ -258,147 +275,147 @@
 
     </div>
     <%- include("../partials/userFooter.ejs")%>
-    <script src="https://cdn.jsdelivr.net/npm/easyinvoice/dist/easyinvoice.min.js"></script>
-    <script>
-        // Add JavaScript to handle the AJAX request and PDF generation
-        document.querySelectorAll('.generatePDF').forEach(function (button) {
-            button.addEventListener('click', function () {
+        <script src="https://cdn.jsdelivr.net/npm/easyinvoice/dist/easyinvoice.min.js"></script>
+        <script>
+            // Add JavaScript to handle the AJAX request and PDF generation
+            document.querySelectorAll('.generatePDF').forEach(function (button) {
+                button.addEventListener('click', function () {
 
-                const orderId = this.getAttribute('data-order-id');
+                    const orderId = this.getAttribute('data-order-id');
 
-                console.log("orderId :", orderId);
+                    console.log("orderId :", orderId);
 
-                // Send an AJAX request to the server to get invoice data
-                fetch(`/invoice?order_id=${orderId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log("response reached back");
-                        console.log(data);
-
-                        easyinvoice.createInvoice(data, function (result) {
-                            // The response will contain a base64 encoded PDF file
-
-                            easyinvoice.download('myInvoice.pdf', result.pdf);
-
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Error fetching invoice data:', error);
-                    });
-            })
-        });
-    </script>
-    <script>
-        function Cancel(data, paymentMode, refund) {
-            const id = data;
-            const paymode = paymentMode
-            console.log('furst', id)
-            console.log('helllllllllo david', paymode)
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You want to cancel this product from Orders!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonText: 'No, keep it',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, cancel it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch("/cancel-order", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            id: id,
-                            paymode: paymode,
-                            refund: refund
-
-                        })
-                    })
-                        .then(response => {
-                            return response.json();
-                        })
+                    // Send an AJAX request to the server to get invoice data
+                    fetch(`/invoice?order_id=${orderId}`)
+                        .then(response => response.json())
                         .then(data => {
-                            Swal.fire(
-                                'Cancelled!',
-                                'Your Order has been cancelled.',
-                                'success'
-                            )
+                            console.log("response reached back");
+                            console.log(data);
+
+                            easyinvoice.createInvoice(data, function (result) {
+                                // The response will contain a base64 encoded PDF file
+
+                                easyinvoice.download('myInvoice.pdf', result.pdf);
+
+                            });
                         })
                         .catch(error => {
-                            console.log(error);
+                            console.error('Error fetching invoice data:', error);
                         });
-                    location.reload();
-                }
-
-            })
-
-        }
-    </script>
-    <script>
-        function Return(data,refund) {
-            const id = data;
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'Do you want to return this item?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes,return!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch("/return-order", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            id: id,
-                            refund: refund
-                        })
-                    })
-                        .then(response => {
-                            return response.json();
-                        })
-                        .then(data => {
-                            Swal.fire(
-                                'Cancelled!',
-                                'Your Order has been cancelled.',
-                                'success'
-                            )
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        });
-                    location.reload();
-                }
-
-            })
-
-        }
-    </script>
-    <script>
-        document.getElementById('returnForm').addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevent the default form submission
-
-            // Show SweetAlert
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'Do you want to return this item?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes,return!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // If the user confirms, proceed with the form submission
-                    event.target.submit();
-                }
+                })
             });
-        });
-    </script>
-    <!-- Your EJS template file -->
+        </script>
+        <script>
+            function Cancel(data, paymentMode, refund) {
+                const id = data;
+                const paymode = paymentMode
+                console.log('furst', id)
+                console.log('helllllllllo david', paymode)
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to cancel this product from Orders!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonText: 'No, keep it',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, cancel it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch("/cancel-order", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                id: id,
+                                paymode: paymode,
+                                refund: refund
+
+                            })
+                        })
+                            .then(response => {
+                                return response.json();
+                            })
+                            .then(data => {
+                                Swal.fire(
+                                    'Cancelled!',
+                                    'Your Order has been cancelled.',
+                                    'success'
+                                )
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
+                        location.reload();
+                    }
+
+                })
+
+            }
+        </script>
+        <script>
+            function Return(data, refund) {
+                const id = data;
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'Do you want to return this item?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes,return!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch("/return-order", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                id: id,
+                                refund: refund
+                            })
+                        })
+                            .then(response => {
+                                return response.json();
+                            })
+                            .then(data => {
+                                Swal.fire(
+                                    'Cancelled!',
+                                    'Your Order has been cancelled.',
+                                    'success'
+                                )
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
+                        location.reload();
+                    }
+
+                })
+
+            }
+        </script>
+        <script>
+            document.getElementById('returnForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Show SweetAlert
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'Do you want to return this item?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes,return!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If the user confirms, proceed with the form submission
+                        event.target.submit();
+                    }
+                });
+            });
+        </script>
+        <!-- Your EJS template file -->

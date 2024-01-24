@@ -16,7 +16,9 @@
         }
 
 
-
+        .footr {
+            margin-top: 6rem;
+        }
 
 
         label {
@@ -136,7 +138,7 @@
 
                         <a href="/forgetpassword" style="text-decoration: none;">Forgot Password?</a>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
@@ -145,125 +147,124 @@
 
 
 
-    <script>
-        function printError(elemId, hintMsg) {
-            document.getElementById(elemId).innerText = hintMsg;
-        }
-        function showGeneralError(message) {
-            document.getElementById('generalError').innerText = message;
-        }
-        function loginValidate() {
-            showGeneralError('');
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+        <script>
+            function printError(elemId, hintMsg) {
+                document.getElementById(elemId).innerText = hintMsg;
+            }
+            function showGeneralError(message) {
+                document.getElementById('generalError').innerText = message;
+            }
+            function loginValidate() {
+                showGeneralError('');
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
 
-            let isValid = true;
+                let isValid = true;
 
-            if (email.trim() === '') {
-                printError('lEmailErr', 'Please enter your email address');
-                isValid = false;
-            } else {
-                const regex = /^\S+@\S+\.\S+$/;
-                if (regex.test(email) === false) {
-                    printError('lEmailErr', 'Please enter a valid email address');
+                if (email.trim() === '') {
+                    printError('lEmailErr', 'Please enter your email address');
                     isValid = false;
                 } else {
-                    printError('lEmailErr', '');
-                }
-            }
-            if (password.trim() === '') {
-                printError('lPassErr', 'Please enter your password');
-                isValid = false;
-            } else if (password.length < 3) {
-                printError('lPassErr', 'Password must be at least 3 characters long');
-                isValid = false;
-            } else {
-                printError('lPassErr', '');
-            }
-
-            // return isValid;
-            if (isValid) {
-                // If the form is valid, make an AJAX request
-                loginUser(email, password);
-            }
-
-            return false;
-        }
-
-        function loginUser(email, password) {
-            // Make an AJAX request to the server
-            $.ajax({
-                type: 'POST',
-                url: '/login',
-                data: { email: email, password: password },
-                success: function (response) {
-                    if (response.success) {
-
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Login Successful!',
-                            text: 'You have successfully logged in.',
-                            confirmButtonText: 'OK',
-                        }).then((result) => {
-
-                            if (result.isConfirmed || result.isDismissed) {
-
-                                window.location.replace('/products');
-                            }
-                        });
-
-                    } else if (response.otp) {
-                        // Handle OTP verification
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'OTP Verification',
-                            text: 'An OTP has been sent to your email for verification.',
-                            confirmButtonText: 'OK',
-                        }).then((result) => {
-                            if (result.isConfirmed || result.isDismissed) {
-                                // Redirect or perform any other action as needed
-                                window.location.replace('/signup/otp');
-                            }
-                        });
-                    }
-                    else if (response.blocked) {
-                        // Display a SweetAlert alert for blocked account
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Account Blocked',
-                            text: 'Your account is blocked. Please contact the admin.',
-                            confirmButtonText: 'OK',
-                        });
-                    }
-                },
-                error: function (xhr) {
-                    // Handle the error response
-                    if (xhr.status === 401) {
-                        // Unauthorized - display error message to the user
-                        showGeneralError('Email and password are incorrect.');
+                    const regex = /^\S+@\S+\.\S+$/;
+                    if (regex.test(email) === false) {
+                        printError('lEmailErr', 'Please enter a valid email address');
+                        isValid = false;
                     } else {
-                        // Other errors - display a generic error message
-                        showGeneralError('An error occurred during login.');
+                        printError('lEmailErr', '');
                     }
                 }
-            });
-        }
-    </script>
-    <script>
-        function togglePasswordVisibility() {
-            const passwordInput = document.getElementById('password');
-            const eyeIcon = document.getElementById('eyeIcon');
+                if (password.trim() === '') {
+                    printError('lPassErr', 'Please enter your password');
+                    isValid = false;
+                } else if (password.length < 3) {
+                    printError('lPassErr', 'Password must be at least 3 characters long');
+                    isValid = false;
+                } else {
+                    printError('lPassErr', '');
+                }
 
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                eyeIcon.classList.remove('fa-eye');
-                eyeIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                eyeIcon.classList.remove('fa-eye-slash');
-                eyeIcon.classList.add('fa-eye');
+                // return isValid;
+                if (isValid) {
+                    // If the form is valid, make an AJAX request
+                    loginUser(email, password);
+                }
+
+                return false;
             }
-        }
 
-    </script>
-   
+            function loginUser(email, password) {
+                // Make an AJAX request to the server
+                $.ajax({
+                    type: 'POST',
+                    url: '/login',
+                    data: { email: email, password: password },
+                    success: function (response) {
+                        if (response.success) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Login Successful!',
+                                text: 'You have successfully logged in.',
+                                confirmButtonText: 'OK',
+                            }).then((result) => {
+
+                                if (result.isConfirmed || result.isDismissed) {
+
+                                    window.location.replace('/products');
+                                }
+                            });
+
+                        } else if (response.otp) {
+                            // Handle OTP verification
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'OTP Verification',
+                                text: 'An OTP has been sent to your email for verification.',
+                                confirmButtonText: 'OK',
+                            }).then((result) => {
+                                if (result.isConfirmed || result.isDismissed) {
+                                    // Redirect or perform any other action as needed
+                                    window.location.replace('/signup/otp');
+                                }
+                            });
+                        }
+                        else if (response.blocked) {
+                            // Display a SweetAlert alert for blocked account
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Account Blocked',
+                                text: 'Your account is blocked. Please contact the admin.',
+                                confirmButtonText: 'OK',
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        // Handle the error response
+                        if (xhr.status === 401) {
+                            // Unauthorized - display error message to the user
+                            showGeneralError('Email and password are incorrect.');
+                        } else {
+                            // Other errors - display a generic error message
+                            showGeneralError('An error occurred during login.');
+                        }
+                    }
+                });
+            }
+        </script>
+        <script>
+            function togglePasswordVisibility() {
+                const passwordInput = document.getElementById('password');
+                const eyeIcon = document.getElementById('eyeIcon');
+
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    eyeIcon.classList.remove('fa-eye');
+                    eyeIcon.classList.add('fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    eyeIcon.classList.remove('fa-eye-slash');
+                    eyeIcon.classList.add('fa-eye');
+                }
+            }
+
+        </script>
