@@ -151,7 +151,7 @@ exports.productsByCategory = async (req, res) => {
 
 exports.langingPage = async (req, res) => {
     try {
-        console.log(req.query.q, 'hai man')
+       
         const banner = await Banner.find({ active: true })
         const activeCategories = await catego.find({ active: true });
         const activeBrands = await brand.find({ active: true });
@@ -181,7 +181,7 @@ exports.langingPage = async (req, res) => {
             brand: { $in: activeBrands.map(brand => brand.name) },
 
         }).populate('category');
-        console.log(products, 'total produxts')
+      
         const cat = await catego.find({ active: true });
 
         if (products) {

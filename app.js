@@ -35,9 +35,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(usersRouter)
 app.use(adminRouter);
-
+console.log(process.env.RAZORPAY_ID_KEY)
 
 const db = process.env.MONGODB_URL
+console.log(db)
 mongoose
     .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
