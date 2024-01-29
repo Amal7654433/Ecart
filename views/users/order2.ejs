@@ -39,8 +39,16 @@
             visibility: hidden;
         }
     </style>
+    
+    <div class="container mt-3">
+        <div class="d-flex justify-content-center " >
+        <% if (data.length===0) { %>
+            <img src="https://i.pinimg.com/originals/ae/8a/c2/ae8ac2fa217d23aadcc913989fcc34a2.png" alt="" class="h-50 w-50">
+                 <% } %>
+        </div>
+    </div>
+    <div class="container-fluid" id="butt">
 
-    <div class="container-fluid">
         <% data.forEach(function(order, index) { %>
             <div class="container">
                 <!-- Title -->
@@ -89,7 +97,7 @@
 
                                 </div>
                                 <div class="table-responsive">
-                                    <table class="table table-borderless ">
+                                    <table class="table table-borderless  " id="tab">
                                         <% order.items.forEach(function(item) { %>
                                             <tbody>
                                                 <tr>
@@ -117,7 +125,7 @@
                                                             class="badge rounded-pill bg-info text-end">
                                                             <%= item.orderStatus %>
                                                         </span></td>
-                                                    <td class="text-end">
+                                                    <td class="text-end" >
                                                         <% if (item.orderStatus==='Cancelled' ) { %>
 
                                                             <button type="button" disabled
@@ -126,7 +134,7 @@
                                                             <% } else if (item.orderStatus !=='Delivered' &&
                                                                 item.orderStatus !=='Return initiated' ) { %>
 
-                                                                <button
+                                                                <button 
                                                                     onclick="Cancel('<%= item._id %>','<%= order.paymentMode%>','<%= item.bill%>')"
                                                                     type="button"
                                                                     class="btn btn-warning border-dark btn-sm ">Cancel</button>
@@ -143,9 +151,9 @@
                                                                                         %>
                                                                                         <!-- Disabled button code -->
                                                                                         <button type="button"
-                                                                                            class="btn btn-success border-dark btn-sm"
+                                                                                            class="btn btn-secondary border-dark btn-sm"
                                                                                             disabled>Delivered
-                                                                                            (Disabled)</button>
+                                                                                            </button>
                                                                                         <% } else { %>
                                                                                             <!-- Enabled button code -->
                                                                                             <button type="submit"
@@ -309,8 +317,7 @@
             function Cancel(data, paymentMode, refund) {
                 const id = data;
                 const paymode = paymentMode
-                console.log('furst', id)
-                console.log('helllllllllo david', paymode)
+              
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "You want to cancel this product from Orders!",
@@ -336,18 +343,24 @@
                         })
                             .then(response => {
                                 return response.json();
+                                
                             })
                             .then(data => {
                                 Swal.fire(
                                     'Cancelled!',
                                     'Your Order has been cancelled.',
                                     'success'
-                                )
+                                ).then((data)=>{
+                                    if(data.isConfirmed || data.isDismissed)
+                                    {
+                                        $('#butt').load(' #butt')
+                                    }
+                                })
                             })
                             .catch(error => {
                                 console.log(error);
                             });
-                        location.reload();
+                        
                     }
 
                 })
@@ -382,10 +395,15 @@
                             })
                             .then(data => {
                                 Swal.fire(
-                                    'Cancelled!',
-                                    'Your Order has been cancelled.',
+                                    'Returned!',
+                                    'Your Order has been Returned.',
                                     'success'
-                                )
+                                ).then((data)=>{
+                                    if(data.isConfirmed || data.isDismissed)
+                                    {
+                                        $('#butt').load(' #butt')
+                                    }
+                                })
                             })
                             .catch(error => {
                                 console.log(error);

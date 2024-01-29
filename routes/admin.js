@@ -7,7 +7,7 @@ const auth = require('../middlewares/auth')
 const dashboardControl=require('../controller/dashboardController')
 
 
-router.get('/sales', auth.adminLoggedIn, dashboardControl.salesReport)
+
 router.get('/admin/chart', auth.adminLoggedIn, dashboardControl.chart)
 router.get('/admin/dashboard', auth.adminLoggedIn,   dashboardControl.dashboardView)
 router.get('/admin/dashboard/report', auth.adminLoggedIn, dashboardControl.orderReport)

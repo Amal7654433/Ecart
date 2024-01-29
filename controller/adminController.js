@@ -810,12 +810,6 @@ const editOrderStatus = async (req, res) => {
   }
 }
 
-
-
-
-
-
-
 const bannerLoad = async (req, res) => {
   try {
     const banner = await Banner.find({}).sort({ _id: 1 });

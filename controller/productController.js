@@ -22,7 +22,8 @@ exports.productSearch = async (req, res) => {
             brand: { $in: activeBrands.map(brand => brand.name) },
 
         }).populate('category');
-        console.log(products, 'hello prod')
+        console.log(products.length, 'hello prod')
+        let productsLength=products.length
         if (products) {
 
             if (req.session.user) {
@@ -35,10 +36,10 @@ exports.productSearch = async (req, res) => {
                     inCart: userCartProductIds.includes(product._id.toString())
                 }));
 
-                res.render('users/productSearch', { products: productsWithCartFlag, activeBrands, });
+                res.render('users/productSearch', { products: productsWithCartFlag, activeBrands,productsLength });
             } else {
 
-                res.render('users/productSearch', { products, activeBrands, });
+                res.render('users/productSearch', { products, activeBrands,productsLength });
             }
         } else {
 

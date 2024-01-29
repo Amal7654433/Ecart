@@ -1,4 +1,3 @@
-
 <%- include("../partials/userHead2.ejs")%>
   <style>
     .product-link {
@@ -53,18 +52,21 @@
     <div id="bannerCarousel" class="carousel slide " data-ride="carousel">
       <div class="carousel-inner">
         <% banner.forEach(function(ban, index) { %>
-          <div class="carousel-item <% if (index === 0) { %>active<% } %> ">
-            <img src="/images/<%= ban.image %>" class="d-block mx-auto " alt="<%= ban.title %>"
-              style="width: 80rem; height: 20rem;">
-            <div class="carousel-caption d-none d-md-block">
-              <h5>
-                <%= ban.title %>
-              </h5>
-              <p>
-                <%= ban.description %>
-              </p>
+        
+            <div class="carousel-item <% if (index === 0) { %>active<% } %> ">
+              <img src="/images/<%= ban.image %>" class="d-block mx-auto " alt="<%= ban.title %>"
+                style="width: 80rem; height: 20rem;">
+              <div class="carousel-caption d-none d-md-block">
+                <a href="<%=ban.redirect%>">click here</a>
+                <h5>
+                 
+                </h5>
+                <p>
+                 
+                </p>
+              </div>
             </div>
-          </div>
+         
           <% }); %>
       </div>
       <a class="carousel-control-prev" href="#bannerCarousel" role="button" data-slide="prev">
@@ -91,7 +93,7 @@
             <div class="col-lg-3 col-md-6 col-sm-6 d-flex">
               <div class="card w-100 my-2 shadow-2-strong">
 
-                <img src="/images/<%= product.image[0] %>" class="card-img-top " style="aspect-ratio: 1/ 1;  " />
+                <img src="/images/<%= product.image[0] %>" class="card-img-top " style="aspect-ratio: 1.4/ 1.2;  " />
                 <div class="card-body d-flex flex-column">
 
                   <a href="/products/view/<%= product._id %>" class="product-link">
@@ -146,51 +148,51 @@
   </div>
   <%- include("../partials/userFooter.ejs")%>
 
-  <script>function addCart(id) {
+    <script>function addCart(id) {
 
-      fetch(`/addtocart/${id}`, {
-        method: 'PATCH',
-      }).then(() => {
-        window.location.assign('/cart')
-      }).catch((error) => {
-        console.error('Error deleting product:', error);
-        // Optionally handle error and show error message to the user
-      });
-    }</script>
-
-
-
-  <script>// Example using fetch API
-    // const searchInput = document.querySelector('#searchInput');
-    // const searchButton = document.querySelector('#searchButton');
-    // console.log('david beckam')
-    // searchButton.addEventListener('click', () => {
-    //   const searchTerm = searchInput.value;
-    //   console.log("hai", searchTerm)
-    //   fetch(`/home?q=${searchTerm}`)
-    //     .then(response => response.json())
-    //     .then(products => {
-
-    //       displaySearchProducts(products)
-    //       console.log(products);
-    //     })
-    //     .catch(error => {
-    //       console.error(error);
-    //     });
-    // });
+        fetch(`/addtocart/${id}`, {
+          method: 'PATCH',
+        }).then(() => {
+          window.location.assign('/cart')
+        }).catch((error) => {
+          console.error('Error deleting product:', error);
+          // Optionally handle error and show error message to the user
+        });
+      }</script>
 
 
-    function displaySearchProducts(filteredProducts) {
-      const productContainer = document.getElementById('productContainer');
-      productContainer.innerHTML = ''; // Clear existing content
 
-      // const prod = Object.values(filteredProducts);
+    <script>// Example using fetch API
+      // const searchInput = document.querySelector('#searchInput');
+      // const searchButton = document.querySelector('#searchButton');
+      // console.log('david beckam')
+      // searchButton.addEventListener('click', () => {
+      //   const searchTerm = searchInput.value;
+      //   console.log("hai", searchTerm)
+      //   fetch(`/home?q=${searchTerm}`)
+      //     .then(response => response.json())
+      //     .then(products => {
 
-      // Create a new product card
-      filteredProducts.forEach(product => {
-        const productHtml =
+      //       displaySearchProducts(products)
+      //       console.log(products);
+      //     })
+      //     .catch(error => {
+      //       console.error(error);
+      //     });
+      // });
 
-          `<div class="row justify-content-center mb-3">
+
+      function displaySearchProducts(filteredProducts) {
+        const productContainer = document.getElementById('productContainer');
+        productContainer.innerHTML = ''; // Clear existing content
+
+        // const prod = Object.values(filteredProducts);
+
+        // Create a new product card
+        filteredProducts.forEach(product => {
+          const productHtml =
+
+            `<div class="row justify-content-center mb-3">
                 <div class="col-md-8">
                   
                     <div class="card shadow-0 border rounded-3">
@@ -231,12 +233,12 @@
                                     <h6 class="text-success">Free shipping</h6>
                                     <div class="mt-4">
                                         ${product.stock < 1 ? '<span aria-disabled="true">out of stock</span>' :
-            product.inCart ? `
+              product.inCart ? `
                                                 <a href="/cart" class="btn btn-primary">Go to Cart</a>
                                                 <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover" onclick="addToWishlist('${product._id}')">
                                                     <i class="fas fa-heart fa-lg px-1"></i>
                                                 </a>` :
-              `<button class="btn btn-primary shadow-0" onclick="addCart('${product._id}')" type="button">Add to cart</button>
+                `<button class="btn btn-primary shadow-0" onclick="addCart('${product._id}')" type="button">Add to cart</button>
                                                 <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover" onclick="addToWishlist('${product._id}')">
                                                     <i class="fas fa-heart fa-lg px-1"></i>
                                                 </a>`}
@@ -249,47 +251,47 @@
                 <input id="catId" type="hidden" value="${product.category._id}">
             `;
 
-        // Append the new product card to the container
-        console.log(productHtml, 'product heml')
-        productContainer.innerHTML += productHtml;
+          // Append the new product card to the container
+          console.log(productHtml, 'product heml')
+          productContainer.innerHTML += productHtml;
 
-      });
-
-    }
-  </script>
-
-  <script>
-    function addToWishlist(id) {
-      console.log('amal');
-      fetch(`/add-wishlist/${id}`, {
-        method: 'PATCH',
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error('Failed to add product to wishlist');
-          }
-        })
-        .then((data) => {
-          if (data.exist) {
-            Swal.fire({
-              title: 'Product Already in Wishlist',
-              icon: 'info',
-            });
-          } else if (data.success) {
-            Swal.fire({
-              title: 'Product Added to Wishlist',
-              icon: 'success',
-            }).then(() => {
-              window.location.assign('/wishlist');
-            });
-          }
-        })
-        .catch((error) => {
-          console.error('Error adding product to wishlist:', error);
-          // Handle other errors or show a general error message
-          swal('Error', 'Failed to add product to wishlist', 'error');
         });
-    }
-  </script>
+
+      }
+    </script>
+
+    <script>
+      function addToWishlist(id) {
+        console.log('amal');
+        fetch(`/add-wishlist/${id}`, {
+          method: 'PATCH',
+        })
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error('Failed to add product to wishlist');
+            }
+          })
+          .then((data) => {
+            if (data.exist) {
+              Swal.fire({
+                title: 'Product Already in Wishlist',
+                icon: 'info',
+              });
+            } else if (data.success) {
+              Swal.fire({
+                title: 'Product Added to Wishlist',
+                icon: 'success',
+              }).then(() => {
+                window.location.assign('/wishlist');
+              });
+            }
+          })
+          .catch((error) => {
+            console.error('Error adding product to wishlist:', error);
+            // Handle other errors or show a general error message
+            swal('Error', 'Failed to add product to wishlist', 'error');
+          });
+      }
+    </script>

@@ -430,7 +430,7 @@ const razorpayRedirect = async (req, res) => {
 const ordersView = async (req, res) => {
     try {
         const userId = req.session.user;
-        console.log(userId)
+   
         const users = await user.findById(userId).populate({
             path: 'cart.prod_id',
             model: 'productDetails',
@@ -441,7 +441,7 @@ const ordersView = async (req, res) => {
         });
 
         const data = await order.find({ user_id: users._id }).sort({ orderDate: -1 }).lean();
-
+console.log(data.length,'heu')
         res.render('users/order2', { data, users })
 
 
