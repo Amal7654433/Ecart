@@ -8,7 +8,7 @@ const orderControl=require("../controller/orderController")
 const couponControl=require("../controller/couponController")
 const wishlistControl=require("../controller/wishlistController")
 const productControl=require("../controller/productController")
-const products=require("../middlewares/products")
+const products=require("../helpers/products")
 router.use(products.category,products.proudct)
 router.use(auth.isAuth)
 /* GET users listing. */
