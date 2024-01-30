@@ -2,10 +2,8 @@
 const user = require('../models/userSignup');
 const prod = require('../models/adminProducts');
 const catego = require('../models/categoryModel')
-
 const brand = require('../models/brandsModel');
 const Banner = require('../models/bannerModel');
-
 exports.productSearch = async (req, res) => {
 
 

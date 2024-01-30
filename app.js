@@ -9,13 +9,12 @@ var logger = require('morgan');
 const mongoose = require('mongoose');
 var adminRouter = require('./routes/admin');
 var usersRouter = require('./routes/users');
-const ejs = require('ejs');
+const { errorHandler, err404handle } = require('./middlewares/errorHandler');
 const nocache = require('nocache');
 
 const http = require('http'); // Or another HTTP library if you prefer
 const cookie = require('cookie');
-const catego = require('./models/categoryModel');
-const prod = require('./models/adminProducts');
+
 const { config } = require('dotenv');
 const app = express();
 
@@ -49,22 +48,9 @@ mongoose
     });
 
 
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-    next(createError(404));
-});
+app.use(err404handle)
+app.use(errorHandler);
 
-// error handler
-app.use(function (err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    const errStatus = err.status || 500;
-    const errMessage = err.message;
-    res.render('error', { errStatus, errMessage });
-});
 app.listen(process.env.PORT, () => {
     console.log("server running on", process.env.PORT);
 })

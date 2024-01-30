@@ -566,9 +566,9 @@ const invoice = async (req, res) => {
 
 
         const productIds = orders.items.map(itme => itme.productId)
-        console.log("mapped ids of the products" + productIds)
+    
         const productsData = await prod.find({ _id: { $in: productIds } });
-        console.log("collected products data" + productsData)
+
         let totalDiscount = 0;
         const ddd = orders.items.reduce((total, item) => {
             return total + (item.price * item.quantity)
@@ -583,10 +583,10 @@ const invoice = async (req, res) => {
 
         const data = {
             images: {
-                logo: "https://content.jdmagicbox.com/comp/warangal/s6/pwfl1537687529m6p3s6/catalogue/-0qgktw1xss.jpg",
+                logo: "https://upload.wikimedia.org/wikipedia/commons/6/64/Seeker_Media_Logo.png",
             },
             sender: {
-                company: 'Ecart',
+                company: 'ShopSeeker',
                 address: 'HustleHub Techpark',
                 city: 'mumbai',
                 country: 'maharahtra',

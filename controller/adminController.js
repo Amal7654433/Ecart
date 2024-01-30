@@ -82,6 +82,7 @@ const brandView = async (req, res) => {
     console.log(error.message);
   }
 };
+
 const brandAdd
   = async (req, res) => {
     try {
@@ -90,6 +91,7 @@ const brandAdd
       console.log(error.message);
     }
   };
+
 const addBrandPost = async (req, res) => {
   console.log(req.body)
   try {
@@ -112,9 +114,6 @@ const addBrandPost = async (req, res) => {
     const c = new brand({
       name: req.body.name,
       description: req.body.description
-
-
-
 
     })
     console.log(c)
@@ -229,6 +228,7 @@ const categoryAdd = async (req, res) => {
     console.log(error.message);
   }
 };
+
 const addCategoryPost = async (req, res) => {
   console.log(req.body)
   try {
@@ -251,11 +251,8 @@ const addCategoryPost = async (req, res) => {
       name: req.body.name,
       description: req.body.description
 
-
-
-
     })
-    console.log(c)
+   
     const result = await c.save()
     if (result) {
       res.redirect('/admin/category')
@@ -274,6 +271,7 @@ const adminLogin = async (req, res) => {
     console.log(error.message);
   }
 };
+
 const adminLoginPost = async (req, res) => {
   const { email, password } = req.body;
   console.log(email);
@@ -292,47 +290,6 @@ const adminLoginPost = async (req, res) => {
   }
 }
 
-
-
-// const
-//   productsView = async (req, res) => {
-//     try {
-//       const products = await prod.find()
-//       const cat = await catego.find({ active: true })
-//       const brands = await brand.find({ active: true });
-
-//       if (products) {
-
-//         res.render('admin/products', { products, cat });
-//       } else {
-//         throw new Error('error while fetching products from database');
-//       }
-//     } catch (error) {
-//       console.log(error.message);
-//     }
-//   };
-// const productsView = async (req, res) => {
-//   try {
-//     // Fetch active categories
-//     const activeCategories = await catego.find({ active: true });
-
-//     if (activeCategories) {
-//       // Get the IDs of active categories
-//       const activeCategoryIds = activeCategories.map((category) => category.name);
-//       console.log(activeCategoryIds)
-
-//       // Fetch products that belong to active categories
-//       const products = await prod.find({ category: { $in: activeCategoryIds } });
-//       console.log(products)
-
-//       res.render('admin/products', { products, activeCategories });
-//     } else {
-//       throw new Error('Error while fetching active categories from the database');
-//     }
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
 const productsView = async (req, res) => {
   try {
 
@@ -358,9 +315,6 @@ const productsView = async (req, res) => {
   }
 };
 
-
-
-
 const addProduct = async (req, res) => {
   try {
     const brands = await brand.find({ active: true })
@@ -370,6 +324,7 @@ const addProduct = async (req, res) => {
     console.log(error.message);
   }
 };
+
 const
   addProductpost = async (req, res) => {
     try {
@@ -411,8 +366,6 @@ const
         details: req.body.details,
         image: images,
 
-
-
       })
       const result = await c.save()
       console.log(result.image)
@@ -443,9 +396,6 @@ const productEdit = async (req, res) => {
     const brands = await brand.find({ active: true })
     const categories = await catego.find({ active: true })
 
-
-
-
     if (products) {
       res.render('admin/editProduct', { products, brands, categories }); // Render the edit brand page
     } else {
@@ -474,11 +424,10 @@ const productUpdate = async (req, res) => {
     }
 
     const selectedCategoryName = req.body.category;
-    console.log(selectedCategoryName, "james")
+
 
     const selectedCategory = await catego.findOne({ name: selectedCategoryName });
-    console.log("hello", selectedCategory)
-    console.log(selectedCategory._id)
+  
 
     // const images =  req.files.map((file) => file.filename);
     if (req.files && req.files.length > 0) {
@@ -487,8 +436,6 @@ const productUpdate = async (req, res) => {
     }
 
     products.name = req.body.name;
-
-
     products.category = selectedCategory._id
 
     products.brand = req.body.brand
@@ -499,13 +446,7 @@ const productUpdate = async (req, res) => {
     products.discount = req.body.discount
     products.details = req.body.details
 
-
-
-
-
-
-
-    // Save the updated brand
+ // Save the updated brand
     const updatedBrand = await products.save();
     console.log(updatedBrand.image)
     if (updatedBrand) {
@@ -519,9 +460,6 @@ const productUpdate = async (req, res) => {
   }
 }
 
-
-
-
 const securePassword = async (password) => {
   const spassword = await bcrypt.hash(password, 10)
   return spassword
@@ -534,9 +472,6 @@ const customerView = async (req, res) => {
     console.log(error.message);
   }
 };
-
-
-
 
 const verifyLogin = async (req, res) => {
   const { email, password } = req.body;
@@ -580,19 +515,7 @@ const userManagement = async (req, res) => {
     console.log(error.message);
   }
 }
-// const deleteUser=async (req, res) => {
-//   try {
 
-//    const id =req.query.id
-//    console.log(id)
-//   //  var ido = new mongoose.Types.ObjectId(id);
-
-//      await user.deleteOne({_id:id})
-//      res.redirect('/admin/customer')
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// }
 const categoryActive = async (req, res) => {
   try {
     const category = req.body.id

@@ -2,27 +2,19 @@ const user = require('../models/userSignup');
 const bcrypt = require('bcrypt')
 const mail = require('nodemailer')
 const auth = require('../middlewares/auth')
-const prod = require('../models/adminProducts');
 const randomString = require('randomstring')
 const catego = require('../models/categoryModel')
 const { v4: uuidv4 } = require('uuid');
-const brand = require('../models/brandsModel');
 const { ObjectId } = require('mongoose').Types;
-const Banner = require('../models/bannerModel');
-
 
 const securePassword = async (password) => {
   const spassword = await bcrypt.hash(password, 10)
   return spassword
 }
 
-
-
-
 const loadLogin = async (req, res) => {
   try {
     const cat = await catego.find({ active: true })
-
     res.render('users/userLogin', { cat });
   } catch (error) {
     console.log(error.message);
@@ -80,11 +72,6 @@ const verifyLogin = async (req, res) => {
   }
 };
 
-
-
-
-
-
 const sendVerifyMail = async (name, email, user_id) => {
   try {
     const uniqueToken = uuidv4();
@@ -129,35 +116,6 @@ const sendVerifyMail = async (name, email, user_id) => {
   }
 };
 
-
-// const verifyMail = async (req, res) => {
-//   try {
-//     const cat = await catego.find({ active: true });
-//     const expire = false
-//     const currentTimestamp = new Date().getTime();
-//     const expiryTimestamp = parseInt(req.query.expiry, 10); 
-
-//     if (currentTimestamp > expiryTimestamp) {
-//       const expire = true
-//       return res.render('users/emailVerificationExpired', { cat, expire });
-//     }
-
-
-//     const updateInfo = await user.updateOne({ _id: req.query.id }, { $set: { is_verified: 1 } });
-//     const userData = await user.findOne({ _id: req.query.id });
-//     if (updateInfo) {
-//       req.session.user = userData._id
-//     }
-
-//     console.log(req.session.user)
-
-//     console.log(updateInfo);
-
-//     res.render('users/emailVerificationExpired', { cat, expire });
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
 let referralCodeApplied;
 const loadSignup = async (req, res) => {
   try {
@@ -168,6 +126,7 @@ const loadSignup = async (req, res) => {
     console.log(error.message);
   }
 };
+
 const subSignup = async (req, res) => {
   try {
     const cat = await catego.find({ active: true });
@@ -239,6 +198,7 @@ const subSignup = async (req, res) => {
     res.send(error.message);
   }
 };
+
 const signupOtpGet = async (req, res) => {
   try {
 
@@ -253,6 +213,7 @@ const signupOtpGet = async (req, res) => {
     console.log(error.message);
   }
 };
+
 const signupOtpPost = async (req, res) => {
   try {
     enteredOTP = req.body.otp;
@@ -299,67 +260,7 @@ const generateOTP = function () {
   return Math.floor(100000 + Math.random() * 900000);
 };
 
-// const sendResetPasswordEmail = async (email, user_id) => {
-//   try {
-//     const OTP = generateOTP();
 
-//     // Update the user's record with the OTP (you can use your model and database here)
-//     const result = await user.findOneAndUpdate({ email: email }, { $set: { token: OTP } });
-
-//     if (result) {
-//       const transporter = mail.createTransport({
-//         service: 'gmail',
-//         auth: {
-//           user: 'amal790257@gmail.com',
-//           pass: 'oazg dytp cbaw ovml',
-//         },
-//       });
-
-//       const options = {
-//         from: 'amal790257@gmail.com',
-//         to: email,
-//         subject: 'Password Reset OTP',
-//         text: `Your OTP for password reset is: ${OTP}`,
-//       };
-
-//       await transporter.sendMail(options);
-//       console.log('Email has been sent');
-
-//       // Return user ID for further processing (e.g., in a session)
-//       return user_id;
-//     } else {
-//       // Handle the case where the user is not found
-//       return null;
-//     }
-//   } catch (error) {
-//     console.log(error.message);
-//     return null;
-//   }
-// };
-
-// const submitEmailForPasswordReset = async (req, res) => {
-//   try {
-//     const enteredEmail = req.body.email;
-// const userData=await user.findOne({email:enteredEmail})
-//     if (enteredEmail === '') {
-//       return res.render('users/forgetPasswordEmailEnter', { message: 'Email should not be empty' });
-//     }
-
-//     // Call the sendResetPasswordEmail function to send the OTP email
-//     const userId = await sendResetPasswordEmail(enteredEmail, userData._id);
-
-//     if (userId !== null) {
-//       // Set the user ID in the session for further processing
-//       req.session.userId = userId;
-
-//       return res.render('users/forgetPasswordOtp', { message: '' });
-//     } else {
-//       return res.render('users/forgetPasswordEmailEnter', { message: 'User not found' });
-//     }
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
 const sendResetPasswordEmail = async (email, otp) => {
   try {
     const transporter = mail.createTransport({
@@ -383,6 +284,7 @@ const sendResetPasswordEmail = async (email, otp) => {
     console.error('Error sending email:', error.message);
   }
 };
+
 const submitEmailForPasswordReset = async (req, res) => {
   try {
     const cat = await catego.find({ active: true });
@@ -401,8 +303,6 @@ const submitEmailForPasswordReset = async (req, res) => {
 
       });
     }
-
-
     req.session.emailTemp = enteredEmail
 
     const OTP = generateOTP();
@@ -410,8 +310,6 @@ const submitEmailForPasswordReset = async (req, res) => {
 
     if (result) {
       await user.findOneAndUpdate({ email: enteredEmail }, { $set: { token: OTP } });
-
-
 
       await sendResetPasswordEmail
         (enteredEmail, OTP);
@@ -429,6 +327,7 @@ const submitEmailForPasswordReset = async (req, res) => {
     return res.json({ message: 'An error occurred' });
   }
 }
+
 const verifyOtp = async (req, res) => {
   const
     enteredOTP = req.body.otp; // Assuming you're sending the email and OTP in the request body
@@ -486,9 +385,7 @@ const verifyOtpGet = async (req, res) => {
 };
 
 
-// =====================email logic=============================
 
-// =======================change password====================
 const verifyPassword = async (req, res) => {
   const { password, cPassword } = req.body;
   const email = req.session.emailTemp
@@ -553,22 +450,10 @@ const deactivateAccount = async (req, res) => {
 }
 
 
-
-// Define a route for removing a product from the cart
-
-
-
-
-
-
-
 module.exports = {
   signupOtpGet, signupOtpPost,
-
-
   loadLogin,
   verifyLogin,
-
   loadSignup,
   subSignup,
   // verifyMail,
