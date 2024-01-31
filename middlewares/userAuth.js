@@ -14,15 +14,15 @@ const
       try {
         const users = req.session.user;
         const userDetails = await user.findOne({ _id: users });
-      
+
+
+        console.log('hello david')
         req.userDetails = userDetails;
+       
         if (userDetails.blocked) {
-          req.session.destroy((err) => {
-            console.log(err);
-            res.status(500)
-          })
+          req.session.user = null
           res.clearCookie('connect.sid')
-          res.redirect('/login?message=blocked by admin', 302, { message: 'blocked by admin' }
+          res.redirect('/login?message=blocked by admin', 302,
           )
         }
         next();
@@ -44,30 +44,7 @@ const userLogout = (req, res, next) => {
   next()
 }
 
-const adminLoggedIn = (req, res, next) => {
-  try {
-    if (req.session.admin) {
 
-    } else {
-      res.redirect('/admin')
-    }
-    next()
-  } catch (error) {
-    console.log(error.message);
-  }
-}
-
-const adminLogout = (req, res, next) => {
-  try {
-    if (req.session.admin) {
-      return res.redirect('/admin/dashboard')
-    }
-    next()
-
-  } catch (error) {
-    console.log(error.message);
-  }
-}
 const OtpAccess = (req, res, next) => {
   try {
     if (req.session.emailTemp) {
@@ -78,34 +55,32 @@ const OtpAccess = (req, res, next) => {
 
     }
 
-
-
   } catch (error) {
     console.log(error.message);
   }
 }
-const emailTempClear= (req, res, next) => {
+const emailTempClear = (req, res, next) => {
   try {
     if (req.session.emailTemp) {
-      req.session.emailTemp=false
+      req.session.emailTemp = false
     }
     next()
-  
+
 
 
   } catch (error) {
     console.log(error.message);
   }
 }
-const resetpAccess= (req, res, next) => {
+const resetpAccess = (req, res, next) => {
   try {
     if (req.session.otp) {
       next()
     }
-    else{
+    else {
       return res.redirect('/forgetpassword/otp')
     }
-  
+
 
 
   } catch (error) {
@@ -113,9 +88,9 @@ const resetpAccess= (req, res, next) => {
   }
 }
 
-const isAuth=(req, res, next) => {
+const isAuth = (req, res, next) => {
   res.locals.userIsAuthenticated = req.session.user ? true : false;
   next();
 };
 
-module.exports = { adminLogout, adminLoggedIn, userLoggedIn, userLogout, OtpAccess,emailTempClear,resetpAccess,isAuth }
+module.exports = { userLoggedIn, userLogout, OtpAccess, emailTempClear, resetpAccess, isAuth }

@@ -1,7 +1,7 @@
 const user = require('../models/userSignup');
 const bcrypt = require('bcrypt')
 const mail = require('nodemailer')
-const auth = require('../middlewares/auth')
+const auth = require('../middlewares/userAuth')
 const prod = require('../models/adminProducts');
 const randomString = require('randomstring')
 const catego = require('../models/categoryModel')
@@ -19,7 +19,7 @@ const addToCart = async (req, res) => {
 
         const productId = req.params.id; // Assuming the product ID is sent in the request body
         const quantity = parseInt(req.body.quantity) || 1; // Default to 1 if quantity is not provided
-console.log(productId)
+        console.log(productId)
         // Fetch the product details based on the product ID
         const product = await prod.findById(productId);
         const unitPrice = Math.floor(product.price - ((product.price * product.discount) / 100))
@@ -45,18 +45,18 @@ console.log(productId)
         // } else {
         // If the product is not in the cart, add it as a new item
         if (existingCartItemIndex === -1) {
-        users.cart.push({
-            prod_id: productId,
-            qty: quantity,
-            unit_price: unitPrice,
-            total_price: unitPrice
-        });
-        // }
+            users.cart.push({
+                prod_id: productId,
+                qty: quantity,
+                unit_price: unitPrice,
+                total_price: unitPrice
+            });
+            // }
 
-        // Save the user's updated cart
-        const cartDetail = await users.save();
+            // Save the user's updated cart
+            const cartDetail = await users.save();
 
-    }
+        }
 
         res.redirect('/cart');
 
@@ -141,7 +141,7 @@ const cartView = async (req, res) => {
         // Replace with your cart items
         const cart = users ? users.cart : [];
         console.log(users)
-     
+
         if (cart.length === 0) {
             const empty = true
             res.render('users/cart', { users, cart, empty, message: ' Your cart is empty' });
@@ -164,7 +164,7 @@ const removeFromCart = async (req, res) => {
     try {
         const productId = req.params.id;
         // Assuming you pass the product ID in the URL as a parameter
-        
+
         const users = await user.findById(req.session.user)
 
         if (!users.cart) {

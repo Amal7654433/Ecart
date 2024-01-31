@@ -1,7 +1,7 @@
 const user = require('../models/userSignup');
 const bcrypt = require('bcrypt')
 const mail = require('nodemailer')
-const auth = require('../middlewares/auth')
+const auth = require('../middlewares/userAuth')
 const randomString = require('randomstring')
 const catego = require('../models/categoryModel')
 const { v4: uuidv4 } = require('uuid');
@@ -47,21 +47,21 @@ const verifyLogin = async (req, res) => {
 
             res.json({ blocked: true })
 
-           
+
           } else {
             req.session.user = userData._id;
             console.log("login success")
             res.json({ success: true })
-           
+
           }
         }
       } else {
         res.status(401).json({ success: false, message: 'Email and password are incorrect.' });
-      
+
       }
     } else {
       res.status(401).json({ success: false, message: 'Email and password are incorrect.' });
-     
+
     }
   } catch (error) {
     console.log(error.message);
@@ -397,7 +397,7 @@ const verifyPassword = async (req, res) => {
           const update = await user.updateOne({ email: email }, { $set: { password: passwordhash } });
           if (update) {
 
-       console.log(req.session.user,"hey password")
+            console.log(req.session.user, "hey password")
             res.redirect('/login')
           } else {
             throw new Error("couldn't update the user");
@@ -418,26 +418,13 @@ const userLogout = async (req, res) => {
   try {
 
     req.session.user = null
-   
+
     res.redirect('/home')
   } catch (error) {
     console.log(error.message);
   }
 };
-const userBlock = async (req, res) => {
-  try {
-    const users = await user.findById({ _id: req.session.user })
-    if (users.blocked) {
 
-
-      req.session.destroy()
-    }
-
-
-  } catch (error) {
-    console.log(error.message);
-  }
-};
 const deactivateAccount = async (req, res) => {
   const userDetails = req.userDetails
   await user.updateOne({ _id: userDetails._id }, { $set: { blocked: true } })
@@ -463,7 +450,7 @@ module.exports = {
   verifyOtp,
   resetPassword,
   verifyPassword,
-  userBlock,
+  
   verifyOtpGet,
   deactivateAccount,
 

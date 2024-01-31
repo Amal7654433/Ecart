@@ -75,6 +75,7 @@
         .btn-primary:hover {
             background-color: #0056b3;
         }
+
         #searchForm {
             visibility: hidden;
         }
@@ -218,7 +219,7 @@
 
 
             // Validate email field
-            if (email === '') {
+            if (email.trim() === '') {
                 printError('emailError', 'Please enter your email');
                 isValid = false;
             } else {
@@ -230,7 +231,7 @@
             }
 
             // Validate phone field
-            if (phone === '') {
+            if (phone.trim() === '') {
                 printError('phoneError', 'Please enter your phone number');
                 isValid = false;
             } else {
@@ -251,15 +252,18 @@
                 isValid = false;
             }
             else if (!/\d/.test(password)) {
-            printError('passwordError', 'Password must include at least one number');
-            isValid = false;
-        }
+                printError('passwordError', 'Password must include at least one number');
+                isValid = false;
+            }
 
-        // Check for at least one special character
-       else if (!/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password)) {
-            printError('passwordError', 'Password must include at least one special character');
-            isValid = false;
-        }
+            // Check for at least one special character
+            else if (!/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password)) {
+                printError('passwordError', 'Password must include at least one special character');
+                isValid = false;
+            } else if (/\s/.test(password)) {
+                printError('passwordError', 'Password cannot contain any white spaces');
+                isValid = false;
+            }
 
             return isValid;
         }

@@ -1,7 +1,7 @@
 const user = require('../models/userSignup');
 const bcrypt = require('bcrypt')
 const mail = require('nodemailer')
-const auth = require('../middlewares/auth')
+const auth = require('../middlewares/userAuth')
 const prod = require('../models/adminProducts');
 const randomString = require('randomstring')
 const catego = require('../models/categoryModel')
@@ -13,15 +13,14 @@ const { ObjectId } = require('mongoose').Types;
 
 const profileView = async (req, res) => {
     try {
-      
+
         const cat = await catego.find({ active: true })
         const userData = await user.findById({ _id: req.session.user })
-        console.log(userData.wallet)
-        console.log(userData.walletHistory)
-       const walletHistory=userData.walletHistory
        
+        const walletHistory = userData.walletHistory
 
-        res.render('users/profile', { cat, userData,walletHistory });
+
+        res.render('users/profile', { cat, userData, walletHistory });
     } catch (error) {
         console.log(error.message);
     }
@@ -168,7 +167,7 @@ const updateAddressView = async (req, res) => {
 
 const updateAddressPost = async (req, res) => {
     try {
-      
+
 
 
 
@@ -350,7 +349,7 @@ const updateUserEmail = async (req, res) => {
         const userData = await user.findById(req.session.user);
 
         if (!userData) {
-            
+
             return res.status(404).send('User not found');
         }
         if (email === userData.email) {
@@ -358,7 +357,7 @@ const updateUserEmail = async (req, res) => {
             return res.redirect('/profile');
         }
 
-      
+
         userData.email = email;
 
         const updatedUserData = await userData.save();

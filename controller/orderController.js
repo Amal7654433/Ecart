@@ -3,7 +3,7 @@ const order = require('../models/orderModel');
 const bcrypt = require('bcrypt')
 const mail = require('nodemailer')
 const brand = require('../models/brandsModel');
-const auth = require('../middlewares/auth')
+const auth = require('../middlewares/userAuth')
 const prod = require('../models/adminProducts');
 const randomString = require('randomstring')
 const catego = require('../models/categoryModel')
@@ -430,7 +430,7 @@ const razorpayRedirect = async (req, res) => {
 const ordersView = async (req, res) => {
     try {
         const userId = req.session.user;
-   
+
         const users = await user.findById(userId).populate({
             path: 'cart.prod_id',
             model: 'productDetails',
@@ -441,7 +441,7 @@ const ordersView = async (req, res) => {
         });
 
         const data = await order.find({ user_id: users._id }).sort({ orderDate: -1 }).lean();
-console.log(data.length,'heu')
+        console.log(data.length, 'heu')
         res.render('users/order2', { data, users })
 
 
@@ -566,7 +566,7 @@ const invoice = async (req, res) => {
 
 
         const productIds = orders.items.map(itme => itme.productId)
-    
+
         const productsData = await prod.find({ _id: { $in: productIds } });
 
         let totalDiscount = 0;
