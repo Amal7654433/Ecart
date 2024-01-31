@@ -206,14 +206,14 @@
     <script>
         const searchInput = document.querySelector('#searchInput');
         const searchButton = document.querySelector('#searchButton');
-        console.log('david beckam')
+      
         searchButton.addEventListener('click', () => {
             const searchTerm = searchInput.value.trim();
             if (searchTerm !== '') {
                 fetch(`/search?q=${searchTerm}`, {
                 method: 'GET',
             }).then(() => {
-                window.location.assign(`/search?q=${searchTerm}`)
+                // window.location.assign(`/search?q=${searchTerm}`)
             })
 
                 .catch(error => {

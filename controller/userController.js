@@ -397,7 +397,7 @@ const verifyPassword = async (req, res) => {
           const update = await user.updateOne({ email: email }, { $set: { password: passwordhash } });
           if (update) {
 
-            req.session.user = false;
+       console.log(req.session.user,"hey password")
             res.redirect('/login')
           } else {
             throw new Error("couldn't update the user");

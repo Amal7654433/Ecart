@@ -20,8 +20,9 @@ exports.productSearch = async (req, res) => {
             brand: { $in: activeBrands.map(brand => brand.name) },
 
         }).populate('category');
-        console.log(products.length, 'hello prod')
-        let productsLength=products.length
+      
+        let productsLength = products.length
+        console.log(productsLength)
         if (products) {
 
             if (req.session.user) {
@@ -34,10 +35,10 @@ exports.productSearch = async (req, res) => {
                     inCart: userCartProductIds.includes(product._id.toString())
                 }));
 
-                res.render('users/productSearch', { products: productsWithCartFlag, activeBrands,productsLength });
+                res.render('users/productSearch', { products: productsWithCartFlag, activeBrands, productsLength });
             } else {
 
-                res.render('users/productSearch', { products, activeBrands,productsLength });
+                res.render('users/productSearch', { products, activeBrands, productsLength });
             }
         } else {
 
@@ -150,7 +151,7 @@ exports.productsByCategory = async (req, res) => {
 
 exports.langingPage = async (req, res) => {
     try {
-       
+
         const banner = await Banner.find({ active: true })
         const activeCategories = await catego.find({ active: true });
         const activeBrands = await brand.find({ active: true });
@@ -180,7 +181,7 @@ exports.langingPage = async (req, res) => {
             brand: { $in: activeBrands.map(brand => brand.name) },
 
         }).populate('category');
-      
+
         const cat = await catego.find({ active: true });
 
         if (products) {

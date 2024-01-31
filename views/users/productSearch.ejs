@@ -61,7 +61,7 @@
                                                         <%= product.name %>
                                                     </h5>
                                                 </a>
-                                                <div class="d-flex flex-row">
+                                                <!-- <div class="d-flex flex-row">
                                                     <div class="text-warning mb-1 me-2">
                                                         <i class="fa fa-star"></i>
                                                         <i class="fa fa-star"></i>
@@ -72,8 +72,8 @@
                                                             4.5
                                                         </span>
                                                     </div>
-                                                    <!-- <span class="text-muted">154 orders</span> -->
-                                                </div>
+                                                  
+                                                </div> -->
 
                                                 <p class="text mb-4 mb-md-0" title="   <%= product.details %>">
                                                     <%= product.details.slice(0,200) %>
@@ -134,119 +134,7 @@
         </div>
     </div>
     <%- include("../partials/userFooter.ejs")%>
-    <script>
-        function applyFilter() {
-            // Get the input 
-            // var sortOrder = document.getElementById('sortSelect').value;
-            var minPrice = document.getElementById('minPrice').value;
-            var maxPrice = document.getElementById('maxPrice').value;
-         
-          
-            // Convert the brand names to a comma-separated string
-            // var brandsQueryParam = selectedBrands.join(',');
-
-            fetch(`/products/filter?minPrice=${minPrice}&maxPrice=${maxPrice}`, {
-                method: 'GET',
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.filteredProducts) {
-                        const filteredProducts = data.filteredProducts || [];
-                        console.log("filtered prod=", filteredProducts)
-                        // Update the UI with the filtered products
-                        displayFilteredProducts(filteredProducts);
-                    }
-                    else if (data.invalidQuantity) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Invalid Price',
-                            text: 'Please enter a valid Price Range.',
-                        });
-                    }
-
-
-
-                })
-                .catch(error => console.error('Error:', error));
-        }
-
-        function displayFilteredProducts(filteredProducts) {
-            const productContainer = document.getElementById('productContainer');
-            productContainer.innerHTML = ''; // Clear existing content
-
-            // const prod = Object.values(filteredProducts);
-
-            // Create a new product card
-            filteredProducts.forEach(product => {
-                const productHtml =
-
-                    `<div class="row justify-content-center mb-3">
-                <div class="col-md-12">
-                  
-                    <div class="card shadow-0 border rounded-3">
-                        <div class="card-body">
-                            <div class="row g-0">
-                                <div class="col-xl-3 col-md-4 d-flex justify-content-center">
-                                    <div class="bg-image hover-zoom ripple rounded ripple-surface me-md-3 mb-3 mb-md-0">
-                                        <img src="/images/${product.image[0]}" class="w-100" />
-                                        <a href="#!">
-                                            <div class="hover-overlay">
-                                                <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);"></div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 col-md-5 col-sm-7">
-                                    <a href="/products/view/${product._id}" class="product-link">
-                                        <h5 class="card-title product-title">${product.name}</h5>
-                                    </a>
-                                    <div class="d-flex flex-row">
-                                        <div class="text-warning mb-1 me-2">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
-                                            <span class="ms-1">4.5</span>
-                                        </div>
-                                    </div>
-                                    <p class="text mb-4 mb-md-0" title="${product.details}">${product.details.slice(0, 200)}</p>
-                                </div>
-                                <div class="col-xl-3 col-md-3 col-sm-5">
-                                    <div class="d-flex flex-row align-items-center mb-1">
-                                        <h4 class="mb-1 me-1"> ₹${(product.price - (product.price * product.discount / 100)).toFixed(2)}</h4>
-                                        <span class="text-danger"><s>${product.discount !== 0 ? `₹${product.price}` : ''}</s></span>&nbsp;
-                                        <span><small>${product.discount !== 0 ? `${product.discount}% off` : ''}</small></span>
-                                    </div>
-                                    <h6 class="text-success">Free shipping</h6>
-                                    <div class="mt-4">
-                                        ${product.stock < 1 ? '<span aria-disabled="true">out of stock</span>' :
-                        product.inCart ? `
-                                                <a href="/cart" class="btn btn-primary">Go to Cart</a>
-                                                <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover" onclick="addToWishlist('${product._id}')">
-                                                    <i class="fas fa-heart fa-lg px-1"></i>
-                                                </a>` :
-                            `<button class="btn btn-primary shadow-0" onclick="addCart('${product._id}')" type="button">Add to cart</button>
-                                                <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover" onclick="addToWishlist('${product._id}')">
-                                                    <i class="fas fa-heart fa-lg px-1"></i>
-                                                </a>`}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <input id="catId" type="hidden" value="${product.category._id}">
-            `;
-
-                // Append the new product card to the container
-                console.log(productHtml, 'product heml')
-                productContainer.innerHTML += productHtml;
-
-            });
-
-        }
-    </script>
+    
 
     <script>function addCart(id) {
 
@@ -261,7 +149,7 @@
         }</script>
     <script>
         function addToWishlist(id) {
-            console.log('amal');
+           
             fetch(`/add-wishlist/${id}`, {
                 method: 'PATCH',
             })
