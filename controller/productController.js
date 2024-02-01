@@ -9,6 +9,7 @@ exports.productSearch = async (req, res) => {
 
     try {
         const searchTerm = req.query.q;
+    
         console.log('term=', searchTerm)
         const activeCategories = await catego.find({ active: true });
         const activeBrands = await brand.find({ active: true });

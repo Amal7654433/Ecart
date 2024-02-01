@@ -104,9 +104,9 @@
                         <h2 class="brand-name">ShopSeeker</h2>
                     </div>
                     <div class="col-md-5 my-auto">
-                        <form role="search">
+                        <form role="search" action="/search" method="get" onsubmit="return validateForm()">
                             <div class="input-group">
-                                <input type="search" id="searchInput" placeholder="Search your product"
+                                <input type="search" name="q" id="searchInput" placeholder="Search your product"
                                     class="form-control" />
                                 <button class="btn bg-white" type="submit" id="searchButton">
                                     <i class="fa fa-search"></i>
@@ -204,29 +204,36 @@
     </div>
     
     <script>
-        const searchInput = document.querySelector('#searchInput');
-        const searchButton = document.querySelector('#searchButton');
+        // const searchInput = document.querySelector('#searchInput');
+        // const searchButton = document.querySelector('#searchButton');
       
-        searchButton.addEventListener('click', () => {
-            const searchTerm = searchInput.value.trim();
-            if (searchTerm !== '') {
-                fetch(`/search?q=${searchTerm}`, {
-                method: 'GET',
-            }).then(() => {
-                window.location.assign(`/search?q=${searchTerm}`) 
-                console.log('helo')
-            })
+        // searchButton.addEventListener('click', () => {
+        //     const searchTerm = searchInput.value.trim();
+        //     if (searchTerm !== '') {
+        //         fetch(`/search?q=${searchTerm}`, {
+        //         method: 'GET',
+        //     }).then(() => {
+        //         window.location.assign(`/search?q=${searchTerm}`) 
+        //         console.log('helo')
+        //     })
 
-                .catch(error => {
-                    console.error(error);
-                });
-            } else {
-                alert('Please enter a search term.');
+        //         .catch(error => {
+        //             console.error(error);
+        //         });
+        //     } else {
+        //         alert('Please enter a search term.');
 
-            }
+        //     }
            
-        });
-
+        // });
+        function validateForm() {
+            var searchTerm = document.getElementById('searchInput').value;
+            if (searchTerm.trim() === '') {
+                alert('Please enter a search term.');
+                return false; // Prevent form submission
+            }
+            return true; // Allow form submission
+        }
 
     </script>
 
