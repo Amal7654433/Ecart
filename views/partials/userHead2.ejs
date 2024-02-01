@@ -213,7 +213,8 @@
                 fetch(`/search?q=${searchTerm}`, {
                 method: 'GET',
             }).then(() => {
-                // window.location.assign(`/search?q=${searchTerm}`)
+                window.location.assign(`/search?q=${searchTerm}`) 
+                console.log('helo')
             })
 
                 .catch(error => {
