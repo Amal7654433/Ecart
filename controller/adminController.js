@@ -566,6 +566,7 @@ const blockUser = async (req, res) => {
   try {
     console.log(req.params.id)
     const users = req.body.id
+    
     await user.updateOne({ _id: users }, { $set: { blocked: true } })
     req.session.user = null
     res.sendStatus(200)

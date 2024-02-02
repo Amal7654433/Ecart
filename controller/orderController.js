@@ -139,8 +139,6 @@ const checkOutPost = async (req, res) => {
         }
 
 
-
-
     } catch (error) {
         console.log(error.message);
     }
@@ -169,15 +167,9 @@ const paymentView = async (req, res) => {
         if (userData.cart.length !== 0 && req.session.addr) {
             const cart = userData.cart;
 
-
-
             const keyId = process.env.RAZORPAY_ID_KEY
 
-
-
-
             res.render('users/payment', { totalBill, keyId, userData, cart, couponDiscount });
-
 
         }
         else {
@@ -188,6 +180,7 @@ const paymentView = async (req, res) => {
         console.log(error.message);
     }
 };
+
 const paymentPost = async (req, res) => {
     try {
         const userData = await user.findById(req.session.user).populate({
@@ -200,8 +193,6 @@ const paymentPost = async (req, res) => {
         });
 
         const paymentModelSelect = req.body.radio
-
-
 
         const selectedAddress = req.session.addr
         const totalBill = await getTotalSum(userData._id);

@@ -39,12 +39,13 @@
             visibility: hidden;
         }
     </style>
-    
+
     <div class="container mt-3">
-        <div class="d-flex justify-content-center " >
-        <% if (data.length===0) { %>
-            <img src="https://i.pinimg.com/originals/ae/8a/c2/ae8ac2fa217d23aadcc913989fcc34a2.png" alt="" class="h-50 w-50">
-                 <% } %>
+        <div class="d-flex justify-content-center ">
+            <% if (data.length===0) { %>
+                <img src="https://i.pinimg.com/originals/ae/8a/c2/ae8ac2fa217d23aadcc913989fcc34a2.png" alt=""
+                    class="h-50 w-50">
+                <% } %>
         </div>
     </div>
     <div class="container-fluid" id="butt">
@@ -125,7 +126,7 @@
                                                             class="badge rounded-pill bg-info text-end">
                                                             <%= item.orderStatus %>
                                                         </span></td>
-                                                    <td class="text-end" >
+                                                    <td class="text-end">
                                                         <% if (item.orderStatus==='Cancelled' ) { %>
 
                                                             <button type="button" disabled
@@ -134,7 +135,7 @@
                                                             <% } else if (item.orderStatus !=='Delivered' &&
                                                                 item.orderStatus !=='Return initiated' ) { %>
 
-                                                                <button 
+                                                                <button
                                                                     onclick="Cancel('<%= item._id %>','<%= order.paymentMode%>','<%= item.bill%>')"
                                                                     type="button"
                                                                     class="btn btn-warning border-dark btn-sm ">Cancel</button>
@@ -153,7 +154,7 @@
                                                                                         <button type="button"
                                                                                             class="btn btn-secondary border-dark btn-sm"
                                                                                             disabled>Delivered
-                                                                                            </button>
+                                                                                        </button>
                                                                                         <% } else { %>
                                                                                             <!-- Enabled button code -->
                                                                                             <button type="submit"
@@ -317,7 +318,7 @@
             function Cancel(data, paymentMode, refund) {
                 const id = data;
                 const paymode = paymentMode
-              
+
                 Swal.fire({
                     title: 'Are you sure?',
                     text: "You want to cancel this product from Orders!",
@@ -343,16 +344,15 @@
                         })
                             .then(response => {
                                 return response.json();
-                                
+
                             })
                             .then(data => {
                                 Swal.fire(
                                     'Cancelled!',
                                     'Your Order has been cancelled.',
                                     'success'
-                                ).then((data)=>{
-                                    if(data.isConfirmed || data.isDismissed)
-                                    {
+                                ).then((data) => {
+                                    if (data.isConfirmed || data.isDismissed) {
                                         $('#butt').load(' #butt')
                                     }
                                 })
@@ -360,7 +360,7 @@
                             .catch(error => {
                                 console.log(error);
                             });
-                        
+
                     }
 
                 })
@@ -398,9 +398,8 @@
                                     'Returned!',
                                     'Your Order has been Returned.',
                                     'success'
-                                ).then((data)=>{
-                                    if(data.isConfirmed || data.isDismissed)
-                                    {
+                                ).then((data) => {
+                                    if (data.isConfirmed || data.isDismissed) {
                                         $('#butt').load(' #butt')
                                     }
                                 })
@@ -408,7 +407,7 @@
                             .catch(error => {
                                 console.log(error);
                             });
-                        location.reload();
+
                     }
 
                 })
