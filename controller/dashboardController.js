@@ -9,17 +9,10 @@ const fs = require('fs');
 const excelJs = require('exceljs');
 const order = require('../models/orderModel');
 
-
-
-
-
-
 exports.dashboardView = async (req, res) => {
     try {
         const months = {};
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-
         const orders = await order.find({});
         orders.forEach((order) => {
             const month = monthNames[order.orderDate.getMonth()];
@@ -29,8 +22,6 @@ exports.dashboardView = async (req, res) => {
             months[month]++;
 
         });
-
-        console.log("hello monthes", months)
 
         const paymentModeStats = await order.aggregate([
             {
@@ -106,8 +97,6 @@ exports.dashboardView = async (req, res) => {
 
 exports.salesReport = async (req, res) => {
     try {
-
-
         const totalRevenueResult = await order.aggregate([
             { $match: { "items.orderStatus": 'Delivered' } },
             {
@@ -117,7 +106,6 @@ exports.salesReport = async (req, res) => {
                 }
             }
         ]);
-
 
         const totalRevenue = totalRevenueResult.length > 0 ? totalRevenueResult[0].totalRevenue : 0;
 
@@ -141,9 +129,6 @@ exports.salesReport = async (req, res) => {
                 }
             }
         ]);
-
-
-
 
         console.log(totalRevenue);
 

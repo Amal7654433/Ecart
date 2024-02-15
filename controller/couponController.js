@@ -1,6 +1,6 @@
 const Coupon = require('../models/couponModel')
 const user = require('../models/userSignup');
-const dateConvert = require('../helpers/helperDate')
+const dateConvert = require('../helpers/dateHelper')
 const crypto = require('crypto');
 // admin side implementaions
 
@@ -21,16 +21,11 @@ exports.addCoupon = async (req, res) => {
     try {
 
         const { couponName, value, minBill, maxAmount, expiryDate } = req.body;
-
-
-
         let isUnique = false;
         let randomString;
 
-
         while (!isUnique) {
             randomString = crypto.randomBytes(3).toString('hex');
-
 
             const existingCoupon = await Coupon.findOne({ code: randomString });
 
@@ -78,16 +73,11 @@ exports.updateCoupon = async (req, res) => {
 
         const { couponName, value, minBill, maxAmount, expiryDate } = req.body;
         const couponId = req.params.id;
-
-
-
-
         const existingCoupon = await Coupon.findById(couponId);
 
         if (!existingCoupon) {
             return res.status(404).json({ success: false, message: 'Coupon not found' });
         }
-
 
         existingCoupon.couponName = couponName;
         existingCoupon.value = value;

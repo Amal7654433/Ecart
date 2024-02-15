@@ -8,10 +8,10 @@ const orderControl = require("../controller/orderController")
 const couponControl = require("../controller/couponController")
 const wishlistControl = require("../controller/wishlistController")
 const productControl = require("../controller/productController")
-const products = require("../helpers/products")
-router.use(products.category, products.proudct)
+const productsHelper = require("../helpers/productsHelper")
+router.use(productsHelper.category, productsHelper.proudct)
 router.use(auth.isAuth)
-/* GET users listing. */
+
 router.get('/home', auth.emailTempClear, productControl.langingPage)
 router.get('/', auth.emailTempClear, productControl.langingPage)
 
@@ -25,20 +25,9 @@ router.get('/signup', auth.emailTempClear, auth.userLogout, userControl.loadSign
 router.post('/signup', userControl.subSignup)
 router.get('/signup/otp', auth.emailTempClear, auth.userLogout, userControl.signupOtpGet)
 router.post('/signup/otp', userControl.signupOtpPost)
-
-
-
-
-/* login section */
 router.get('/login', auth.emailTempClear, auth.userLogout, userControl.loadLogin)
 router.post('/login', userControl.verifyLogin)
-// router.get('/verify',auth.userLogout,userControl.verifyMail)
 router.get('/logout', userControl.userLogout)
-// router.get('/blocked',userControl.userBlock)
-
-
-
-
 router.get('/forgetpassword', auth.userLogout, auth.emailTempClear, userControl.forgetPasswordEmail)
 router.post('/forgetpassword', userControl.submitEmailForPasswordReset)
 router.get('/forgetpassword/otp', auth.OtpAccess, auth.userLogout, userControl.verifyOtpGet)
@@ -46,20 +35,13 @@ router.post('/forgetpassword/otp', userControl.verifyOtp)
 router.get('/forgetpassword/resetpassword', auth.OtpAccess, auth.resetpAccess, auth.userLogout, userControl.resetPassword)
 router.post('/forgetpassword/resetpassword', userControl.verifyPassword)
 router.get('/deactivate-user', auth.userLoggedIn, userControl.deactivateAccount)
-// router.post('/forgetpassword',userControl.forgetVerify)
-// router.get('/resetpassword',userControl.resetPasswordLoad)
-// router.post('/resetpassword',userControl.resetPassword)
 
 router.get('/cart', auth.userLoggedIn, cartControl.cartView)
 router.patch('/addtocart/:id', auth.userLoggedIn, cartControl.addToCart)
 router.patch('/cart/update-quantity', auth.userLoggedIn, cartControl.updateQty)
 router.delete('/cart/remove/:id', cartControl.removeFromCart);
 
-
-// profile routesy
 router.get('/profile', auth.userLoggedIn, profileControl.profileView)
-// router.get('/profile/editprofile',auth.userLoggedIn,profileControl.profileEdit)
-// router.post('/profile/editprofile',auth.userLoggedIn,profileControl.editProfilePost)
 router.get('/profile/address', auth.userLoggedIn, profileControl.addAddressView)
 router.post('/profile/address', auth.userLoggedIn, profileControl.addAddressPost)
 router.delete('/profile/address/remove/:addressId', auth.userLoggedIn, profileControl.removeAddress)
@@ -72,11 +54,7 @@ router.post('/profile/username/update', auth.userLoggedIn, profileControl.update
 router.post('/profile/phone/update', auth.userLoggedIn, profileControl.updateUserPhone)
 router.post('/profile/email/update', auth.userLoggedIn, profileControl.updateUserEmail)
 
-
-
-//order routes
 router.get('/checkout', auth.userLoggedIn, orderControl.checkOutView)
-
 router.post('/checkout', auth.userLoggedIn, orderControl.checkOutPost)
 router.get('/checkout/payment', auth.userLoggedIn, orderControl.paymentView)
 router.post('/checkout/payment', auth.userLoggedIn, orderControl.paymentPost)
@@ -88,19 +66,11 @@ router.get('/orders', auth.userLoggedIn, orderControl.ordersView)
 router.post('/cancel-order', auth.userLoggedIn, orderControl.cancelOrder)
 router.post('/return-order', auth.userLoggedIn, orderControl.returnOrder)
 router.get('/invoice', auth.userLoggedIn, orderControl.invoice)
-
 router.get('/order-success', auth.userLoggedIn, orderControl.orderSuccess)
-
-
-
 
 router.get('/wishlist', auth.userLoggedIn, wishlistControl.wishlistLoad)
 router.patch('/add-wishlist/:productId', auth.userLoggedIn, wishlistControl.wishlistAdd)
 router.patch('/remove-wishlist/:productId', auth.userLoggedIn, wishlistControl.removeWishlistItem)
 router.get('/referral', auth.userLoggedIn, productControl.referral)
-
-
-
-
 
 module.exports = router;

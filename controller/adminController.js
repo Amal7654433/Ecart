@@ -11,9 +11,6 @@ const order = require('../models/orderModel');
 const catego = require('../models/categoryModel')
 const Coupon = require('../models/couponModel')
 const Banner = require('../models/bannerModel');
-const moment = require('moment');
-
-
 
 
 const categoryEditLoad = async (req, res) => {
@@ -325,8 +322,7 @@ const addProduct = async (req, res) => {
   }
 };
 
-const
-  addProductpost = async (req, res) => {
+const addProductpost = async (req, res) => {
     try {
       const brands = await brand.find({ active: true })
       const categories = await catego.find({ active: true })
@@ -500,9 +496,6 @@ const adminLogout = async (req, res) => {
   }
 };
 
-
-
-
 const userManagement = async (req, res) => {
   try {
     const users = await user.find({});
@@ -528,6 +521,7 @@ const categoryActive = async (req, res) => {
     res.render('error')
   }
 }
+
 const categoryDeactive = async (req, res) => {
   try {
     const category = req.body.id
@@ -540,7 +534,6 @@ const categoryDeactive = async (req, res) => {
     res.render('error')
   }
 }
-
 
 const productActive = async (req, res) => {
   try {
@@ -566,8 +559,7 @@ const blockUser = async (req, res) => {
   try {
     console.log(req.params.id)
     const users = req.body.id
-    
-    await user.updateOne({ _id: users }, { $set: { blocked: true } })
+     await user.updateOne({ _id: users }, { $set: { blocked: true } })
     req.session.user = null
     res.sendStatus(200)
   } catch (error) {
@@ -602,11 +594,8 @@ const imageCrop = (req, res) => {
 
   const imageIndex = req.body.data;
   console.log('index=', imageIndex)
-  // Load the original image path from your database or source
 
   const originalImagePath = `public/images/${imageIndex}`;
-
-  // Define the cropping dimensions
 
   const cropHeight =200
 
@@ -626,14 +615,7 @@ const imageCrop = (req, res) => {
         return res.status(500).send('Error cropping image');
       }
 
-      // image
-      //   .resize(cropWidth, cropHeight)
-      //   .toFile(`/path/to/cropped_images/${productId}/${imageIndex}_cropped.jpg`, (err) => {
-      //     if (err) {
-      //       console.error('Error cropping image', err);
-      //       return res.status(500).send('Error cropping image');
-      //     }
-      // Send the cropped image to the client
+     
       const croppedImagePath = `public/images/${imageIndex}`;
       fs.writeFileSync(croppedImagePath, croppedBuffer);
       res.redirect('/admin/products')
@@ -847,7 +829,6 @@ module.exports =
   adminLogin,
   productsView,
   customerView,
-
   categoryView,
   categoryAdd,
   categoryActive,

@@ -2,7 +2,6 @@ const user = require('../models/userSignup');
 const bcrypt = require('bcrypt')
 const mail = require('nodemailer')
 const auth = require('../middlewares/userAuth')
-const randomString = require('randomstring')
 const catego = require('../models/categoryModel')
 const { v4: uuidv4 } = require('uuid');
 const { ObjectId } = require('mongoose').Types;
@@ -242,12 +241,6 @@ const signupOtpPost = async (req, res) => {
 
 const forgetPasswordEmail = async (req, res) => {
   try {
-    // if(req.session.emailTemp)
-    // {
-    //   req.session.emailTemp=false
-    // }
-    // Set req.session.otp to true
-
     const cat = await catego.find({ active: true });
     res.render('users/forgetPasswordEmailEnter', { cat });
     console.log(req.session.emailTemp)
@@ -450,7 +443,6 @@ module.exports = {
   verifyOtp,
   resetPassword,
   verifyPassword,
-  
   verifyOtpGet,
   deactivateAccount,
 

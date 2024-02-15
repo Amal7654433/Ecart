@@ -59,14 +59,13 @@ const OtpAccess = (req, res, next) => {
     console.log(error.message);
   }
 }
+
 const emailTempClear = (req, res, next) => {
   try {
     if (req.session.emailTemp) {
       req.session.emailTemp = false
     }
     next()
-
-
 
   } catch (error) {
     console.log(error.message);
@@ -80,8 +79,6 @@ const resetpAccess = (req, res, next) => {
     else {
       return res.redirect('/forgetpassword/otp')
     }
-
-
 
   } catch (error) {
     console.log(error.message);

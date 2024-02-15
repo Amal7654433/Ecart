@@ -11,7 +11,7 @@ const { v4: uuidv4 } = require('uuid');
 const { ObjectId } = require('mongoose').Types;
 const fs = require('fs');
 const easyinvoice = require('easyinvoice');
-const helper = require('../helpers/helperDate');
+const helper = require('../helpers/dateHelper');
 const config = require('../config/connection')
 const Coupon = require('../models/couponModel')
 const Razorpay = require('razorpay');
@@ -343,19 +343,6 @@ const paymentPost = async (req, res) => {
             }
         }
 
-        // await orders.save()
-        // req.session.addr = false
-
-
-
-
-
-        // if (!redirectFlag) {
-        //     res.redirect('/orders-redirect')
-        // }
-
-
-
     } catch (error) {
         console.log(error.message);
     }
@@ -546,15 +533,11 @@ const invoice = async (req, res) => {
     try {
         const orderId = req.query.order_id
 
-
         const orders = await order.findById(orderId);
 
         if (!orders) {
             return res.status(404).json({ error: 'Order not found' });
         }
-
-        // const item = orders.items.find((item) => item._id.equals(itemId));
-
 
         const productIds = orders.items.map(itme => itme.productId)
 
@@ -567,7 +550,6 @@ const invoice = async (req, res) => {
         const abc = ddd - orders.orderBill
         console.log("discount", abc)
         dis = (abc / ddd) * 100
-
 
         const address = orders.address;
         const date = helper.formatDate(orders.orderDate);
@@ -630,46 +612,6 @@ const invoice = async (req, res) => {
     }
 };
 
-// const applyCoupon = async (req, res) => {
-//     try {
-//         console.log("ehmmo ajdjdjdjsj")
-//         const code = req.body.coupon;
-//         const bill = req.body.bill;
-//         console.log("code=", code, "bill=", bill)
-//         const couponFound = await Coupon.findOne({ code });
-//         if (couponFound) {
-//             if (couponFound.Status === 'Active') {
-//                 const coupDate = new Date(couponFound.expiryDate);
-//                 const currDate = new Date();
-//                 const status = currDate.getTime() > coupDate.getTime() ? 'Expired' : 'Active';
-
-//                 await Coupon.findOneAndUpdate({ code }, { $set: { Status: status } });
-
-//                 const Vcoupon = await Coupon.findOne({ code }); // Extra validation
-
-//                 if (Vcoupon.minBill < bill) {
-//                     req.session.appliedCoupon = Vcoupon;
-//                     const deduction = (bill * Vcoupon.value) / 100;
-//                     let final;
-//                     if (Vcoupon.maxAmount > deduction) {
-//                         final = bill - (bill * Vcoupon.value) / 100;
-//                     } else {
-//                         final = bill - Vcoupon.maxAmount;
-//                     }
-
-//                     req.session.orderBill = final;
-//                 }
-//                 res.json(couponFound);
-//             } else {
-//                 res.json(couponFound);
-//             }
-//         } else {
-//             res.json(307);
-//         }
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-// };
 
 const orderSuccess = async (res, req) => {
     try {

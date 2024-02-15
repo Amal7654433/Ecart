@@ -4,12 +4,12 @@ const prod = require('../models/adminProducts');
 const catego = require('../models/categoryModel')
 const brand = require('../models/brandsModel');
 const Banner = require('../models/bannerModel');
-exports.productSearch = async (req, res) => {
 
+exports.productSearch = async (req, res) => {
 
     try {
         const searchTerm = req.query.q;
-    
+
         console.log('term=', searchTerm)
         const activeCategories = await catego.find({ active: true });
         const activeBrands = await brand.find({ active: true });
@@ -21,7 +21,7 @@ exports.productSearch = async (req, res) => {
             brand: { $in: activeBrands.map(brand => brand.name) },
 
         }).populate('category');
-      
+
         let productsLength = products.length
         console.log(productsLength)
         if (products) {
@@ -156,26 +156,6 @@ exports.langingPage = async (req, res) => {
         const banner = await Banner.find({ active: true })
         const activeCategories = await catego.find({ active: true });
         const activeBrands = await brand.find({ active: true });
-        // const searchTerm = req.query.q;
-        // let products
-        // if (searchTerm) {
-
-        //     products = await prod.find({
-        //         name: { $regex: new RegExp(searchTerm, 'i') },
-        //         active: true,
-        //         category: { $in: activeCategories.map(category => category._id) },
-        //         brand: { $in: activeBrands.map(brand => brand.name) },
-
-        //     }).populate('category');
-        // }
-        // else {
-        //     products = await prod.find({
-        //         active: true,
-        //         category: { $in: activeCategories.map(category => category._id) },
-        //         brand: { $in: activeBrands.map(brand => brand.name) },
-
-        //     }).populate('category');
-        // }
         const products = await prod.find({
             active: true,
             category: { $in: activeCategories.map(category => category._id) },
@@ -229,33 +209,21 @@ exports.homeView = async (req, res) => {
 
 exports.productsView = async (req, res) => {
     try {
-
         const productId = req.params.productId;
-
-
         const product = await prod.findById(productId);
-
-
         const cat = await catego.find({ active: true });
 
         if (!product) {
 
             return res.status(404).render('error', { message: 'Product not found' });
         }
-
-
         if (req.session.user) {
             const userId = req.session.user;
-
-
             const users = await user.findById(userId);
             const userCartProductIds = users ? users.cart.map(item => item.prod_id.toString()) : [];
-
-
             product.inCart = userCartProductIds.includes(productId);
         }
         const userId = req.session.user;
-
         const users = await user.findById(userId).populate({
             path: 'cart.prod_id',
             model: 'productDetails',
@@ -265,10 +233,6 @@ exports.productsView = async (req, res) => {
             },
         });
 
-        // Replace with your cart items
-        //     const filteredCart = users.cart.filter(item => item.prod_id._id.toString() === productId);
-        // console.log(filteredCart)
-        // Render a dedicated product details page, passing the product and categories to the template
         res.render('users/productDetails', { product, cat });
     } catch (error) {
         console.error(error.message);
