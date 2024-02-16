@@ -391,19 +391,21 @@
                             })
                         })
                             .then(response => {
-                                return response.json();
+                                // return response.json();
+                                location.reload()
                             })
-                            .then(data => {
-                                Swal.fire(
-                                    'Returned!',
-                                    'Your Order has been Returned.',
-                                    'success'
-                                ).then((data) => {
-                                    if (data.isConfirmed || data.isDismissed) {
-                                        $('#butt').load(' #butt')
-                                    }
-                                })
-                            })
+                            // .then(data => {
+                            //     Swal.fire(
+                            //         'Returned!',
+                            //         'Your Order has been Returned.',
+                            //         'success'
+                            //     ).then((data) => {
+                            //         if (data.isConfirmed || data.isDismissed) {
+                            //            location.reload()
+                            //         }
+                            //     })
+                            // })
+                        
                             .catch(error => {
                                 console.log(error);
                             });

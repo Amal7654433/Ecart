@@ -1,9 +1,7 @@
 const user = require('../models/userSignup');
 const bcrypt = require('bcrypt')
 const mail = require('nodemailer')
-const auth = require('../middlewares/userAuth')
 const catego = require('../models/categoryModel')
-const { v4: uuidv4 } = require('uuid');
 const { ObjectId } = require('mongoose').Types;
 
 const securePassword = async (password) => {
@@ -71,49 +69,7 @@ const verifyLogin = async (req, res) => {
   }
 };
 
-const sendVerifyMail = async (name, email, user_id) => {
-  try {
-    const uniqueToken = uuidv4();
 
-    const transporter = mail.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.PASS
-      }
-    });
-
-    // Calculate expiry time (1 minute from now)
-    // const expiryTime = new Date();
-    // expiryTime.setMinutes(expiryTime.getMinutes() + 1);
-    // Calculate expiry time (e.g., 1 hour from now)
-    const expiryTime = new Date();
-    // expiryTime.setHours(expiryTime.getHours() + 1);
-    expiryTime.setMinutes(expiryTime.getMinutes() + 1);
-
-    // Convert the expiry time to a Unix timestamp (milliseconds since January 1, 1970)
-    const expiryTimestamp = expiryTime.getTime();
-
-    const mailOptions = {
-      from: 'amal790257@gmail.com',
-      to: email,
-      subject: 'Verification Mail',
-      html: `<p>Hi ${name}, please click here to <a href="http://localhost:7000/verify?id=${user_id}&expiry=${expiryTimestamp}">verify your account</a>This verification link will expire on ${expiryTime.toString()}</p>`,
-      text: `<p>This verification link will expire on ${expiryTime.toString()}</p>`
-    };
-
-
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log(error.message);
-      } else {
-        console.log("Email has been sent. Response:", info.response);
-      }
-    });
-  } catch (error) {
-    console.log(error.message);
-  }
-};
 
 let referralCodeApplied;
 const loadSignup = async (req, res) => {
@@ -436,7 +392,6 @@ module.exports = {
   verifyLogin,
   loadSignup,
   subSignup,
-  // verifyMail,
   forgetPasswordEmail,
   submitEmailForPasswordReset,
   userLogout,
